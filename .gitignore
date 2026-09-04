@@ -1,0 +1,49 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Jupyter
+.ipynb_checkpoints/
+# Notebooks often contain outputs, notes, local paths, and exploratory results.
+# Force-add only notebooks reviewed and cleaned for public release.
+*.ipynb
+
+# Local AI/tooling state
+.claude/
+.codex/
+claude_desktop_config.json
+.mcp.json
+.env
+.env.*
+
+# OS/editor
+.DS_Store
+Thumbs.db
+
+# Tabular data and generated exports
+*.csv
+*.tsv
+*.xls
+*.xlsx
+*.xlsm
+*.parquet
+*.feather
+*.arrow
+*.lst
+*.duckdb
+*.db
+*.sqlite
+*.sqlite3
+
+# Downloaded archives
+*.zip
+*.rar
+*.7z
+
+# Generated export folders
+/exports/
+
+# Local commercial filters
+/posiciones_interes.txt
