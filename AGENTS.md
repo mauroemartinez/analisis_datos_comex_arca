@@ -17,7 +17,7 @@ intermediate that gets deleted once it is folded into that file.
 - `codigos/codigos_arca.py`: ARCA/AFIP lookup dictionaries for countries, customs offices, units, taxes, and transport modes.
 - `Data/`: local data folder. Everything in it is ignored by Git.
 - `notebooks/`: tutorial notebooks (basic to advanced) against `impo_historico.parquet`. Tracked in Git (exception to the general `*.ipynb` ignore) and must stay output-free; see "Notebooks" below.
-- `explorer/index.html`: static prototype that queries the Parquet directly from the browser via DuckDB-WASM (no backend). See `docs/EXPLORACION_ONLINE.md`.
+- `explorer/index.html`: static, no-backend dashboard (filters, evolution/top-15 charts, period-over-period delta) that queries the Parquet directly in the browser via DuckDB-WASM — either a local file (no upload, works from a USB drive) or a remote URL (HTTP Range requests). See `docs/EXPLORACION_ONLINE.md`.
 - `docs/EXPLORACION_ONLINE.md`: architecture decision for online/self-hosted exploration.
 - `.claude/skills/actualizar-historico-arca/SKILL.md`: runbook for keeping the historico up to date; tracked in Git as the one exception to the general `.claude/` ignore.
 - `exports/`: personal scratch/workspace folder for local files and exports. Fully gitignored except `exports/README.md`, which documents its purpose. Scripts never read or write here automatically.

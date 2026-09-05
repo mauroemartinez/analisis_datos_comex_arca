@@ -56,19 +56,47 @@ Object storage con Range requests + CORS
   parámetro.
 - **Dónde alojar la página**: Vercel (gratis para esto), Cloudflare Pages, o
   GitHub Pages. Es un HTML estático, no hay build step obligatorio.
-- **Prototipo ya armado en el repo**: `explorer/index.html`. Es una pagina
-  sola, sin dependencias de build, que carga `@duckdb/duckdb-wasm` desde CDN
-  y deja correr SQL libre contra la URL del Parquet (configurable por query
-  string `?data=` o editable en el archivo). Pensada como punto de partida,
-  no como producto terminado: hoy es "una caja de SQL", falta UI para
-  búsquedas guiadas (por importador, por NCM, por rango de fechas) si se
-  quiere algo más amigable para quien no sabe SQL.
 
-Limitaciones de esta capa: depende de que el navegador soporte WASM (todos
-los navegadores modernos lo hacen) y de que el object storage exponga bien
-Range + CORS. Consultas muy pesadas (un `GROUP BY` sobre las 616M de filas
-sin ningún filtro) van a tardar y consumir la RAM del navegador de quien la
-corre; no hay forma de evitar eso sin agregar la capa 2.
+### Cómo funciona `explorer/index.html` por dentro
+
+Un solo archivo HTML, sin build, sin dependencias propias (solo carga
+`@duckdb/duckdb-wasm` desde CDN en tiempo de ejecución):
+
+1. **DuckDB corre adentro del navegador**: el HTML carga DuckDB compilado a
+   WebAssembly y lo arranca en un Web Worker. A partir de ahí hay un motor
+   SQL real corriendo en la pestaña, no un simulacro.
+2. **Cargar el archivo, de dos formas**:
+   - *Local* (la forma pensada para el pendrive): el navegador lee el
+     Parquet elegido con el selector de archivo y se lo pasa a DuckDB como
+     un "buffer" en memoria (`db.registerFileBuffer`). El archivo nunca sale
+     de la máquina: no hay upload, no hay pedido de red por el dato en sí.
+   - *URL remota*: DuckDB pide el archivo por HTTP, pero no entero — usa
+     Range requests para traer solo los row groups que cada consulta
+     necesita, aprovechando que el histórico está ordenado por `PERIODO`
+     (ver README).
+3. **Los filtros arman SQL, no magia**: cada campo (importador, NCM, país,
+   aduana, tipo de destinación, rango de fechas) se concatena en un `WHERE`
+   dentro de `construirFiltro()`. "Aplicar filtros" corre ese SQL contra la
+   view `impo` (creada sobre el archivo cargado) y listo.
+4. **Los gráficos son SVG a mano, no una librería**: `renderBarsH` (barras
+   horizontales top-15) y `renderLineSingle`/`renderLineMulti` (evolución,
+   mensual/trimestral/anual/interanual) arman el `<svg>` directamente en
+   JavaScript a partir del resultado de la consulta. No hay Chart.js ni
+   D3: menos dependencias, control total sobre que no haya ejes numéricos
+   y las etiquetas de valor queden siempre visibles (como se pidió).
+5. **Nada se manda a ningún lado**: el único tráfico de red es la carga
+   inicial de DuckDB-WASM (una vez) y, si se usa la opción de URL, los
+   Range requests al object storage. Filtros, datos y resultados quedan
+   en la pestaña del navegador de quien la usa.
+
+Limitaciones conocidas: depende de que el navegador soporte WASM (todos los
+modernos lo hacen) y, para la opción de URL, de que el object storage
+exponga bien Range + CORS. Una agregación sin ningún filtro sobre el
+histórico completo va a tardar y usar la RAM del navegador; no hay forma de
+evitar eso del todo sin agregar la Capa 2 de abajo. `PRAGMA memory_limit` no
+aplica acá (es cosa de DuckDB nativo, no de duckdb-wasm), así que en una
+máquina con poca RAM libre conviene filtrar por fecha antes de pedir
+agregaciones sobre todo el archivo.
 
 ## Capa 2 (opcional, si hace falta más adelante): función serverless
 
@@ -178,13 +206,17 @@ skill.
 
 ## Qué falta para que esto sea un producto real
 
-La arquitectura y el prototipo están listos y probados (`explorer/index.html`
-corre localmente contra cualquier Parquet accesible por HTTP); lo que falta
-es específicamente ejecutar los pasos 1-5 de arriba, que requieren una cuenta
-de Cloudflare (u otro proveedor) que esta sesión no tiene. Después de eso:
+La página ya no es solo una arquitectura en el papel: `explorer/index.html`
+se probó en un navegador real (Chrome, vía carga de archivo local y vía URL)
+con datos reales del histórico, incluyendo filtros (importador, NCM, país,
+aduana, tipo de destinación, rango de fechas), los tres gráficos (evolución,
+top importadores, top NCM) y el indicador de variación contra el período
+anterior. Lo que falta es específicamente ejecutar los pasos 1-5 de arriba
+para publicarla en un link real, que requieren una cuenta de Cloudflare (u
+otro proveedor) que esta sesión no tiene. Después de eso:
 
-1. Decidir si hace falta la Capa 2 (función serverless) y con qué UI, si la
-   "caja de SQL" no alcanza para el público que se busca.
+1. Decidir si hace falta la Capa 2 (función serverless) para consultas más
+   pesadas o una UI todavía más guiada.
 2. Si el tráfico crece mucho, revisar límites del plan gratis elegido (R2:
    10 GB de storage y sin límite de egress en el plan gratis al momento de
    escribir esto; confirmar en la página de precios del proveedor antes de

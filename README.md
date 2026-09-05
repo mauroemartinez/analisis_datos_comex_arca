@@ -34,7 +34,7 @@ Este repositorio está preparado para publicarse: no incluye bases mensuales, sa
 |   |-- 02_analisis_intermedio.ipynb  (series de tiempo, paises, NCM)
 |   `-- 03_avanzado.ipynb             (rendimiento, memoria acotada, outliers)
 |-- explorer/
-|   `-- index.html                    (prototipo: SQL en el navegador via DuckDB-WASM)
+|   `-- index.html                    (dashboard con filtros y graficos, DuckDB-WASM, sin backend)
 |-- docs/
 |   `-- EXPLORACION_ONLINE.md         (arquitectura de exploracion online/self-hosted)
 |-- .claude/skills/actualizar-historico-arca/
@@ -212,9 +212,16 @@ Se versionan sin outputs (correr y guardar limpio si se editan; ver `AGENTS.md`)
 jupyter lab notebooks
 ```
 
-## Explorar el dataset online o self-hosted
+## Explorar el dataset online o self-hosted (o desde un pendrive)
 
-Para explorar el histórico desde un link, sin instalar nada, sin duplicar los ~2 GB en otra base de datos: `explorer/index.html` es un prototipo de página estática que corre SQL contra `impo_historico.parquet` **directo en el navegador**, vía DuckDB-WASM, pidiendo por HTTP Range solo los row groups que cada consulta necesita (aprovecha el mismo orden por `PERIODO` que ya hace baratos los filtros de fecha en DuckDB nativo). Ver `docs/EXPLORACION_ONLINE.md` para la decisión completa (por qué no una base de datos, la arquitectura en capas, y qué falta para desplegarlo de verdad: elegir object storage, subir el Parquet, apuntar la página ahí).
+`explorer/index.html` es una página estática, sin backend, que corre **DuckDB directo en el navegador** (vía DuckDB-WASM) contra `impo_historico.parquet`, con filtros (importador, NCM, país, aduana, tipo de destinación, rango de fechas), gráficos (evolución mensual/trimestral/anual/interanual, top 15 importadores, top 15 NCM) y un indicador de variación contra el período anterior. Sin caja de SQL obligatoria: los filtros arman las consultas solos (aunque queda una sección "Avanzado" con SQL libre para quien lo quiera).
+
+Dos formas de usarla, sin escribir nada de código:
+
+- **Local, sin internet para los datos** (pensada para llevarla en un pendrive): elegís el archivo Parquet con el selector de la página; nunca se sube a ningún lado, todo el cómputo es en tu navegador. Solo necesita internet una vez, para traer DuckDB-WASM.
+- **Con una URL remota**: si el Parquet está publicado en algún object storage con soporte de Range requests, pidiendo por HTTP solo los row groups que cada consulta necesita (aprovecha el mismo orden por `PERIODO` que ya hace baratos los filtros de fecha en DuckDB nativo).
+
+Ver `docs/EXPLORACION_ONLINE.md` para la decisión completa (por qué no una base de datos, cómo funciona por dentro, la arquitectura en capas, y los pasos concretos para publicarla de verdad con una URL).
 
 ## Consultas rápidas
 
