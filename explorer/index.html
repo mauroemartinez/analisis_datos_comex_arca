@@ -9,6 +9,7 @@
     color-scheme: light dark;
     --navy: #0B2545;
     --cyan: #35D6FF;
+    --accent-text: var(--navy);
     --bg: #FBF9F4;
     --fg: #23241F;
     --muted: #6B6558;
@@ -20,9 +21,11 @@
     --btn-grad-top: #17427E;
     --btn-grad-bottom: #0B2545;
     --up: #1a9e6b;
-    --up-bg: rgba(26, 158, 107, 0.13);
     --down: #d1495b;
-    --down-bg: rgba(209, 73, 91, 0.13);
+    --delta-up: #3FAE7A;
+    --up-bg: rgba(63, 174, 122, 0.16);
+    --delta-down: #E2727F;
+    --down-bg: rgba(226, 114, 127, 0.16);
     --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
     --shadow-sm: 0 1px 2px rgba(30, 26, 14, 0.07), 0 1px 1px rgba(30, 26, 14, 0.05);
     --shadow-md: 0 6px 16px rgba(30, 26, 14, 0.09), 0 2px 5px rgba(30, 26, 14, 0.07);
@@ -33,7 +36,7 @@
     --inset-field: inset 0 1px 3px rgba(30, 26, 14, 0.08);
   }
   @media (prefers-color-scheme: dark) {
-    :root {
+    :root:not([data-theme="light"]) {
       --bg: #071627;
       --fg: #E7F1FB;
       --muted: #93A9C4;
@@ -45,9 +48,12 @@
       --btn-grad-top: #6BE6FF;
       --btn-grad-bottom: #35D6FF;
       --up: #35e6a3;
-      --up-bg: rgba(53, 230, 163, 0.14);
       --down: #ff6b7a;
-      --down-bg: rgba(255, 107, 122, 0.14);
+      --delta-up: #7FDDB0;
+      --up-bg: rgba(127, 221, 176, 0.16);
+      --delta-down: #FFA3AE;
+      --down-bg: rgba(255, 163, 174, 0.16);
+      --accent-text: var(--cyan);
       --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.35);
       --shadow-md: 0 6px 18px rgba(0, 0, 0, 0.45), 0 2px 6px rgba(0, 0, 0, 0.35);
       --shadow-btn: 0 2px 0 rgba(0, 0, 0, 0.35), 0 5px 14px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.25);
@@ -56,6 +62,32 @@
       --shadow-btn-sec-active: 0 1px 2px rgba(0, 0, 0, 0.3);
       --inset-field: inset 0 1px 3px rgba(0, 0, 0, 0.4);
     }
+  }
+  :root[data-theme="dark"] {
+    --bg: #071627;
+    --fg: #E7F1FB;
+    --muted: #93A9C4;
+    --border: #1C3654;
+    --panel: #0E2038;
+    --panel-2: #12294A;
+    --btn-bg: #35D6FF;
+    --btn-fg: #05202E;
+    --btn-grad-top: #6BE6FF;
+    --btn-grad-bottom: #35D6FF;
+    --up: #35e6a3;
+    --down: #ff6b7a;
+    --delta-up: #7FDDB0;
+    --up-bg: rgba(127, 221, 176, 0.16);
+    --delta-down: #FFA3AE;
+    --down-bg: rgba(255, 163, 174, 0.16);
+    --accent-text: var(--cyan);
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.35);
+    --shadow-md: 0 6px 18px rgba(0, 0, 0, 0.45), 0 2px 6px rgba(0, 0, 0, 0.35);
+    --shadow-btn: 0 2px 0 rgba(0, 0, 0, 0.35), 0 5px 14px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+    --shadow-btn-active: 0 1px 2px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+    --shadow-btn-sec: 0 2px 0 rgba(0, 0, 0, 0.3), 0 3px 8px rgba(0, 0, 0, 0.35);
+    --shadow-btn-sec-active: 0 1px 2px rgba(0, 0, 0, 0.3);
+    --inset-field: inset 0 1px 3px rgba(0, 0, 0, 0.4);
   }
   * { box-sizing: border-box; }
   body {
@@ -78,6 +110,16 @@
     padding: 18px 20px;
     box-shadow: var(--shadow-md);
   }
+  .paso-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+    align-items: start;
+  }
+  .paso-grid section { margin: 0; }
+  @media (max-width: 760px) {
+    .paso-grid { grid-template-columns: 1fr; }
+  }
   .field { margin: 10px 0; }
   label { display: block; font-size: 0.8rem; color: var(--muted); margin-bottom: 4px; }
   input[type="text"], select, textarea {
@@ -94,6 +136,29 @@
   input[type="text"]:focus, select:focus, textarea:focus {
     outline: 2px solid var(--cyan);
     outline-offset: 1px;
+  }
+  input[type="file"] { width: 100%; color: var(--muted); font-size: 0.85rem; }
+  input[type="file"]::file-selector-button,
+  input[type="file"]::-webkit-file-selector-button {
+    font-size: 0.86rem;
+    padding: 8px 16px;
+    margin-right: 12px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: linear-gradient(180deg, var(--bg), var(--panel-2));
+    color: var(--fg);
+    font-weight: 600;
+    box-shadow: var(--shadow-btn-sec);
+    cursor: pointer;
+  }
+  input[type="file"]:hover:not(:disabled)::file-selector-button,
+  input[type="file"]:hover:not(:disabled)::-webkit-file-selector-button {
+    filter: brightness(1.05);
+  }
+  input[type="file"]:disabled::file-selector-button,
+  input[type="file"]:disabled::-webkit-file-selector-button {
+    opacity: 0.45;
+    cursor: default;
   }
   select { font-family: inherit; }
   textarea { min-height: 110px; resize: vertical; }
@@ -145,8 +210,7 @@
     padding: 14px 20px;
     box-shadow: var(--shadow-md);
   }
-  .resumen .metrica .valor { font-size: 2.1rem; font-weight: 800; letter-spacing: -0.01em; line-height: 1.15; color: var(--navy); }
-  @media (prefers-color-scheme: dark) { .resumen .metrica .valor { color: var(--cyan); } }
+  .resumen .metrica .valor { font-size: 2.1rem; font-weight: 800; letter-spacing: -0.01em; line-height: 1.15; color: var(--accent-text); }
   .resumen .metrica .etiqueta { font-size: 0.74rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.04em; font-weight: 700; margin-top: 4px; }
   .delta {
     font-weight: 800;
@@ -155,21 +219,20 @@
     padding: 2px 12px;
     border-radius: 999px;
   }
-  .delta.up { color: var(--up); background: var(--up-bg); }
-  .delta.down { color: var(--down); background: var(--down-bg); }
+  .delta.up { color: var(--delta-up); background: var(--up-bg); }
+  .delta.down { color: var(--delta-down); background: var(--down-bg); }
   .table-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: 8px; max-height: 440px; background: var(--bg); box-shadow: var(--shadow-sm); }
   table { border-collapse: collapse; width: 100%; font-size: 0.8rem; }
   th, td { padding: 7px 10px; border-bottom: 1px solid var(--border); text-align: left; white-space: nowrap; }
   td { font-variant-numeric: tabular-nums; color: var(--fg); }
   th { background: var(--panel-2); position: sticky; top: 0; font-weight: 700; }
-  details { border: 1px solid var(--border); border-radius: 12px; padding: 12px 16px; background: var(--panel); box-shadow: var(--shadow-sm); }
+  details { margin: 18px 0; border: 1px solid var(--border); border-radius: 12px; padding: 12px 16px; background: var(--panel); box-shadow: var(--shadow-sm); }
   details summary { cursor: pointer; font-size: 0.88rem; color: var(--muted); font-weight: 600; }
   details[open] summary { margin-bottom: 10px; }
   .examples { font-size: 0.82rem; color: var(--muted); }
   .examples code { color: var(--fg); }
   footer { margin-top: 20px; font-size: 0.75rem; color: var(--muted); }
-  a { color: var(--navy); font-weight: 600; }
-  @media (prefers-color-scheme: dark) { a { color: var(--cyan); } }
+  a { color: var(--accent-text); font-weight: 600; }
   .paso { font-size: 0.72rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; margin: 0 0 4px; font-weight: 700; }
   .chart-head { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; margin-bottom: 8px; }
   .chart-wrap { overflow-x: auto; }
@@ -178,10 +241,16 @@
   svg text { font-family: system-ui, -apple-system, "Segoe UI", sans-serif; }
   svg rect { filter: drop-shadow(0 1px 1.5px rgba(11, 37, 69, 0.3)); }
   svg path { filter: drop-shadow(0 1px 1.5px rgba(11, 37, 69, 0.2)); }
+  .header-row { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+  .header-row h1 { flex: 1; }
+  #temaToggle { padding: 7px 14px; font-size: 0.8rem; white-space: nowrap; }
 </style>
 </head>
 <body>
-  <h1>Explorador Comex ARCA</h1>
+  <div class="header-row">
+    <h1>Explorador Comex ARCA</h1>
+    <button id="temaToggle" class="secundario" type="button"></button>
+  </div>
   <p class="lead">
     Explora <code>impo_historico.parquet</code> con filtros, sin instalar nada:
     corre 100% en tu navegador (DuckDB-WASM), no sube el archivo a ningún
@@ -191,6 +260,36 @@
     archivo de datos en sí queda siempre local).
   </p>
 
+  <details open>
+    <summary>¿De dónde salen estos datos?</summary>
+    <p style="margin: 0 0 10px; font-size: 0.88rem; line-height: 1.5;">
+      Son datos públicos de importaciones argentinas que publica ARCA (la
+      agencia aduanera/impositiva) mes a mes, en el reporte "Información
+      Agregada de Comercio Exterior". ARCA los publica sueltos, un archivo
+      por mes: para poder explorarlos todos juntos, cada mes se descargó, se
+      convirtió a un formato más liviano (Parquet) y se pegó al resto en un
+      único archivo ordenado por fecha. Armar así el histórico completo
+      (todos los meses publicados hasta ahora, cientos de millones de
+      filas) le tomó a Claude Code (un asistente de IA trabajando solo,
+      sin supervisión) alrededor de 7 horas.
+    </p>
+    <p style="margin: 0 0 10px; font-size: 0.88rem; line-height: 1.5;">
+      Si en algún momento querés un recorte distinto (por ejemplo, solo las
+      importaciones de un importador puntual, de un período específico, o
+      de ciertas posiciones NCM), no hace falta que repitas ese proceso a
+      mano: se lo podés pedir en lenguaje simple a un asistente de IA que
+      tenga acceso a internet, una terminal con Python y, si hace falta, un
+      navegador: el asistente se encarga de resolver la descarga y el
+      filtrado.
+    </p>
+    <p style="margin: 0 0 10px; font-size: 0.88rem; line-height: 1.5;">
+      Todo el código y la documentación completa (cómo se arma el
+      histórico, cómo actualizarlo, decisiones de diseño) están en el
+      <a href="https://github.com/mauroemartinez/analisis_datos_comex_arca" target="_blank" rel="noopener">repositorio en GitHub</a>.
+    </p>
+  </details>
+
+  <div class="paso-grid">
   <section>
     <p class="paso">Paso 1</p>
     <h2>Cargar los datos</h2>
@@ -249,6 +348,7 @@
       <button id="limpiar" class="secundario">Limpiar filtros</button>
     </div>
   </section>
+  </div>
 
   <section>
     <p class="paso">Resumen</p>
@@ -257,6 +357,10 @@
       <div class="metrica">
         <div class="valor" id="resFilas">-</div>
         <div class="etiqueta">Ítems</div>
+      </div>
+      <div class="metrica">
+        <div class="valor" id="resDespachos">-</div>
+        <div class="etiqueta">Despachos</div>
       </div>
       <div class="metrica">
         <div class="valor" id="resFob">-</div>
@@ -313,10 +417,18 @@
 
   <section>
     <details>
-      <summary>Avanzado: SQL libre</summary>
+      <summary>Avanzado: armar o escribir SQL a mano</summary>
+      <p style="margin: 0 0 12px; font-size: 0.85rem;">
+        Usá los mismos filtros del "Paso 2" de arriba para armar la consulta
+        completa — no hace falta escribir el <code>WHERE</code> a mano. El
+        SQL generado aparece abajo, editable, antes de ejecutarlo.
+      </p>
+      <div class="botones" style="margin-top: 0">
+        <button id="generarSql" class="secundario">Generar SQL desde los filtros de arriba</button>
+      </div>
       <div class="field">
         <label for="sql">SQL (la tabla se llama <code>impo</code>)</label>
-        <textarea id="sql">SELECT substr(PERIODO,1,4) AS anio, count(*) AS filas, round(sum(FOB_TOTAL_USD)) AS fob_usd
+        <textarea id="sql">SELECT substr(PERIODO,1,4) AS "año", count(*) AS filas, round(sum(FOB_TOTAL_USD)) AS fob_usd
 FROM impo
 GROUP BY 1
 ORDER BY 1</textarea>
@@ -324,6 +436,12 @@ ORDER BY 1</textarea>
       <div class="botones">
         <button id="runSql" class="secundario">Ejecutar SQL</button>
       </div>
+      <p style="margin: 10px 0 0; font-size: 0.78rem; color: var(--muted);">
+        "Ejecutar SQL" solo corre la consulta y muestra el resultado en la
+        tabla de "Detalle" (más arriba) — no descarga nada. Para bajar un
+        CSV usá el botón "Exportar CSV" de esa sección: exporta según los
+        filtros del Paso 2, no según este SQL.
+      </p>
       <div class="examples">
         <p>
           El histórico está ordenado por <code>PERIODO</code>, así que filtrar
@@ -343,6 +461,24 @@ ORDER BY 1</textarea>
 <script type="module">
 import * as duckdb from "https://cdn.jsdelivr.net/npm/@duckdb/duckdb-wasm@1.29.0/+esm";
 
+const TEMA_KEY = "comex-arca-tema";
+const temaToggleEl = document.getElementById("temaToggle");
+function temaActual() {
+  const guardado = localStorage.getItem(TEMA_KEY);
+  if (guardado === "light" || guardado === "dark") return guardado;
+  return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+}
+function aplicarTema(tema) {
+  document.documentElement.setAttribute("data-theme", tema);
+  temaToggleEl.textContent = tema === "dark" ? "☀️ Modo claro" : "🌙 Modo oscuro";
+}
+aplicarTema(temaActual());
+temaToggleEl.addEventListener("click", () => {
+  const siguiente = temaActual() === "dark" ? "light" : "dark";
+  localStorage.setItem(TEMA_KEY, siguiente);
+  aplicarTema(siguiente);
+});
+
 const PAISES = {"101": "BURKINA FASO", "102": "ARGELIA", "103": "BOTSWANA", "104": "BURUNDI", "105": "CAMERUN", "107": "REP. CENTROAFRICANA", "108": "CONGO", "109": "REP DEM CONGO EXZAIR", "110": "COSTA DE MARFIL", "111": "CHAD", "112": "BENIN", "113": "EGIPTO", "115": "GABON", "116": "GAMBIA", "117": "GHANA", "118": "GUINEA", "119": "GUINEA ECUATORIAL", "120": "KENYA", "121": "LESOTHO", "122": "LIBERIA", "123": "LIBIA", "124": "MADAGASCAR", "125": "MALAWI", "126": "MALI", "127": "MARRUECOS", "128": "MAURICIO,ISLAS", "129": "MAURITANIA", "130": "NIGER", "131": "NIGERIA", "132": "ZIMBABWE", "133": "RWANDA", "134": "SENEGAL", "135": "SIERRA LEONA", "136": "SOMALIA", "137": "SWAZILANDIA", "138": "SUDAN", "139": "TANZANIA", "140": "TOGO", "141": "TUNEZ", "142": "UGANDA", "144": "ZAMBIA", "145": "T V REINO UNIDO AFR.", "146": "T VINC A ESPANA AFR.", "147": "T VINC A FRANCIA,AFR", "149": "ANGOLA", "150": "CABO VERDE,ISLAS", "151": "MOZAMBIQUE", "152": "SEYCHELLES", "153": "DJIBOUTI", "155": "COMORAS", "156": "GUINEA BISSAU", "157": "STO.TOME Y PRINCIPE", "158": "NAMIBIA", "159": "SUDAFRICA", "160": "ERITREA", "161": "ETIOPIA", "198": "INDET.(AFRICA)", "200": "ARGENTINA", "201": "BARBADOS", "202": "BOLIVIA", "203": "BRASIL", "204": "CANADA", "205": "COLOMBIA", "206": "COSTA RICA", "207": "CUBA", "208": "CHILE", "209": "DOMINICANA,REP.", "210": "ECUADOR", "211": "EL SALVADOR", "212": "ESTADOS UNIDOS", "213": "GUATEMALA", "214": "GUYANA", "215": "HAITI", "216": "HONDURAS", "217": "JAMAICA", "218": "MEXICO", "219": "NICARAGUA", "220": "PANAMA", "221": "PARAGUAY", "222": "PERU", "223": "PUERTO RICO(EST ASOC", "224": "TRINIDAD Y TOBAGO", "225": "URUGUAY", "226": "VENEZUELA", "227": "T V A REINO UNIDO AM", "228": "T V A DINAMARCA AMER", "229": "T V A FRANCIA, AMER", "231": "T VINC A USA, AMERIC", "232": "SURINAME", "233": "DOMINICA", "234": "SANTA LUCIA", "235": "S.VICENTE Y LAS GRAN", "236": "BELICE", "237": "ANTIGUA Y BARBUDA", "238": "S.CRISTOBAL Y NEVIS", "239": "BAHAMAS", "240": "GRENADA", "241": "ANT HOLADESAS T PA B", "242": "ARUBA", "250": "TIERRA DEL FUEGO AAE", "251": "ZF LA PLATA (BS AS)", "252": "ZF.JUSTO DARACT S LU", "253": "ZF RIO GALLEGOS S CR", "254": "ISLAS MALVINAS", "255": "Z.F.TUCUMAN", "256": "Z.F.CORDOBA", "257": "Z.F.MENDOZA", "258": "ZF GRAL PICO L PAMPA", "259": "Z.F.COMODO.RIVADAVIA", "260": "ZF IQUIQUE (CHILE)", "261": "ZF PUNTA ARENAS (CHI", "262": "Z.F.SALTA", "263": "Z.F.PASO D/L LIBRES", "264": "Z.F. PUERTO IGUAZU", "270": "ZF COLON (PANAMA)", "271": "Z.F.STA CRUZ SIERRA", "280": "ZF COLONIA (URUGUAY)", "281": "ZF FLORIDA (URUGUAY)", "282": "ZF LIBERTAD (URUGUAY", "283": "ZFZONAMERICA.EXMONTV", "284": "ZF NVA HELVECIA (URU", "285": "ZF NVA PALMIRA (URUG", "286": "ZF RIO NEGRO URUGUAY", "287": "ZF RIVERA (URUGUAY)", "288": "ZF SAN JOSE (URUGUAY", "291": "ZF MANAOS (BRASIL)", "295": "MAR TER ARG/ZONA E E", "296": "RIOS NAC ARG NAV INT", "298": "INDET.(AMERICA)", "301": "AFGANISTAN", "302": "ARABIA SAUDITA", "303": "BAHREIN", "304": "MYANMAR(EX-BIRMANIA)", "305": "BUTAN", "306": "CAMBODYA(EX-KAMPUCHE", "307": "SRI LANKA", "308": "COREA DEMOCRATICA", "309": "COREA REPUBLICANA", "310": "CHINA", "312": "FILIPINAS", "313": "TAIWAN", "315": "INDIA", "316": "INDONESIA", "317": "IRAQ", "318": "IRAN", "319": "ISRAEL", "320": "JAPON", "321": "JORDANIA", "322": "QATAR", "323": "KUWAIT", "324": "LAO", "325": "LIBANO", "326": "MALASIA", "327": "MALDIVES,ISLAS", "328": "OMAN", "329": "MONGOLIA", "330": "NEPAL", "331": "EMIRATOS ARABES,UNID", "332": "PAKISTAN", "333": "SINGAPUR", "334": "SIRIA", "335": "THAILANDIA", "337": "VIETNAM", "341": "HONG KONG R A E CHIN", "344": "MACAO (R A E CHINA)", "345": "BANGLADESH", "346": "BRUNEI", "348": "REP. DE YEMEN", "349": "ARMENIA", "350": "AZERBAIJAN", "351": "GEORGIA", "352": "KAZAJSTAN", "353": "KIRGUIZISTAN", "354": "TAYIKISTAN", "355": "TURKMENISTAN", "356": "UZBEKISTAN", "357": "T AU PALEST GAZA JER", "358": "TIMOR ORIENTAL", "398": "INDET.(ASIA)", "401": "ALBANIA", "404": "ANDORRA", "405": "AUSTRIA", "406": "BELGICA", "407": "BULGARIA", "409": "DINAMARCA", "410": "ESPAÑA", "411": "FINLANDIA", "412": "FRANCIA", "413": "GRECIA", "414": "HUNGRIA", "415": "IRLANDA", "416": "ISLANDIA", "417": "ITALIA", "418": "LIECHTENSTEIN", "419": "LUXEMBURGO", "420": "MALTA", "421": "MONACO", "422": "NORUEGA", "423": "PAISES BAJOS", "424": "POLONIA", "425": "PORTUGAL", "426": "REINO UNIDO", "427": "RUMANIA", "428": "SAN MARINO", "429": "SUECIA", "430": "SUIZA", "431": "SANTA SEDE(VATICANO)", "433": "T V A REINO UNIDO EU", "435": "CHIPRE", "436": "TURQUIA", "438": "REP. FED DE ALEMANIA", "439": "BIELORRUSIA", "440": "ESTONIA", "441": "LETONIA", "442": "LITUANIA", "443": "MOLDAVIA", "444": "RUSIA", "445": "UCRANIA", "446": "BOSNIA HERZEGOVINA", "447": "CROACIA", "448": "ESLOVAQUIA", "449": "ESLOVENIA", "450": "MACEDONIA", "451": "REP. CHECA", "452": "FED SER Y MONT YUGOE", "498": "INDET.(EUROPA)", "501": "AUSTRALIA", "503": "NAURU", "504": "NUEVA ZELANDIA", "505": "VANATU", "506": "SAMOA OCCIDENTAL", "507": "T V A AUSTRALIA OCEA", "508": "T V A REINO UNIDO OC", "509": "T V A FRANCIA (OCEAN", "510": "T V A NVA ZELANDA OC", "511": "T V A USA (OCEANIA)", "512": "FIJI, ISLAS", "513": "PAPUA NUEVA GUINEA", "514": "KIRIBATI, ISLAS", "515": "MICRONESIA,EST.FEDER", "516": "PALAU", "517": "TUVALU", "518": "SALOMON,ISLAS", "519": "TONGA", "520": "MARSHALL,ISLAS", "521": "MARIANAS,ISLAS", "598": "INDET.(OCEANIA)", "998": "INDET.(CONTINENTE)"};
 const ADUANAS = {"001": "BS.AS.(CAPITAL)", "003": "BAHIA BLANCA", "004": "BARILOCHE", "008": "CAMPANA", "010": "BARRANQUERAS", "012": "CLORINDA", "013": "COLON", "014": "COMODORO RIVADAVIA", "015": "CONCEPCION DEL URUGU", "016": "CONCORDIA", "017": "CORDOBA", "018": "CORRIENTES", "019": "PUERTO DESEADO", "020": "DIAMANTE", "023": "ESQUEL", "024": "FORMOSA", "025": "GOYA", "026": "GUALEGUAYCHU", "029": "IGUAZU", "031": "JUJUY", "033": "LA PLATA", "034": "LA QUIACA", "037": "MAR DEL PLATA", "038": "MENDOZA", "040": "NECOCHEA", "041": "PARANA", "042": "PASO DE LOS LIBRES", "045": "POCITOS", "046": "POSADAS", "047": "PUERTO MADRYN", "048": "RIO GALLEGOS", "049": "RIO GRANDE", "052": "ROSARIO", "053": "SALTA", "054": "SAN JAVIER", "055": "SAN JUAN", "057": "SAN LORENZO", "058": "S.MARTIN DE LOS ANDE", "059": "SAN NICOLAS", "060": "SAN PEDRO", "061": "SANTA CRUZ", "062": "SANTA FE", "066": "TINOGASTA", "067": "USHUAIA", "069": "VILLA CONSTITUCION", "073": "EZEIZA", "074": "TUCUMAN", "075": "NEUQUEN", "076": "ORAN", "078": "SAN RAFAEL", "079": "LA RIOJA", "080": "SAN ANTONIO OESTE", "082": "BERNARDO DE YRIGOYEN", "083": "SAN LUIS", "084": "SANTO TOME", "085": "VILLA REGINA", "086": "OBERA"};
 const COLOR_NAVY = "#0B2545";
@@ -358,10 +494,12 @@ const aplicarBtn = document.getElementById("aplicar");
 const limpiarBtn = document.getElementById("limpiar");
 const exportarBtn = document.getElementById("exportarCsv");
 const runSqlBtn = document.getElementById("runSql");
+const generarSqlBtn = document.getElementById("generarSql");
 const sqlEl = document.getElementById("sql");
 const resultEl = document.getElementById("result");
 const resumenEl = document.getElementById("resumen");
 const resFilasEl = document.getElementById("resFilas");
+const resDespachosEl = document.getElementById("resDespachos");
 const resFobEl = document.getElementById("resFob");
 const resTiempoEl = document.getElementById("resTiempo");
 const resDeltaEl = document.getElementById("resDelta");
@@ -717,7 +855,7 @@ async function aplicarFiltros() {
 
     const resumen = await conn.query(`
       WITH items AS (${itemsCTE(where)})
-      SELECT count(*) AS items, sum(fob) AS fob_usd FROM items
+      SELECT count(*) AS items, count(DISTINCT PERIODO || DESTINACION) AS despachos, sum(fob) AS fob_usd FROM items
     `);
     const filaResumen = resumen.toArray()[0].toJSON();
 
@@ -731,6 +869,7 @@ async function aplicarFiltros() {
 
     const ms = Math.round(performance.now() - t0);
     resFilasEl.textContent = Number(filaResumen.items ?? 0).toLocaleString("es-AR");
+    resDespachosEl.textContent = Number(filaResumen.despachos ?? 0).toLocaleString("es-AR");
     const fob = filaResumen.fob_usd;
     resFobEl.textContent = fob != null ? Number(fob).toLocaleString("es-AR", { maximumFractionDigits: 0 }) : "-";
     resTiempoEl.textContent = ms + " ms";
@@ -808,6 +947,14 @@ limpiarBtn.addEventListener("click", () => {
 });
 exportarBtn.addEventListener("click", exportarCsv);
 runSqlBtn.addEventListener("click", ejecutarSql);
+generarSqlBtn.addEventListener("click", () => {
+  try {
+    const where = construirFiltro();
+    sqlEl.value = `SELECT *\nFROM impo\nWHERE ${where}\nORDER BY PERIODO DESC\nLIMIT 500`;
+  } catch (err) {
+    setStatusResultados(String(err.message || err), "error");
+  }
+});
 granularidadEl.addEventListener("change", () => {
   if (fuenteLista) actualizarEvolucion(ultimoFiltro);
 });
