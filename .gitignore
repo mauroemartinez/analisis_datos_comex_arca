@@ -7,11 +7,17 @@ venv/
 # Jupyter
 .ipynb_checkpoints/
 # Notebooks often contain outputs, notes, local paths, and exploratory results.
-# Force-add only notebooks reviewed and cleaned for public release.
+# Tracked only under /notebooks/, and only reviewed and cleaned (no outputs)
+# for public release.
 *.ipynb
+!/notebooks/*.ipynb
 
-# Local AI/tooling state
-.claude/
+# Local AI/tooling state: everything ignored except the shared, reviewed
+# skill meant to ship with the repo (see .claude/skills/actualizar-historico-arca).
+.claude/*
+!/.claude/skills/
+/.claude/skills/*
+!/.claude/skills/actualizar-historico-arca/
 .codex/
 claude_desktop_config.json
 .mcp.json
@@ -42,8 +48,9 @@ Thumbs.db
 *.rar
 *.7z
 
-# Generated export folders
-/exports/
+# Local personal workspace: everything inside is ignored except its own README
+/exports/*
+!/exports/README.md
 
 # Local commercial filters
 /posiciones_interes.txt

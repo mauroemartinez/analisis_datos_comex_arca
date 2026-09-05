@@ -1,28 +1,44 @@
 # -*- coding: utf-8 -*-
 """
-Tabla final mensual: 1 fila por item (DESTINACION+NUM_ITEM), todos los importadores.
-Columnas: Importador, Despacho, Tipo de Destinacion, Fecha, Medio,
-          Unidad de medida, Cantidad, FOB unitario USD, Pais de origen, Aduana
+Tabla final mensual: 1 fila por ítem (DESTINACION+NUM_ITEM), todos los importadores.
+Columnas: Importador, Despacho, Tipo de Destinación, Fecha, Medio,
+          Unidad de medida, Cantidad, FOB unitario USD, País de origen, Aduana
+
+Uso:
+  python tabla_final.py                 -> ultimo periodo disponible
+  python tabla_final.py --periodo 202508 -> un periodo puntual del historico
 """
-import os, sys, re, glob, duckdb, pandas as pd
+import os, sys, duckdb, pandas as pd
+from _fuente_impo import ubicar_fuente
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-_CANDIDATOS = glob.glob(os.path.join(HERE, "impo_*.parquet"))
-_CANDIDATOS = [
-    p for p in _CANDIDATOS
-    if re.fullmatch(r"impo_\d{6}\.parquet", os.path.basename(p))
-]
-PARQUET = sorted(_CANDIDATOS, key=lambda p: os.path.basename(p))[-1] if _CANDIDATOS else None
+PARQUET, ES_HISTORICO = ubicar_fuente(HERE)
 if PARQUET is None:
-    sys.exit("No encontre impo_YYYYMM.parquet. Descargalo desde ARCA y ubicalo en Data/.")
-PERIODO = re.search(r"impo_(\d{6})\.parquet$", os.path.basename(PARQUET))
-PERIODO = PERIODO.group(1) if PERIODO else "mensual"
-PARQUET = PARQUET.replace("\\", "/")
+    sys.exit(
+        "No encontré Data/impo_historico.parquet ni ningún impo_YYYYMM.parquet.\n"
+        "Corré: python Data/descargar_historico_impo.py --actualizar"
+    )
+
 ROOT = os.path.abspath(os.path.join(HERE, "..", "codigos"))
 sys.path.insert(0, ROOT)
 from codigos_arca import ADUANAS, UNIDADES, PAISES, MEDIOS_TRANSPORTE
 
 con = duckdb.connect()
+
+periodo_arg = None
+if "--periodo" in sys.argv:
+    periodo_arg = sys.argv[sys.argv.index("--periodo") + 1]
+
+if ES_HISTORICO:
+    PERIODO = periodo_arg or con.execute(
+        f"SELECT max(PERIODO) FROM read_parquet('{PARQUET}')"
+    ).fetchone()[0]
+    FILTRO_PERIODO = f"AND PERIODO = '{PERIODO}'"
+else:
+    if periodo_arg:
+        sys.exit("--periodo solo aplica cuando la fuente es Data/impo_historico.parquet.")
+    PERIODO = "mensual"
+    FILTRO_PERIODO = ""
 
 def _t(d, col):
     return pd.DataFrame(list(d.items()), columns=["cod", col])
@@ -45,18 +61,19 @@ final = con.execute(f"""
             any_value(PAIS_ORIGEN)       AS PAIS_ORIGEN
         FROM read_parquet('{PARQUET}')
         WHERE regexp_matches(trim(FECHA), '^[0-9]{{6}}$')
+        {FILTRO_PERIODO}
         GROUP BY ADU, DESTINACION, NUM_ITEM
     )
     SELECT
         i.NOMBRE_IMPORTADOR                                     AS "Importador",
         i.DESTINACION                                           AS "Despacho",
-        substr(i.DESTINACION, 6, 4)                             AS "Tipo de Destinacion",
+        substr(i.DESTINACION, 6, 4)                             AS "Tipo de Destinación",
         strptime(i.FECHA || '01', '%Y%m%d')::DATE                AS "Fecha",
         coalesce(m.medio, i.MEDIO_TRANSPORTE)                   AS "Medio",
         coalesce(u.unidad, i.UNIDAD_MEDIDA)                     AS "Unidad de medida",
         i.CANT_UNIDAD_MEDIDA                                    AS "Cantidad",
         i.FOB_UNITARIO_USD                                      AS "FOB unitario USD",
-        coalesce(p.pais, i.PAIS_ORIGEN)                         AS "Pais de origen",
+        coalesce(p.pais, i.PAIS_ORIGEN)                         AS "País de origen",
         coalesce(ad.aduana, i.ADU)                              AS "Aduana"
     FROM items i
     LEFT JOIN t_aduana ad ON ad.cod = i.ADU

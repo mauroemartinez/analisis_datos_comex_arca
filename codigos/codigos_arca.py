@@ -1,15 +1,15 @@
 # -*- coding: utf-8 -*-
 """
-Tablas de codigos de ARCA/AFIP para los archivos de comercio exterior (impo/expo).
-Fuente oficial: "Codigos Maria" -- https://www.afip.gob.ar/genericos/documentos/codigos-maria.pdf
+Tablas de códigos de ARCA/AFIP para los archivos de comercio exterior (impo/expo).
+Fuente oficial: "Códigos María" -- https://www.afip.gob.ar/genericos/documentos/codigos-maria.pdf
 
 Uso:
     from codigos_arca import PAISES, UNIDADES, TRIBUTOS, ADUANAS
     PAISES.get("212")           -> 'ESTADOS UNIDOS'
-    PAISES.get(cod, cod)        -> nombre, o el mismo codigo si no esta
+    PAISES.get(cod, cod)        -> nombre, o el mismo código si no está
 
-En el .lst los codigos vienen con ceros a la izquierda: ADU="001", UN="07",
-COD (tributo)="010"; los de pais son de 3 digitos: "212", "410".
+En el .lst los códigos vienen con ceros a la izquierda: ADU="001", UN="07",
+COD (tributo)="010"; los de país son de 3 dígitos: "212", "410".
 """
 
 PAISES = {
@@ -263,8 +263,8 @@ PAISES = {
     '998': 'INDET.(CONTINENTE)',
 }
 
-# Via / medio de transporte (RG AFIP 1452/2003, Anexo V). En el .lst viene 1 caracter;
-# hay filas con el campo vacio (declaraciones sin via informada).
+# Vía / medio de transporte (RG AFIP 1452/2003, Anexo V). En el .lst viene 1 carácter;
+# hay filas con el campo vacío (declaraciones sin vía informada).
 MEDIOS_TRANSPORTE = {
     '1': 'Propios medios',
     '2': 'Avión',

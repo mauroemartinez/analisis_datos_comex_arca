@@ -1,11 +1,11 @@
 # Posiciones NCM de ejemplo para probar el filtro.
-# Este archivo es publico y no representa una lista comercial real.
+# Este archivo es público y no representa una lista comercial real.
 # Para trabajar localmente, copiarlo como posiciones_interes.txt y editar esa copia.
 #
-# Se puede dejar una nota despues del codigo:
-# 392690  articulos plasticos diversos
+# Se puede dejar una nota después del código:
+# 392690  artículos plásticos diversos
 #
-# El filtro toma los primeros 6 digitos y matchea por prefijo.
+# El filtro toma los primeros 6 dígitos y matchea por prefijo.
 
 392690
 850440

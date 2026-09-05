@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Explorador Comex ARCA</title>
+<style>
+  :root {
+    color-scheme: light dark;
+    --bg: #ffffff;
+    --fg: #1a1a1a;
+    --muted: #6b7280;
+    --border: #d9dce1;
+    --accent: #1d4ed8;
+    --panel: #f6f7f9;
+    --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #14161a;
+      --fg: #e6e8eb;
+      --muted: #9aa2ad;
+      --border: #2b2f36;
+      --accent: #6ea8fe;
+      --panel: #1b1e23;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--fg);
+    font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+    padding: 24px;
+    max-width: 980px;
+    margin-inline: auto;
+  }
+  h1 { font-size: 1.3rem; margin: 0 0 4px; }
+  p.lead { color: var(--muted); margin-top: 0; font-size: 0.92rem; }
+  .field { margin: 14px 0; }
+  label { display: block; font-size: 0.82rem; color: var(--muted); margin-bottom: 4px; }
+  input[type="text"], textarea {
+    width: 100%;
+    font-family: var(--mono);
+    font-size: 0.85rem;
+    padding: 8px 10px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    background: var(--panel);
+    color: var(--fg);
+  }
+  textarea { min-height: 110px; resize: vertical; }
+  button {
+    font-size: 0.88rem;
+    padding: 8px 16px;
+    border-radius: 6px;
+    border: none;
+    background: var(--accent);
+    color: #fff;
+    cursor: pointer;
+  }
+  button:disabled { opacity: 0.5; cursor: default; }
+  .status { font-size: 0.82rem; color: var(--muted); margin: 10px 0; min-height: 1.2em; }
+  .status.error { color: #dc2626; }
+  .table-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: 6px; }
+  table { border-collapse: collapse; width: 100%; font-size: 0.82rem; }
+  th, td {
+    padding: 6px 10px;
+    border-bottom: 1px solid var(--border);
+    text-align: left;
+    white-space: nowrap;
+  }
+  th { background: var(--panel); position: sticky; top: 0; }
+  .examples { margin-top: 22px; font-size: 0.82rem; color: var(--muted); }
+  .examples code { color: var(--fg); }
+  .examples ul { padding-left: 18px; }
+  footer { margin-top: 28px; font-size: 0.75rem; color: var(--muted); }
+  a { color: var(--accent); }
+</style>
+</head>
+<body>
+  <h1>Explorador Comex ARCA</h1>
+  <p class="lead">
+    Prototipo: corre SQL directo contra <code>impo_historico.parquet</code> sin
+    servidor, usando DuckDB-WASM en tu navegador. Ver
+    <a href="../docs/EXPLORACION_ONLINE.md">docs/EXPLORACION_ONLINE.md</a>
+    para la arquitectura completa y qué falta para producción.
+  </p>
+
+  <div class="field">
+    <label for="dataUrl">URL del Parquet (http/https, con soporte de Range requests y CORS)</label>
+    <input type="text" id="dataUrl" />
+  </div>
+
+  <div class="field">
+    <label for="sql">SQL (la tabla se llama <code>impo</code>)</label>
+    <textarea id="sql">SELECT substr(PERIODO,1,4) AS anio, count(*) AS filas, round(sum(FOB_TOTAL_USD)) AS fob_usd
+FROM impo
+GROUP BY 1
+ORDER BY 1</textarea>
+  </div>
+
+  <button id="run">Ejecutar</button>
+  <div class="status" id="status">Cargando DuckDB-WASM...</div>
+
+  <div class="table-wrap">
+    <table id="result"><thead></thead><tbody></tbody></table>
+  </div>
+
+  <div class="examples">
+    <strong>Ejemplos</strong>
+    <ul>
+      <li>Un importador: <code>SELECT * FROM impo WHERE upper(NOMBRE_IMPORTADOR) LIKE '%ROCHE%' LIMIT 200</code></li>
+      <li>Por NCM: <code>SELECT PERIODO, sum(FOB_TOTAL_USD) FROM impo WHERE POS_NCM LIKE '8504%' GROUP BY 1 ORDER BY 1</code></li>
+      <li>Rango de fechas: <code>SELECT * FROM impo WHERE PERIODO BETWEEN '202301' AND '202312' LIMIT 200</code></li>
+    </ul>
+    <p>
+      Gracias a que el histórico está ordenado por <code>PERIODO</code>, filtrar por
+      rango de fechas evita leer la mayoría del archivo (poda de row groups por
+      estadísticas min/max de Parquet), aunque el archivo entero pese varios GB.
+    </p>
+  </div>
+
+  <footer>
+    Fuente pública: ARCA, Información Agregada de Comercio Exterior.
+    Este archivo es un prototipo estático, sin backend ni recolección de datos.
+  </footer>
+
+<script type="module">
+import * as duckdb from "https://cdn.jsdelivr.net/npm/@duckdb/duckdb-wasm@1.29.0/+esm";
+
+const statusEl = document.getElementById("status");
+const runBtn = document.getElementById("run");
+const dataUrlEl = document.getElementById("dataUrl");
+const sqlEl = document.getElementById("sql");
+const resultEl = document.getElementById("result");
+
+function setStatus(msg, isError) {
+  statusEl.textContent = msg;
+  statusEl.className = "status" + (isError ? " error" : "");
+}
+
+function defaultDataUrl() {
+  const params = new URLSearchParams(location.search);
+  return params.get("data") || "";
+}
+dataUrlEl.value = defaultDataUrl();
+dataUrlEl.placeholder = "https://.../impo_historico.parquet (ver docs/EXPLORACION_ONLINE.md)";
+
+let db, conn, registeredUrl;
+
+async function initDb() {
+  const bundles = duckdb.getJsDelivrBundles();
+  const bundle = await duckdb.selectBundle(bundles);
+  const workerUrl = URL.createObjectURL(
+    new Blob([`importScripts("${bundle.mainWorker}");`], { type: "text/javascript" })
+  );
+  const worker = new Worker(workerUrl);
+  const logger = new duckdb.ConsoleLogger();
+  db = new duckdb.AsyncDuckDB(logger, worker);
+  await db.instantiate(bundle.mainModule, bundle.pthreadWorker);
+  URL.revokeObjectURL(workerUrl);
+  conn = await db.connect();
+}
+
+async function ensureView(url) {
+  if (!url) throw new Error("Pegá la URL del Parquet arriba (ver docs/EXPLORACION_ONLINE.md).");
+  if (url === registeredUrl) return;
+  await conn.query(`CREATE OR REPLACE VIEW impo AS SELECT * FROM read_parquet('${url.replace(/'/g, "''")}')`);
+  registeredUrl = url;
+}
+
+function renderTable(result) {
+  const rows = result.toArray().map((r) => r.toJSON());
+  const cols = result.schema.fields.map((f) => f.name);
+  const thead = resultEl.querySelector("thead");
+  const tbody = resultEl.querySelector("tbody");
+  thead.innerHTML = "<tr>" + cols.map((c) => `<th>${c}</th>`).join("") + "</tr>";
+  tbody.innerHTML = rows
+    .map((r) => "<tr>" + cols.map((c) => `<td>${r[c] ?? ""}</td>`).join("") + "</tr>")
+    .join("");
+}
+
+async function run() {
+  runBtn.disabled = true;
+  try {
+    setStatus("Conectando a la fuente y ejecutando...");
+    await ensureView(dataUrlEl.value.trim());
+    const t0 = performance.now();
+    const result = await conn.query(sqlEl.value);
+    const ms = Math.round(performance.now() - t0);
+    renderTable(result);
+    setStatus(`${result.numRows} filas en ${ms} ms.`);
+  } catch (err) {
+    setStatus(String(err.message || err), true);
+  } finally {
+    runBtn.disabled = false;
+  }
+}
+
+runBtn.addEventListener("click", run);
+
+initDb()
+  .then(() => setStatus("Listo. Pegá la URL del Parquet y ejecutá."))
+  .catch((err) => setStatus("No se pudo inicializar DuckDB-WASM: " + err, true));
+</script>
+</body>
+</html>

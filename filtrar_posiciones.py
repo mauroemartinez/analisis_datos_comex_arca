@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
-Filtra el Parquet mensual de importaciones por las posiciones NCM de
-`posiciones_interes.txt` y exporta para Google Sheets.
+Filtra las importaciones por las posiciones NCM de `posiciones_interes.txt`
+y exporta para Google Sheets.
 
   python filtrar_posiciones.py                # usa posiciones_interes.txt
   python filtrar_posiciones.py otras.txt      # usa otro archivo de posiciones
@@ -11,24 +11,26 @@ Genera, en la carpeta del script:
   impo_posiciones_detalle.(csv|xlsx)     -> 1 fila por ítem (deduplicado), con nombres
   impo_posiciones_resumen_ncm.csv        -> agregado por NCM 6 dígitos
 El match es por prefijo de 6 dígitos: 392410 toma 3924.10.00, 3924.10.90, ...
+
+Fuente: Data/impo_historico.parquet (todo el histórico) si existe, o si no el
+último impo_YYYYMM.parquet suelto en Data/ o en la raíz del proyecto.
 """
-import sys, os, re, glob, duckdb
+import sys, os, duckdb
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 DATA_DIR = os.path.join(HERE, "Data")
+sys.path.insert(0, DATA_DIR)
+from _fuente_impo import ubicar_fuente
 
-_CANDIDATOS = glob.glob(os.path.join(DATA_DIR, "impo_*.parquet"))
-_CANDIDATOS += glob.glob(os.path.join(HERE, "impo_*.parquet"))
-_CANDIDATOS = [
-    p for p in _CANDIDATOS
-    if re.fullmatch(r"impo_\d{6}\.parquet", os.path.basename(p))
-]
-PARQUET = sorted(_CANDIDATOS, key=lambda p: os.path.basename(p))[-1] if _CANDIDATOS else None
+PARQUET, ES_HISTORICO = ubicar_fuente(DATA_DIR)
 if PARQUET is None:
-    sys.exit("No encontre impo_YYYYMM.parquet. Ubicalo en Data/ o en la raiz del proyecto.")
-PERIODO = re.search(r"impo_(\d{6})\.parquet$", os.path.basename(PARQUET))
-PERIODO = PERIODO.group(1) if PERIODO else "el periodo"
-PARQUET = PARQUET.replace("\\", "/")
+    PARQUET, ES_HISTORICO = ubicar_fuente(HERE)
+if PARQUET is None:
+    sys.exit(
+        "No encontré Data/impo_historico.parquet ni ningún impo_YYYYMM.parquet.\n"
+        "Corré: python Data/descargar_historico_impo.py --actualizar"
+    )
+PERIODO = "todo el histórico" if ES_HISTORICO else "el período cargado"
 
 args = [a for a in sys.argv[1:]]
 force_xlsx = "--xlsx" in args
@@ -39,7 +41,7 @@ else:
     pos_file = os.path.join(HERE, "posiciones_interes.txt")
     if not os.path.exists(pos_file):
         pos_file = os.path.join(HERE, "posiciones_interes.ejemplo.txt")
-        print("Aviso: no encontre posiciones_interes.txt, uso posiciones_interes.ejemplo.txt")
+        print("Aviso: no encontré posiciones_interes.txt, uso posiciones_interes.ejemplo.txt")
 
 # --- leer posiciones ---
 codes = []
