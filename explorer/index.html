@@ -232,7 +232,8 @@
     font-weight: 400;
     cursor: pointer;
   }
-  .multiselect-toggle:hover { filter: brightness(1.03); }
+  .multiselect-toggle:hover:not(:disabled) { filter: brightness(1.03); }
+  .multiselect-toggle:disabled { opacity: 0.55; cursor: default; }
   .multiselect-panel {
     position: absolute;
     z-index: 40;
@@ -680,6 +681,10 @@ function crearMultiSelect(rootId, opciones, placeholder) {
   let seleccion = new Set();
 
   function render() {
+    if (!opts.length) {
+      panel.innerHTML = `<p style="margin:2px 4px; font-size:0.78rem; color:var(--muted);">Sin opciones para elegir todavía.</p>`;
+      return;
+    }
     panel.innerHTML = opts.map((o) => `
       <label class="multiselect-opt">
         <input type="checkbox" value="${escXml(o.value)}" ${seleccion.has(o.value) ? "checked" : ""} />
@@ -711,7 +716,7 @@ function crearMultiSelect(rootId, opciones, placeholder) {
     });
   }
 
-  toggleBtn.addEventListener("click", () => { panel.hidden = !panel.hidden; });
+  toggleBtn.addEventListener("click", () => { if (!toggleBtn.disabled) panel.hidden = !panel.hidden; });
   document.addEventListener("click", (e) => { if (!root.contains(e.target)) panel.hidden = true; });
 
   render();
@@ -725,6 +730,15 @@ function crearMultiSelect(rootId, opciones, placeholder) {
       seleccion = new Set(Array.from(seleccion).filter((v) => nuevas.some((o) => o.value === v)));
       render();
       actualizar();
+    },
+    setDisabled: (disabled, label) => {
+      toggleBtn.disabled = disabled;
+      if (disabled) {
+        panel.hidden = true;
+        toggleBtn.textContent = label || "Cargá datos primero";
+      } else {
+        actualizar();
+      }
     },
   };
 }
@@ -801,6 +815,7 @@ const aduanaMultiselect = crearMultiSelect(
   "Todas"
 );
 const tipoDestinacionMultiselect = crearMultiSelect("tipoDestinacionMultiselect", [], "Todos");
+tipoDestinacionMultiselect.setDisabled(true);
 
 let db, conn, fuenteLista = false, ultimoFiltro = "1=1";
 
@@ -838,6 +853,7 @@ async function poblarTiposDestinacion() {
     const row = r.toJSON();
     return { value: row.tipo, label: row.tipo };
   }));
+  tipoDestinacionMultiselect.setDisabled(false);
 }
 
 async function fuenteConectada() {
@@ -849,6 +865,7 @@ async function fuenteConectada() {
   } catch (err) {
     // no bloquea el resto de la pagina si esto falla
     console.warn("No se pudieron poblar los tipos de destinación:", err);
+    tipoDestinacionMultiselect.setDisabled(true, "No disponible");
   }
 }
 
