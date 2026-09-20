@@ -98,6 +98,89 @@ aplica acá (es cosa de DuckDB nativo, no de duckdb-wasm), así que en una
 máquina con poca RAM libre conviene filtrar por fecha antes de pedir
 agregaciones sobre todo el archivo.
 
+### El límite de ~2 GiB del navegador, y por qué se partió por año
+
+`impo_historico.parquet` ya pesa más de 2 GiB (creciendo con cada
+`--actualizar`), y Chrome/Chromium no puede volcar un archivo más grande que
+eso a un buffer en memoria de una sola vez (falla con "Array buffer
+allocation failed"). La carga por URL remota no tiene este problema (lee por
+Range requests, nunca el archivo entero), pero la carga **local** (selector
+de archivo, la forma pensada para pendrive/sin internet) sí.
+
+Solución: `explorer/dividir_para_navegador.py` parte el histórico en un
+archivo por **año calendario** (`impo_2018.parquet`, ..., `impo_2026.parquet`),
+no por un tamaño arbitrario. Se eligió año calendario en vez de un umbral de
+MB fijo por dos motivos:
+
+- Es el corte que la persona que explora el dato va a querer usar de todas
+  formas ("quiero ver 2023 y 2024"), no un número de parte sin significado.
+- Como el histórico está ordenado por `PERIODO`, cada año ya es un bloque
+  contiguo: partir por año no resortea nada ni pierde la compresión que da
+  ese orden, es cortar el archivo ya ordenado, no reorganizarlo.
+
+Medido sobre el histórico real (683M filas, 2018-2026): el año más liviano
+(2018, parcial) pesa ~104 MiB y el más pesado hasta ahora (2024) ~314 MiB —
+cómodo bajo el límite del navegador, y con margen para varios años más de
+crecimiento antes de que un solo año se acerque a los ~2 GiB.
+
+`explorer/index.html` acepta seleccionar **varios años a la vez**
+(`<input type="file" multiple>`) y los junta con `read_parquet([...])` de
+DuckDB-WASM en una sola vista, sin que el usuario tenga que hacer nada
+especial más que tildar los años que quiere. Recomendación práctica: no
+acumular más de ~2 GiB entre los archivos elegidos en una misma carga (es
+decir, no los 9 años juntos) — no es el límite de un archivo individual, es
+la memoria total que esa pestaña del navegador tiene que sostener (los
+buffers de cada archivo, más el espacio de trabajo de DuckDB para el join
+resultante).
+
+Si en algún momento hace falta combinar **todos** los años sin ese techo (o
+sin escribir SQL/notebooks), la opción es una app local (por ejemplo
+Streamlit) corriendo DuckDB nativo en vez de DuckDB-WASM: ahí el límite deja
+de ser un tope fijo del navegador y pasa a ser la RAM real de la máquina,
+igual que ya corre hoy `Data/consultar_impo.py` o los notebooks. Se evalúo
+construir esa app ahora (sesión del 2026-09-20) y se decidió no hacerlo
+todavía: los notebooks y los scripts de `Data/` ya cubren ese caso de uso
+sin código nuevo ni una dependencia (Streamlit) más para mantener; vale la
+pena construirla el día que en la práctica haga falta un "apretar botones"
+sobre el histórico completo, no antes.
+
+### Por qué el Parquet (partido o completo) no se publica en este repositorio de GitHub
+
+Se evaluó subir el histórico (completo o partido por año) al propio
+repositorio de GitHub, para que cualquiera lo tenga con solo clonar. Se
+descartó:
+
+- **Git tiene un límite duro de 100 MB por archivo** sin extensiones. Incluso
+  partido por año, cada archivo pesa entre ~100 y ~330 MiB — ya lo supera.
+- **Git LFS** lo permitiría, pero GitHub da solo 1 GB de storage y 1 GB/mes
+  de bandwidth gratis; con ~9 años de ~100-330 MiB cada uno el storage ya
+  arranca cerca de ese límite, y cada `git clone`/`pull` de quien descargue
+  los años completos consume la cuota de bandwidth rápido. Pasado eso, se
+  paga.
+- **GitHub Releases** (assets de hasta 2 GiB por archivo, gratis) evita el
+  límite de tamaño, pero no está confirmado que sirva Range requests (lo que
+  hace falta para que la carga por URL remota solo pida los row groups que
+  necesita, en vez del archivo entero), y separa el dato del árbol de código
+  de una forma menos natural que simplemente tener el código.
+- El dato además **cambia todos los meses** (`--actualizar` le suma el
+  período nuevo): subir eso a git normal o LFS deja cada actualización
+  mensual completa guardada para siempre en el historial (los archivos
+  Parquet comprimidos no se pueden diffear de forma incremental), así que el
+  repositorio crecería sin límite mes a mes aunque el archivo publicado
+  siempre sea "el último".
+
+En cambio, el repositorio publica el **código** para generar el dato, no el
+dato en sí: `Data/descargar_historico_impo.py --actualizar` reconstruye
+exactamente el mismo histórico desde la fuente pública de ARCA, a mano o
+pidiéndoselo a un agente de Claude Code con la skill
+`actualizar-historico-arca` (`.claude/skills/actualizar-historico-arca/`),
+que ya sabe correr y mantener al día ese comando. Después,
+`explorer/dividir_para_navegador.py` genera los archivos por año en local
+para quien quiera usar el explorador web. Nada de esto excluye subir el dato
+a un object storage aparte (Capa 1/2 de abajo) si se quiere un link público
+real — lo que se descarta es específicamente meterlo en el árbol de git de
+este repositorio.
+
 ## Capa 2 (opcional, si hace falta más adelante): función serverless
 
 Si en algún momento se quiere una UI más guiada (filtros con botones, no una

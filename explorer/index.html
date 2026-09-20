@@ -9,13 +9,15 @@
     color-scheme: light dark;
     --navy: #0B2545;
     --cyan: #35D6FF;
+    --chart-line: #0B84B0;
+    --chart-bar-2: var(--navy);
     --accent-text: var(--navy);
-    --bg: #FBF9F4;
+    --bg: #E7E2D4;
     --fg: #23241F;
-    --muted: #6B6558;
-    --border: #E3DDCE;
-    --panel: #F3EFE4;
-    --panel-2: #EAE3D2;
+    --muted: #665F4E;
+    --border: #D4CCB6;
+    --panel: #FFFDF8;
+    --panel-2: #F1EBDC;
     --btn-bg: #0B2545;
     --btn-fg: #ffffff;
     --btn-grad-top: #17427E;
@@ -54,6 +56,8 @@
       --delta-down: #FFA3AE;
       --down-bg: rgba(255, 163, 174, 0.16);
       --accent-text: var(--cyan);
+      --chart-line: #35D6FF;
+      --chart-bar-2: #4FB4FF;
       --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.35);
       --shadow-md: 0 6px 18px rgba(0, 0, 0, 0.45), 0 2px 6px rgba(0, 0, 0, 0.35);
       --shadow-btn: 0 2px 0 rgba(0, 0, 0, 0.35), 0 5px 14px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.25);
@@ -81,6 +85,8 @@
     --delta-down: #FFA3AE;
     --down-bg: rgba(255, 163, 174, 0.16);
     --accent-text: var(--cyan);
+    --chart-line: #35D6FF;
+    --chart-bar-2: #4FB4FF;
     --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.35);
     --shadow-md: 0 6px 18px rgba(0, 0, 0, 0.45), 0 2px 6px rgba(0, 0, 0, 0.35);
     --shadow-btn: 0 2px 0 rgba(0, 0, 0, 0.35), 0 5px 14px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.25);
@@ -96,7 +102,7 @@
     color: var(--fg);
     font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
     padding: 24px;
-    max-width: 1120px;
+    max-width: 1440px;
     margin-inline: auto;
   }
   h1 { font-size: 1.35rem; margin: 0 0 4px; color: var(--fg); }
@@ -110,15 +116,24 @@
     padding: 18px 20px;
     box-shadow: var(--shadow-md);
   }
-  .paso-grid {
+  .toolbar-fields {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: 14px 24px;
+  }
+  .toolbar-fields .campo-archivo { min-width: 220px; flex: 1 1 260px; }
+  .toolbar-fields .filtros-grid { flex: 3 1 640px; }
+  .dashboard-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 18px;
-    align-items: start;
+    align-items: stretch;
   }
-  .paso-grid section { margin: 0; }
-  @media (max-width: 760px) {
-    .paso-grid { grid-template-columns: 1fr; }
+  .dashboard-grid section { margin: 0; }
+  @media (max-width: 820px) {
+    .dashboard-grid { grid-template-columns: 1fr; }
+    .toolbar-fields .filtros-grid { flex-basis: 100%; }
   }
   .field { margin: 10px 0; }
   label { display: block; font-size: 0.8rem; color: var(--muted); margin-bottom: 4px; }
@@ -163,9 +178,13 @@
   select { font-family: inherit; }
   textarea { min-height: 110px; resize: vertical; }
   .filtros-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+    display: flex;
+    flex-wrap: wrap;
     gap: 10px 14px;
+  }
+  .filtros-grid .field {
+    flex: 1 1 170px;
+    margin: 0;
   }
   .botones { display: flex; gap: 10px; margin-top: 14px; flex-wrap: wrap; align-items: center; }
   button {
@@ -198,6 +217,70 @@
     padding: 6px 10px;
     box-shadow: var(--inset-field);
   }
+  .multiselect { position: relative; }
+  .multiselect-toggle {
+    width: 100%;
+    text-align: left;
+    font-family: var(--mono);
+    font-size: 0.85rem;
+    padding: 8px 10px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    background: var(--bg);
+    color: var(--fg);
+    box-shadow: var(--inset-field);
+    font-weight: 400;
+    cursor: pointer;
+  }
+  .multiselect-toggle:hover { filter: brightness(1.03); }
+  .multiselect-panel {
+    position: absolute;
+    z-index: 40;
+    top: calc(100% + 4px);
+    left: 0;
+    min-width: 220px;
+    max-width: 320px;
+    max-height: 260px;
+    overflow-y: auto;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    box-shadow: var(--shadow-md);
+    padding: 6px;
+  }
+  .multiselect-opt {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 5px 6px;
+    font-size: 0.82rem;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: 400;
+  }
+  .multiselect-opt:hover { background: var(--panel-2); }
+  .multiselect-opt input { width: auto; box-shadow: none; }
+  .multiselect-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+  .chip-sel {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.75rem;
+    background: var(--panel-2);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 2px 6px 2px 10px;
+    color: var(--fg);
+  }
+  .chip-sel button {
+    all: unset;
+    cursor: pointer;
+    font-weight: 700;
+    color: var(--muted);
+    padding: 0 4px;
+    line-height: 1;
+  }
+  .chip-sel button:hover { color: var(--fg); }
   .status { font-size: 0.82rem; color: var(--muted); margin: 10px 0; min-height: 1.2em; }
   .status.error { color: var(--down); font-weight: 600; }
   .status.ok { color: var(--up); font-weight: 600; }
@@ -221,7 +304,12 @@
   }
   .delta.up { color: var(--delta-up); background: var(--up-bg); }
   .delta.down { color: var(--delta-down); background: var(--down-bg); }
-  .table-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: 8px; max-height: 440px; background: var(--bg); box-shadow: var(--shadow-sm); }
+  #resDeltaWrap { background: none; border: none; box-shadow: none; padding: 14px 0; }
+  .table-wrap { overflow: auto; border: 1px solid var(--border); border-radius: 8px; max-height: 440px; background: var(--bg); box-shadow: var(--shadow-sm); }
+  .table-wrap::-webkit-scrollbar { width: 10px; height: 10px; }
+  .table-wrap::-webkit-scrollbar-track { background: var(--bg); }
+  .table-wrap::-webkit-scrollbar-thumb { background: var(--border); border-radius: 6px; }
+  .table-wrap::-webkit-scrollbar-thumb:hover { background: var(--muted); }
   table { border-collapse: collapse; width: 100%; font-size: 0.8rem; }
   th, td { padding: 7px 10px; border-bottom: 1px solid var(--border); text-align: left; white-space: nowrap; }
   td { font-variant-numeric: tabular-nums; color: var(--fg); }
@@ -233,7 +321,6 @@
   .examples code { color: var(--fg); }
   footer { margin-top: 20px; font-size: 0.75rem; color: var(--muted); }
   a { color: var(--accent-text); font-weight: 600; }
-  .paso { font-size: 0.72rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; margin: 0 0 4px; font-weight: 700; }
   .chart-head { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; margin-bottom: 8px; }
   .chart-wrap { overflow-x: auto; }
   .legend { display: flex; gap: 14px; flex-wrap: wrap; font-size: 0.76rem; color: var(--muted); margin-top: 6px; }
@@ -241,6 +328,26 @@
   svg text { font-family: system-ui, -apple-system, "Segoe UI", sans-serif; }
   svg rect { filter: drop-shadow(0 1px 1.5px rgba(11, 37, 69, 0.3)); }
   svg path { filter: drop-shadow(0 1px 1.5px rgba(11, 37, 69, 0.2)); }
+  svg circle { cursor: pointer; }
+  .chart-tooltip {
+    position: fixed;
+    z-index: 50;
+    pointer-events: none;
+    background: var(--panel-2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 8px 12px;
+    box-shadow: var(--shadow-md);
+    font-size: 0.78rem;
+    line-height: 1.5;
+    max-width: 220px;
+  }
+  .chart-tooltip .tt-label { font-weight: 700; color: var(--fg); }
+  .chart-tooltip .tt-valor { color: var(--fg); }
+  .chart-tooltip .tt-delta { font-weight: 800; }
+  .chart-tooltip .tt-delta.up { color: var(--delta-up); }
+  .chart-tooltip .tt-delta.down { color: var(--delta-down); }
+  .ayuda-chica { font-size: 0.78rem; color: var(--muted); margin: 8px 0; }
   .header-row { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
   .header-row h1 { flex: 1; }
   #temaToggle { padding: 7px 14px; font-size: 0.8rem; white-space: nowrap; }
@@ -260,7 +367,7 @@
     archivo de datos en sí queda siempre local).
   </p>
 
-  <details open>
+  <details>
     <summary>¿De dónde salen estos datos?</summary>
     <p style="margin: 0 0 10px; font-size: 0.88rem; line-height: 1.5;">
       Son datos públicos de importaciones argentinas que publica ARCA (la
@@ -289,58 +396,59 @@
     </p>
   </details>
 
-  <div class="paso-grid">
-  <section>
-    <p class="paso">Paso 1</p>
-    <h2>Cargar los datos</h2>
-    <div class="field">
-      <label for="fileInput">Archivo Parquet local (recomendado)</label>
-      <input type="file" id="fileInput" accept=".parquet" disabled />
-    </div>
-    <details id="urlDetails">
-      <summary>Usar una URL en vez de un archivo local</summary>
-      <div class="field">
-        <label for="dataUrl">URL del Parquet (http/https, con Range requests y CORS)</label>
-        <input type="text" id="dataUrl" placeholder="https://.../impo_historico.parquet" />
-        <div class="botones">
-          <button id="loadUrl" class="secundario" disabled>Cargar desde URL</button>
+  <section class="toolbar">
+    <div class="toolbar-fields">
+      <div class="campo-archivo">
+        <label for="fileInput">Archivo Parquet local (recomendado)</label>
+        <input type="file" id="fileInput" accept=".parquet" multiple disabled />
+        <p class="ayuda-chica" style="margin: 6px 0 0">
+          El histórico viene partido en un archivo por año (<code>impo_2023.parquet</code>,
+          <code>impo_2024.parquet</code>, ...). Seleccioná los años que te interesan
+          (podés elegir varios a la vez): los navegadores no pueden cargar un único
+          archivo de más de ~2 GB, y sumar demasiados años a la vez puede consumir
+          mucha memoria del navegador aunque cada archivo individual entre bien.
+        </p>
+        <details id="urlDetails">
+          <summary>Usar una URL en vez de un archivo local</summary>
+          <div class="field">
+            <label for="dataUrl">URL del Parquet (http/https, con Range requests y CORS)</label>
+            <input type="text" id="dataUrl" placeholder="https://.../impo_historico.parquet" />
+            <div class="botones">
+              <button id="loadUrl" class="secundario" disabled>Cargar desde URL</button>
+            </div>
+          </div>
+        </details>
+        <div class="status" id="status">Cargando DuckDB-WASM...</div>
+      </div>
+      <div class="filtros-grid">
+        <div class="field">
+          <label for="periodoDesde">Período desde (YYYYMM)</label>
+          <input type="text" id="periodoDesde" placeholder="202301" />
         </div>
-      </div>
-    </details>
-    <div class="status" id="status">Cargando DuckDB-WASM...</div>
-  </section>
-
-  <section>
-    <p class="paso">Paso 2</p>
-    <h2>Filtros</h2>
-    <div class="filtros-grid">
-      <div class="field">
-        <label for="periodoDesde">Período desde (YYYYMM)</label>
-        <input type="text" id="periodoDesde" placeholder="202301" />
-      </div>
-      <div class="field">
-        <label for="periodoHasta">Período hasta (YYYYMM)</label>
-        <input type="text" id="periodoHasta" placeholder="202312" />
-      </div>
-      <div class="field">
-        <label for="importador">Importador (contiene)</label>
-        <input type="text" id="importador" placeholder="ROCHE" />
-      </div>
-      <div class="field">
-        <label for="ncm">Posición NCM (prefijo)</label>
-        <input type="text" id="ncm" placeholder="8504" />
-      </div>
-      <div class="field">
-        <label for="pais">País de origen</label>
-        <select id="pais"><option value="">Todos</option></select>
-      </div>
-      <div class="field">
-        <label for="aduana">Aduana</label>
-        <select id="aduana"><option value="">Todas</option></select>
-      </div>
-      <div class="field">
-        <label for="tipoDestinacion">Tipo de destinación</label>
-        <select id="tipoDestinacion"><option value="">Todos</option></select>
+        <div class="field">
+          <label for="periodoHasta">Período hasta (YYYYMM)</label>
+          <input type="text" id="periodoHasta" placeholder="202312" />
+        </div>
+        <div class="field">
+          <label for="importador">Importador (contiene)</label>
+          <input type="text" id="importador" placeholder="ROCHE" />
+        </div>
+        <div class="field">
+          <label for="ncm">Posición NCM (prefijo)</label>
+          <input type="text" id="ncm" placeholder="8504" />
+        </div>
+        <div class="field">
+          <label for="pais">País de origen</label>
+          <select id="pais"><option value="">Todos</option></select>
+        </div>
+        <div class="field">
+          <label>Aduana</label>
+          <div class="multiselect" id="aduanaMultiselect"></div>
+        </div>
+        <div class="field">
+          <label>Tipo de destinación</label>
+          <div class="multiselect" id="tipoDestinacionMultiselect"></div>
+        </div>
       </div>
     </div>
     <div class="botones">
@@ -348,12 +456,14 @@
       <button id="limpiar" class="secundario">Limpiar filtros</button>
     </div>
   </section>
-  </div>
 
   <section>
-    <p class="paso">Resumen</p>
     <div class="status" id="statusResultados"></div>
     <div class="resumen" id="resumen" hidden>
+      <div class="metrica">
+        <div class="valor" id="resImportadores">-</div>
+        <div class="etiqueta">Importadores</div>
+      </div>
       <div class="metrica">
         <div class="valor" id="resFilas">-</div>
         <div class="etiqueta">Ítems</div>
@@ -369,10 +479,6 @@
       <div class="metrica" id="resDeltaWrap">
         <div class="valor delta" id="resDelta">-</div>
         <div class="etiqueta" id="resDeltaEtiqueta">vs. período anterior</div>
-      </div>
-      <div class="metrica">
-        <div class="valor" id="resTiempo" style="font-size:1.15rem">-</div>
-        <div class="etiqueta">Tiempo de consulta</div>
       </div>
     </div>
   </section>
@@ -391,41 +497,38 @@
     <div class="legend" id="leyendaEvolucion"></div>
   </section>
 
-  <section>
-    <h2>Top 15 importadores por FOB</h2>
-    <div class="chart-wrap" id="chartImportadores"></div>
-  </section>
+  <div class="dashboard-grid">
+    <section>
+      <h2>Top 15 importadores por FOB</h2>
+      <div class="chart-wrap" id="chartImportadores"></div>
+    </section>
+
+    <section>
+      <h2>Top 15 posiciones NCM por FOB</h2>
+      <div class="chart-wrap" id="chartNcm"></div>
+    </section>
+  </div>
 
   <section>
-    <h2>Top 15 posiciones NCM por FOB</h2>
-    <div class="chart-wrap" id="chartNcm"></div>
-  </section>
-
-  <section>
-    <h2>Detalle</h2>
-    <div class="botones" style="margin-top:0">
-      <button id="exportarCsv" class="secundario" disabled>Exportar CSV (hasta 200.000 filas)</button>
+    <div class="chart-head">
+      <h2 style="margin:0">Resultados</h2>
+      <button id="exportarCsv" class="secundario" disabled>Exportar CSV</button>
     </div>
-    <p class="lead" style="font-size:0.78rem">
-      Muestra como máximo 500 filas para no colgar el navegador; usá
-      "Exportar CSV" para llevarte el filtro completo.
+    <p class="ayuda-chica" id="ayudaResultados">
+      Se muestran hasta 500 filas en pantalla. "Exportar CSV" descarga el
+      resultado completo (hasta 200.000 filas) de la consulta actual.
     </p>
     <div class="table-wrap">
       <table id="result"><thead></thead><tbody></tbody></table>
     </div>
-  </section>
-
-  <section>
-    <details>
-      <summary>Avanzado: armar o escribir SQL a mano</summary>
-      <p style="margin: 0 0 12px; font-size: 0.85rem;">
-        Usá los mismos filtros del "Paso 2" de arriba para armar la consulta
-        completa — no hace falta escribir el <code>WHERE</code> a mano. El
-        SQL generado aparece abajo, editable, antes de ejecutarlo.
+    <details id="sqlDetails">
+      <summary>Ver o editar la consulta SQL</summary>
+      <p style="margin: 0 0 10px; font-size: 0.85rem;">
+        Esta es la consulta que arma "Aplicar filtros" a partir del "Filtros"
+        de arriba. La podés editar libremente y correrla con "Ejecutar
+        consulta": actualiza la tabla de "Resultados". "Exportar CSV" siempre
+        usa el SQL que esté acá en este momento, editado o no.
       </p>
-      <div class="botones" style="margin-top: 0">
-        <button id="generarSql" class="secundario">Generar SQL desde los filtros de arriba</button>
-      </div>
       <div class="field">
         <label for="sql">SQL (la tabla se llama <code>impo</code>)</label>
         <textarea id="sql">SELECT substr(PERIODO,1,4) AS "año", count(*) AS filas, round(sum(FOB_TOTAL_USD)) AS fob_usd
@@ -434,14 +537,8 @@ GROUP BY 1
 ORDER BY 1</textarea>
       </div>
       <div class="botones">
-        <button id="runSql" class="secundario">Ejecutar SQL</button>
+        <button id="runSql" class="secundario">Ejecutar consulta</button>
       </div>
-      <p style="margin: 10px 0 0; font-size: 0.78rem; color: var(--muted);">
-        "Ejecutar SQL" solo corre la consulta y muestra el resultado en la
-        tabla de "Detalle" (más arriba) — no descarga nada. Para bajar un
-        CSV usá el botón "Exportar CSV" de esa sección: exporta según los
-        filtros del Paso 2, no según este SQL.
-      </p>
       <div class="examples">
         <p>
           El histórico está ordenado por <code>PERIODO</code>, así que filtrar
@@ -477,13 +574,160 @@ temaToggleEl.addEventListener("click", () => {
   const siguiente = temaActual() === "dark" ? "light" : "dark";
   localStorage.setItem(TEMA_KEY, siguiente);
   aplicarTema(siguiente);
+  if (fuenteLista) {
+    actualizarEvolucion(ultimoFiltro);
+    actualizarTops(ultimoFiltro);
+  }
 });
 
 const PAISES = {"101": "BURKINA FASO", "102": "ARGELIA", "103": "BOTSWANA", "104": "BURUNDI", "105": "CAMERUN", "107": "REP. CENTROAFRICANA", "108": "CONGO", "109": "REP DEM CONGO EXZAIR", "110": "COSTA DE MARFIL", "111": "CHAD", "112": "BENIN", "113": "EGIPTO", "115": "GABON", "116": "GAMBIA", "117": "GHANA", "118": "GUINEA", "119": "GUINEA ECUATORIAL", "120": "KENYA", "121": "LESOTHO", "122": "LIBERIA", "123": "LIBIA", "124": "MADAGASCAR", "125": "MALAWI", "126": "MALI", "127": "MARRUECOS", "128": "MAURICIO,ISLAS", "129": "MAURITANIA", "130": "NIGER", "131": "NIGERIA", "132": "ZIMBABWE", "133": "RWANDA", "134": "SENEGAL", "135": "SIERRA LEONA", "136": "SOMALIA", "137": "SWAZILANDIA", "138": "SUDAN", "139": "TANZANIA", "140": "TOGO", "141": "TUNEZ", "142": "UGANDA", "144": "ZAMBIA", "145": "T V REINO UNIDO AFR.", "146": "T VINC A ESPANA AFR.", "147": "T VINC A FRANCIA,AFR", "149": "ANGOLA", "150": "CABO VERDE,ISLAS", "151": "MOZAMBIQUE", "152": "SEYCHELLES", "153": "DJIBOUTI", "155": "COMORAS", "156": "GUINEA BISSAU", "157": "STO.TOME Y PRINCIPE", "158": "NAMIBIA", "159": "SUDAFRICA", "160": "ERITREA", "161": "ETIOPIA", "198": "INDET.(AFRICA)", "200": "ARGENTINA", "201": "BARBADOS", "202": "BOLIVIA", "203": "BRASIL", "204": "CANADA", "205": "COLOMBIA", "206": "COSTA RICA", "207": "CUBA", "208": "CHILE", "209": "DOMINICANA,REP.", "210": "ECUADOR", "211": "EL SALVADOR", "212": "ESTADOS UNIDOS", "213": "GUATEMALA", "214": "GUYANA", "215": "HAITI", "216": "HONDURAS", "217": "JAMAICA", "218": "MEXICO", "219": "NICARAGUA", "220": "PANAMA", "221": "PARAGUAY", "222": "PERU", "223": "PUERTO RICO(EST ASOC", "224": "TRINIDAD Y TOBAGO", "225": "URUGUAY", "226": "VENEZUELA", "227": "T V A REINO UNIDO AM", "228": "T V A DINAMARCA AMER", "229": "T V A FRANCIA, AMER", "231": "T VINC A USA, AMERIC", "232": "SURINAME", "233": "DOMINICA", "234": "SANTA LUCIA", "235": "S.VICENTE Y LAS GRAN", "236": "BELICE", "237": "ANTIGUA Y BARBUDA", "238": "S.CRISTOBAL Y NEVIS", "239": "BAHAMAS", "240": "GRENADA", "241": "ANT HOLADESAS T PA B", "242": "ARUBA", "250": "TIERRA DEL FUEGO AAE", "251": "ZF LA PLATA (BS AS)", "252": "ZF.JUSTO DARACT S LU", "253": "ZF RIO GALLEGOS S CR", "254": "ISLAS MALVINAS", "255": "Z.F.TUCUMAN", "256": "Z.F.CORDOBA", "257": "Z.F.MENDOZA", "258": "ZF GRAL PICO L PAMPA", "259": "Z.F.COMODO.RIVADAVIA", "260": "ZF IQUIQUE (CHILE)", "261": "ZF PUNTA ARENAS (CHI", "262": "Z.F.SALTA", "263": "Z.F.PASO D/L LIBRES", "264": "Z.F. PUERTO IGUAZU", "270": "ZF COLON (PANAMA)", "271": "Z.F.STA CRUZ SIERRA", "280": "ZF COLONIA (URUGUAY)", "281": "ZF FLORIDA (URUGUAY)", "282": "ZF LIBERTAD (URUGUAY", "283": "ZFZONAMERICA.EXMONTV", "284": "ZF NVA HELVECIA (URU", "285": "ZF NVA PALMIRA (URUG", "286": "ZF RIO NEGRO URUGUAY", "287": "ZF RIVERA (URUGUAY)", "288": "ZF SAN JOSE (URUGUAY", "291": "ZF MANAOS (BRASIL)", "295": "MAR TER ARG/ZONA E E", "296": "RIOS NAC ARG NAV INT", "298": "INDET.(AMERICA)", "301": "AFGANISTAN", "302": "ARABIA SAUDITA", "303": "BAHREIN", "304": "MYANMAR(EX-BIRMANIA)", "305": "BUTAN", "306": "CAMBODYA(EX-KAMPUCHE", "307": "SRI LANKA", "308": "COREA DEMOCRATICA", "309": "COREA REPUBLICANA", "310": "CHINA", "312": "FILIPINAS", "313": "TAIWAN", "315": "INDIA", "316": "INDONESIA", "317": "IRAQ", "318": "IRAN", "319": "ISRAEL", "320": "JAPON", "321": "JORDANIA", "322": "QATAR", "323": "KUWAIT", "324": "LAO", "325": "LIBANO", "326": "MALASIA", "327": "MALDIVES,ISLAS", "328": "OMAN", "329": "MONGOLIA", "330": "NEPAL", "331": "EMIRATOS ARABES,UNID", "332": "PAKISTAN", "333": "SINGAPUR", "334": "SIRIA", "335": "THAILANDIA", "337": "VIETNAM", "341": "HONG KONG R A E CHIN", "344": "MACAO (R A E CHINA)", "345": "BANGLADESH", "346": "BRUNEI", "348": "REP. DE YEMEN", "349": "ARMENIA", "350": "AZERBAIJAN", "351": "GEORGIA", "352": "KAZAJSTAN", "353": "KIRGUIZISTAN", "354": "TAYIKISTAN", "355": "TURKMENISTAN", "356": "UZBEKISTAN", "357": "T AU PALEST GAZA JER", "358": "TIMOR ORIENTAL", "398": "INDET.(ASIA)", "401": "ALBANIA", "404": "ANDORRA", "405": "AUSTRIA", "406": "BELGICA", "407": "BULGARIA", "409": "DINAMARCA", "410": "ESPAÑA", "411": "FINLANDIA", "412": "FRANCIA", "413": "GRECIA", "414": "HUNGRIA", "415": "IRLANDA", "416": "ISLANDIA", "417": "ITALIA", "418": "LIECHTENSTEIN", "419": "LUXEMBURGO", "420": "MALTA", "421": "MONACO", "422": "NORUEGA", "423": "PAISES BAJOS", "424": "POLONIA", "425": "PORTUGAL", "426": "REINO UNIDO", "427": "RUMANIA", "428": "SAN MARINO", "429": "SUECIA", "430": "SUIZA", "431": "SANTA SEDE(VATICANO)", "433": "T V A REINO UNIDO EU", "435": "CHIPRE", "436": "TURQUIA", "438": "REP. FED DE ALEMANIA", "439": "BIELORRUSIA", "440": "ESTONIA", "441": "LETONIA", "442": "LITUANIA", "443": "MOLDAVIA", "444": "RUSIA", "445": "UCRANIA", "446": "BOSNIA HERZEGOVINA", "447": "CROACIA", "448": "ESLOVAQUIA", "449": "ESLOVENIA", "450": "MACEDONIA", "451": "REP. CHECA", "452": "FED SER Y MONT YUGOE", "498": "INDET.(EUROPA)", "501": "AUSTRALIA", "503": "NAURU", "504": "NUEVA ZELANDIA", "505": "VANATU", "506": "SAMOA OCCIDENTAL", "507": "T V A AUSTRALIA OCEA", "508": "T V A REINO UNIDO OC", "509": "T V A FRANCIA (OCEAN", "510": "T V A NVA ZELANDA OC", "511": "T V A USA (OCEANIA)", "512": "FIJI, ISLAS", "513": "PAPUA NUEVA GUINEA", "514": "KIRIBATI, ISLAS", "515": "MICRONESIA,EST.FEDER", "516": "PALAU", "517": "TUVALU", "518": "SALOMON,ISLAS", "519": "TONGA", "520": "MARSHALL,ISLAS", "521": "MARIANAS,ISLAS", "598": "INDET.(OCEANIA)", "998": "INDET.(CONTINENTE)"};
 const ADUANAS = {"001": "BS.AS.(CAPITAL)", "003": "BAHIA BLANCA", "004": "BARILOCHE", "008": "CAMPANA", "010": "BARRANQUERAS", "012": "CLORINDA", "013": "COLON", "014": "COMODORO RIVADAVIA", "015": "CONCEPCION DEL URUGU", "016": "CONCORDIA", "017": "CORDOBA", "018": "CORRIENTES", "019": "PUERTO DESEADO", "020": "DIAMANTE", "023": "ESQUEL", "024": "FORMOSA", "025": "GOYA", "026": "GUALEGUAYCHU", "029": "IGUAZU", "031": "JUJUY", "033": "LA PLATA", "034": "LA QUIACA", "037": "MAR DEL PLATA", "038": "MENDOZA", "040": "NECOCHEA", "041": "PARANA", "042": "PASO DE LOS LIBRES", "045": "POCITOS", "046": "POSADAS", "047": "PUERTO MADRYN", "048": "RIO GALLEGOS", "049": "RIO GRANDE", "052": "ROSARIO", "053": "SALTA", "054": "SAN JAVIER", "055": "SAN JUAN", "057": "SAN LORENZO", "058": "S.MARTIN DE LOS ANDE", "059": "SAN NICOLAS", "060": "SAN PEDRO", "061": "SANTA CRUZ", "062": "SANTA FE", "066": "TINOGASTA", "067": "USHUAIA", "069": "VILLA CONSTITUCION", "073": "EZEIZA", "074": "TUCUMAN", "075": "NEUQUEN", "076": "ORAN", "078": "SAN RAFAEL", "079": "LA RIOJA", "080": "SAN ANTONIO OESTE", "082": "BERNARDO DE YRIGOYEN", "083": "SAN LUIS", "084": "SANTO TOME", "085": "VILLA REGINA", "086": "OBERA"};
+const MEDIOS_TRANSPORTE = {"1": "Propios medios", "2": "Avión", "3": "Ferrocarril", "4": "Camión", "5": "Arreo", "6": "Jangada", "7": "Oleoducto / gasoducto", "8": "Acuático", "9": "Conductor eléctrico", "A": "Vía postal"};
+const UNIDADES = {"01": "KILOGRAMO", "02": "METROS", "03": "METRO CUADRADO", "04": "METRO CUBICO", "05": "LITROS", "06": "1000 KILOWATT HORA", "07": "UNIDAD", "08": "PAR", "09": "DOCENA", "10": "QUILATE", "11": "MILLAR", "14": "GRAMO", "15": "MILIMETRO", "16": "MMCUBICO", "17": "KILOMETRO", "18": "HECTOLITRO", "20": "CENTIMETRO", "25": "JGO.PQT.MAZO NAIPES", "27": "CMCUBICO", "29": "TONELADA", "30": "DAMCUBICO", "31": "HMCUBICO", "32": "KMCUBICO", "33": "MICROGRAMO", "34": "NANOGRAMO", "35": "PICOGRAMO", "41": "MILIGRAMO", "47": "MILILITRO", "48": "CURIE", "49": "MILICURIE", "50": "MICROCURIE", "51": "UIACTHOR", "52": "MUIACTHOR", "53": "KGBASE", "54": "GRUESA", "61": "KG.BRUTO", "62": "UIACTANT", "63": "MUIACTANT", "64": "UIACTIG", "65": "MUIACTIG", "66": "KGACTIVO", "67": "GRACTIVO", "68": "GRAMO BASE"};
+const TRIBUTOS = {"010": "DERECHOS IMPORTACION", "011": "TASA DE ESTADISTICA", "012": "DER. ANTI-DUMPING 1", "013": "DERECHO COMPENSATOR.", "014": "IMPUESTO EQUIP.PREC.", "015": "DERECHO ESPECIFICO", "016": "DER. IMP.ADICIONAL", "017": "DER. ANTI-DUMPING 2", "018": "DER.IMP.AJ.EQ.PRE.1", "019": "DERECHO COMPENST.(2)", "020": "DERECHOS EXPORTACION", "021": "Dchos. Export INT.", "026": "DER.EXP.ADICIONAL", "031": "TASA DE COMPROBACION", "032": "TASA LEY 24196", "033": "MULTA ARR.FUERA TER.", "034": "DIEM-SALVAG", "040": "FDO.GRAT.LEY 23993.", "041": "MULTA DEST.FUERA TER", "043": "VARIOS", "044": "FDO.JER.LEY 23993.", "045": "MULTAS NO AUTOMATICS", "046": "MULTA NO TOMAR CONT.", "047": "MULTA FALTA DOC.COMP", "048": "MULTA TRANS.ART.320", "049": "DTO.258 PROD.EF.FIS.", "050": "D.A-DUMP 1 MERCOSUR", "051": "D.A-DUMP 2 MERCOSUR", "052": "I.EQUIP.PRECIOS MERC", "053": "D.I.AJ.EQ.PR.MERC.1", "054": "DER.IMP.AJ.EQ.PRE.2", "055": "D.I.AJ.EQ.PR.2.MERC", "056": "D.I. USADOS R.909/94", "057": "D.I. USADOS R. 12/98", "058": "D.ANTIDUM.AD-VALOR", "059": "Der.Especif.OMC", "060": "DER.ESP. CALZADO", "061": "TASA ESTAD MONT MAX", "062": "TASA ESTAD MONT MAX2", "063": "Multa falta doc.com.", "064": "Multa Dest.Fuera Ter", "065": "DIEM-CHINA", "066": "TASA REDUCIDA", "067": "COMERC.MERC.-L.25986", "210": "Der.Import.AAE", "217": "Imp.Internos AAE", "285": "Valor en Ad.AAE", "414": "INTER.RESARCITORIOS", "415": "I.V.A.", "416": "I.V.A. INTERESES", "417": "IMPUESTOS INTERNOS", "418": "IMP.TRANSF.GASOIL", "419": "IMP.INT.CIGARRILLOS", "420": "IVA DEV.REINT.REE", "421": "IMP.COMBUST.LIQUIDOS", "422": "IVA ADICIONAL INSCR.", "423": "IVA ADIC. NO INSCR.", "424": "IMP. A LAS GANANCIAS", "425": "IVA DEV. REINT. REEM", "426": "INFRAESTRUC.HIDRICA", "427": "IMP.INT.L24699 ART.3", "428": "I.COMB.LIQ.L24699 2", "429": "ING.BRUTOS BS.AS.", "433": "IVA AD NOINS NOCVDI", "434": "IMP.INT.Dec.290/00", "435": "L.COMB.LIQ.ADVALOREN", "436": "LCOMB.LIQ.L24699ADVA", "437": "IMP.INT.CIGARR.MAX.", "438": "IMP.INT.CIGARR.MIN.", "440": "AFIP L 23993 art.2 C", "441": "Gendarmeria Nac. 2 C", "442": "Prefectura N Arg.2 C", "443": "Policia Fed.Arg.2 C", "444": "POL,AERONAUTICA NAC.", "445": "GEO FSEG.DTO. 258/99", "450": "CIUD. AUT. DE BS.AS", "451": "PROV.DE CATAMARCA", "452": "PROV.DE CORDOBA", "453": "PROV.DE CORRIENTES", "454": "PROV.DEL CHACO", "455": "PROV.DEL CHUBT", "456": "PROV.DE ENTRE RIOS", "457": "PROV.DE FORMOSA", "458": "PROV. DE JUJUY", "459": "PROV.DE LA PAMPA", "460": "PROV. DE LA RIOJA", "461": "PROV. DE MENDOZA", "462": "PROV. DE MISIONES", "463": "PROV. DE NEUQUEN", "464": "PROV.DE RIO NEGRO", "465": "PROV. DE SALTA", "466": "PROV.DE SAN JUAN", "467": "PROV.DE SAN LUIS", "468": "PROV.DE STA. CRUZ", "469": "PROV. DE SANTA FE", "470": "PROV.STGO.DEL ESTERO", "471": "PRO.TIERRA DEL FUEGO", "472": "PROV. DE TUCUMAN", "500": "ARANCEL SIM IMPO", "501": "ARANCEL SIM EXPO", "502": "FACT-CONVERGENCIA(I)", "503": "FACT-CONVERGENCIA(E)", "504": "FC.AREA.AD.ESP.(E)", "505": "DEVOLUCION F.C.(E)", "506": "DEVOLUCION F.C.(I)", "600": "DIFERENCIA REINT/FC", "601": "REINTEGRO % FIJO", "603": "REINT.PROM.MINERA", "604": "REEMBOLSOS LEY 19640", "605": "REEMBOLSOS LEY 23018", "607": "EXPODTO1139/88", "608": "P.LLAVEMANOD870/03", "611": "REINTEGRO % FIJO VA", "613": "REINT.PROM.MINERA VA", "614": "REEMBOL LEY 19640 VA", "615": "REEMBOL LEY 23018 VA", "617": "EXPODTO1139/88 VA", "618": "P.LLAVEMANOD870/03VA", "710": "DER.de IMPORT. (D)", "711": "ESTADISTICA (D)", "715": "IVA GRAL.CUOTA", "716": "IVA (D)", "717": "IMPUESTOS INTERN (D)", "722": "IVA ADIC. DIFERIDO", "723": "IVA ADIC.NO INSC.(D)", "724": "IMP. GCIAS. DIFERIDO", "756": "D.I.USAD. R909/94(D)", "757": "D.I.USAD. R.12/98(D)", "761": "TASA EST.MONT.MAX(D)", "762": "TASA EST.MON.MAX2(D)", "772": "IVA AD INSCRIPTO (X)", "773": "IVA AD NO INSC.(X)", "774": "IMP.GANANCIAS (X)", "775": "IVAAD.NOINS NOCVDI(X", "780": "TOTALIZADOR", "785": "Diferen.Modulo Valor", "786": "DIF.MOD.VALOR-MERCO.", "788": "DIF.VALORES CRITERIO", "802": "FACT-CONVER.IMPO(G)", "803": "FACT-CONV.AREA A.ESP", "819": "IMP.INT.CIGARR.(G.)", "820": "DER.SALV.INTR(GTIA)", "821": "IVA.SALV.INTR(GTIA)", "822": "IVA AD.SV.INTR(GTIA)", "823": "GCIAS.SAL.INTR(GTIA)", "824": "I.INT.SAL.INTR(GTIA)", "845": "Valor Art 453 h)i)CA", "849": "DEVOL.BENEFICIOS(G.)", "850": "FALTA TIT.TRANSPORTE", "851": "ESTADISTICA (GTIA)", "852": "I.V.A. (GTIA)", "853": "IMP.INTERNOS (GTIA)", "854": "IVA ADIC.INSCR(GTIA)", "855": "IVA ADIC.NO INSC(GT)", "856": "IMP.GANANCIAS(GTIA)", "857": "DER.ANTI-DUMP 1 GTIA", "858": "DER.ANTI-DUMP 2 GTIA", "859": "IMP.INT. A-DUMP 1(G)", "860": "IVA ANTIDUMPING GTIA", "861": "IVA ADI.R.I.DUMP.GT.", "862": "IVA ADI.R.N.I.DUM.GT", "863": "IMP.GCIAS.DUMP.GTIAS", "864": "D.A-DUMP1 MERCO.GTIA", "865": "D.A-DUMP2 MERCO.GTIA", "866": "DER.IMPORTACION (G)", "867": "DER.COMPENSATOR.(G)", "868": "I.EQ.DE PRECIOS (G)", "869": "DER.ESPECIFICO (G)", "870": "DER.IMP.ADICIONAL(G)", "871": "DER.EXPORTACION (G)", "872": "TASA COM.DESTINO (G)", "873": "I.V.A. INTERESES (G)", "874": "IMP.COMB.LIQUID. (G)", "882": "MULTA RES 763/305", "883": "MULTA F. CERT. INSP.", "884": "D.I. USAD.R.12/98(G)", "885": "VALOR EN ADUANA", "886": "D.I. USAD.G.R.909/94", "887": "I.INT.L 24699 A.3(G)", "889": "I.C.LIQ.L24699 2 (G)", "891": "DIEM-CHINA (G)", "892": "DIEM IVA (G)", "893": "DIEM IVAAD (G)", "894": "DIEM IMP GCIAS (G)", "895": "DIF DIEM OMC (G)", "896": "DIF DIEM CHINA (G)", "897": "DIF DIEM DI (G)", "900": "INGRESOS BRUTOS", "901": "PLAN DE FACILIDADES"};
+const COLUMNAS_CODIGO = {
+  ADU: ADUANAS,
+  PAIS_ORIGEN: PAISES,
+  PAIS_PROCEDENCIA: PAISES,
+  MEDIO_TRANSPORTE: MEDIOS_TRANSPORTE,
+  UNIDAD_MEDIDA: UNIDADES,
+  ARANCEL_CONCEPTO: TRIBUTOS,
+};
+function decodificar(col, valor) {
+  const dicc = COLUMNAS_CODIGO[col];
+  if (!dicc || valor == null || valor === "") return valor;
+  const nombre = dicc[String(valor).trim()];
+  return nombre ?? valor;
+}
 const COLOR_NAVY = "#0B2545";
 const COLOR_CYAN = "#35D6FF";
-const PALETA_ANIOS = ["#0B2545", "#35D6FF", "#7A9CC6", "#0FAE96", "#B23A6E", "#E8A33D", "#5B4B8A", "#2E7D32", "#9C6B30"];
+const PALETA_ANIOS = ["#35D6FF", "#E8A33D", "#C2588F", "#0FAE96", "#5B4B8A", "#E85D4F", "#C9962B", "#7A9CC6", "#C77DFF"];
+function colorTema(nombre) {
+  return getComputedStyle(document.documentElement).getPropertyValue(nombre).trim();
+}
+const MESES_CORTOS = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"];
+const ETIQUETAS_COMPARACION = { mensual: "mes anterior", trimestral: "trimestre anterior", anual: "año anterior" };
+// Etiqueta corta para el eje del gráfico (mm/aa), y una más larga para
+// tooltips y el texto "vs. X anterior" que sea clara sin ambigüedad.
+function formatEtiquetaEje(modo, bucket) {
+  if (modo === "mensual") return `${bucket.slice(4, 6)}/${bucket.slice(2, 4)}`;
+  if (modo === "trimestral") {
+    const [anio, trim] = bucket.split("-");
+    return `${trim}/${anio.slice(2)}`;
+  }
+  return bucket;
+}
+function formatEtiquetaLarga(modo, bucket) {
+  if (modo === "mensual") {
+    const mesIdx = Number(bucket.slice(4, 6)) - 1;
+    return `${MESES_CORTOS[mesIdx]} ${bucket.slice(0, 4)}`;
+  }
+  if (modo === "trimestral") {
+    const [anio, trim] = bucket.split("-");
+    return `${trim} ${anio}`;
+  }
+  return bucket;
+}
+
+const tooltipEl = document.createElement("div");
+tooltipEl.className = "chart-tooltip";
+tooltipEl.hidden = true;
+document.body.appendChild(tooltipEl);
+function mostrarTooltip(evt, html) {
+  tooltipEl.innerHTML = html;
+  tooltipEl.hidden = false;
+  const margen = 14;
+  let x = evt.clientX + margen;
+  let y = evt.clientY + margen;
+  const rect = tooltipEl.getBoundingClientRect();
+  if (x + rect.width > window.innerWidth) x = evt.clientX - rect.width - margen;
+  if (y + rect.height > window.innerHeight) y = evt.clientY - rect.height - margen;
+  tooltipEl.style.left = x + "px";
+  tooltipEl.style.top = y + "px";
+}
+function ocultarTooltip() {
+  tooltipEl.hidden = true;
+}
+function deltaSpan(actual, anterior) {
+  if (anterior == null || actual == null || anterior === 0) return "";
+  const pct = ((actual - anterior) / Math.abs(anterior)) * 100;
+  const positivo = pct >= 0;
+  return ` <span class="tt-delta ${positivo ? "up" : "down"}">${positivo ? "▲+" : "▼"}${pct.toFixed(1)}%</span>`;
+}
+function formatDuracion(ms) {
+  if (ms < 1000) return `${ms} ms`;
+  const seg = ms / 1000;
+  if (seg < 60) return `${seg.toFixed(1)} s`;
+  const min = Math.floor(seg / 60);
+  const resto = Math.round(seg - min * 60);
+  return `${min} min ${resto} s`;
+}
+
+// Multi-select simple (checkboxes en un panel desplegable + chips para
+// sacar selecciones), en vez de un <select multiple> nativo: con ctrl/cmd+click
+// para elegir varios no es descubrible para la mayoría de la gente, esto sí.
+function crearMultiSelect(rootId, opciones, placeholder) {
+  const root = document.getElementById(rootId);
+  root.innerHTML = `
+    <button type="button" class="multiselect-toggle"></button>
+    <div class="multiselect-panel" hidden></div>
+    <div class="multiselect-chips"></div>
+  `;
+  const toggleBtn = root.querySelector(".multiselect-toggle");
+  const panel = root.querySelector(".multiselect-panel");
+  const chipsEl = root.querySelector(".multiselect-chips");
+  let opts = opciones;
+  let seleccion = new Set();
+
+  function render() {
+    panel.innerHTML = opts.map((o) => `
+      <label class="multiselect-opt">
+        <input type="checkbox" value="${escXml(o.value)}" ${seleccion.has(o.value) ? "checked" : ""} />
+        <span>${escXml(o.label)}</span>
+      </label>
+    `).join("");
+    panel.querySelectorAll("input[type=checkbox]").forEach((cb) => {
+      cb.addEventListener("change", () => {
+        if (cb.checked) seleccion.add(cb.value); else seleccion.delete(cb.value);
+        actualizar();
+      });
+    });
+  }
+
+  function actualizar() {
+    const n = seleccion.size;
+    toggleBtn.textContent = n === 0 ? placeholder : `${n} seleccionad${n === 1 ? "a" : "as"}`;
+    chipsEl.innerHTML = Array.from(seleccion).map((v) => {
+      const o = opts.find((x) => x.value === v);
+      const label = o ? o.label : v;
+      return `<span class="chip-sel" data-v="${escXml(v)}">${escXml(truncar(label, 22))}<button type="button" aria-label="Quitar ${escXml(label)}">×</button></span>`;
+    }).join("");
+    chipsEl.querySelectorAll(".chip-sel button").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        seleccion.delete(btn.parentElement.dataset.v);
+        render();
+        actualizar();
+      });
+    });
+  }
+
+  toggleBtn.addEventListener("click", () => { panel.hidden = !panel.hidden; });
+  document.addEventListener("click", (e) => { if (!root.contains(e.target)) panel.hidden = true; });
+
+  render();
+  actualizar();
+
+  return {
+    getValues: () => Array.from(seleccion),
+    clear: () => { seleccion.clear(); render(); actualizar(); },
+    setOptions: (nuevas) => {
+      opts = nuevas;
+      seleccion = new Set(Array.from(seleccion).filter((v) => nuevas.some((o) => o.value === v)));
+      render();
+      actualizar();
+    },
+  };
+}
 
 const statusEl = document.getElementById("status");
 const statusResultadosEl = document.getElementById("statusResultados");
@@ -494,24 +738,22 @@ const aplicarBtn = document.getElementById("aplicar");
 const limpiarBtn = document.getElementById("limpiar");
 const exportarBtn = document.getElementById("exportarCsv");
 const runSqlBtn = document.getElementById("runSql");
-const generarSqlBtn = document.getElementById("generarSql");
 const sqlEl = document.getElementById("sql");
+const ayudaResultadosEl = document.getElementById("ayudaResultados");
 const resultEl = document.getElementById("result");
 const resumenEl = document.getElementById("resumen");
 const resFilasEl = document.getElementById("resFilas");
 const resDespachosEl = document.getElementById("resDespachos");
 const resFobEl = document.getElementById("resFob");
-const resTiempoEl = document.getElementById("resTiempo");
 const resDeltaEl = document.getElementById("resDelta");
 const resDeltaEtiquetaEl = document.getElementById("resDeltaEtiqueta");
 const resDeltaWrapEl = document.getElementById("resDeltaWrap");
+const resImportadoresEl = document.getElementById("resImportadores");
 const periodoDesdeEl = document.getElementById("periodoDesde");
 const periodoHastaEl = document.getElementById("periodoHasta");
 const importadorEl = document.getElementById("importador");
 const ncmEl = document.getElementById("ncm");
 const paisEl = document.getElementById("pais");
-const aduanaEl = document.getElementById("aduana");
-const tipoDestinacionEl = document.getElementById("tipoDestinacion");
 const granularidadEl = document.getElementById("granularidad");
 const chartEvolucionEl = document.getElementById("chartEvolucion");
 const leyendaEvolucionEl = document.getElementById("leyendaEvolucion");
@@ -553,12 +795,12 @@ Object.entries(PAISES).sort((a, b) => a[1].localeCompare(b[1])).forEach(([cod, n
   opt.textContent = nombre;
   paisEl.appendChild(opt);
 });
-Object.entries(ADUANAS).sort((a, b) => a[1].localeCompare(b[1])).forEach(([cod, nombre]) => {
-  const opt = document.createElement("option");
-  opt.value = cod;
-  opt.textContent = nombre;
-  aduanaEl.appendChild(opt);
-});
+const aduanaMultiselect = crearMultiSelect(
+  "aduanaMultiselect",
+  Object.entries(ADUANAS).sort((a, b) => a[1].localeCompare(b[1])).map(([cod, nombre]) => ({ value: cod, label: nombre })),
+  "Todas"
+);
+const tipoDestinacionMultiselect = crearMultiSelect("tipoDestinacionMultiselect", [], "Todos");
 
 let db, conn, fuenteLista = false, ultimoFiltro = "1=1";
 
@@ -577,27 +819,31 @@ async function initDb() {
 }
 
 async function poblarTiposDestinacion() {
-  tipoDestinacionEl.innerHTML = '<option value="">Todos</option>';
+  // Sin filtro de período esto escanea el archivo entero (cientos de millones
+  // de filas): nos quedamos con el último año para que sea rápido y no
+  // bloquee la conexión mientras el usuario aplica sus propios filtros.
+  const maxRes = await conn.query(`SELECT max(PERIODO) AS maxp FROM impo`);
+  const maxPeriodo = maxRes.toArray()[0]?.toJSON().maxp;
+  const where = maxPeriodo ? `PERIODO >= '${esc(String(Number(maxPeriodo) - 100))}'` : "1=1";
   const res = await conn.query(`
     SELECT substr(DESTINACION, 6, 4) AS tipo, count(*) AS n
     FROM impo
-    WHERE tipo IS NOT NULL AND tipo != ''
+    WHERE ${where}
     GROUP BY tipo
+    HAVING tipo IS NOT NULL AND tipo != ''
     ORDER BY n DESC
     LIMIT 40
   `);
-  res.toArray().forEach((r) => {
+  tipoDestinacionMultiselect.setOptions(res.toArray().map((r) => {
     const row = r.toJSON();
-    const opt = document.createElement("option");
-    opt.value = row.tipo;
-    opt.textContent = row.tipo;
-    tipoDestinacionEl.appendChild(opt);
-  });
+    return { value: row.tipo, label: row.tipo };
+  }));
 }
 
 async function fuenteConectada() {
   fuenteLista = true;
   aplicarBtn.disabled = false;
+  exportarBtn.disabled = false;
   try {
     await poblarTiposDestinacion();
   } catch (err) {
@@ -606,14 +852,33 @@ async function fuenteConectada() {
   }
 }
 
-async function cargarArchivoLocal(file) {
-  setStatus(`Leyendo ${file.name} (${(file.size / 1024 ** 3).toFixed(2)} GiB)...`);
+// Chrome (y el resto de los navegadores basados en Chromium) no puede volcar
+// un Blob de más de ~2 GiB a un buffer en memoria de una sola vez (falla con
+// "Array buffer allocation failed"/NotReadableError). Por eso el histórico
+// grande hay que partirlo primero con explorer/dividir_para_navegador.py y
+// cargar todas las partes juntas acá: DuckDB las lee como una sola tabla con
+// read_parquet([...]).
+const LIMITE_BUFFER_BYTES = 2000 * 1024 * 1024;
+
+async function cargarArchivosLocales(files) {
+  const demasiadoGrande = files.find((f) => f.size > LIMITE_BUFFER_BYTES);
+  if (demasiadoGrande) {
+    setStatus(
+      `"${demasiadoGrande.name}" pesa más de 2 GiB: los navegadores no pueden cargar un archivo así de grande de una vez. Partilo con "python explorer/dividir_para_navegador.py" y seleccioná las partes resultantes.`,
+      "error"
+    );
+    return;
+  }
+  setStatus(`Leyendo ${files.length === 1 ? files[0].name : files.length + " archivos"}...`);
   aplicarBtn.disabled = true;
   try {
-    const buffer = new Uint8Array(await file.arrayBuffer());
-    await db.registerFileBuffer(file.name, buffer);
-    await conn.query(`CREATE OR REPLACE VIEW impo AS SELECT * FROM read_parquet('${esc(file.name)}')`);
-    setStatus(`Listo: ${file.name} cargado. Aplicá filtros o corré SQL.`, "ok");
+    for (const file of files) {
+      const buffer = new Uint8Array(await file.arrayBuffer());
+      await db.registerFileBuffer(file.name, buffer);
+    }
+    const nombres = files.map((f) => `'${esc(f.name)}'`).join(", ");
+    await conn.query(`CREATE OR REPLACE VIEW impo AS SELECT * FROM read_parquet([${nombres}])`);
+    setStatus(`Listo: ${files.length} archivo(s) cargado(s). Aplicá filtros o corré SQL (con varios años cargados puede tardar unos minutos: es muchísima información).`, "ok");
     await fuenteConectada();
   } catch (err) {
     setStatus("No se pudo leer el archivo: " + (err.message || err), "error");
@@ -646,8 +911,10 @@ function construirFiltro() {
   const ncm = ncmEl.value.trim();
   if (ncm) clausulas.push(`POS_NCM LIKE '${esc(ncm)}%'`);
   if (paisEl.value) clausulas.push(`PAIS_ORIGEN = '${esc(paisEl.value)}'`);
-  if (aduanaEl.value) clausulas.push(`ADU = '${esc(aduanaEl.value)}'`);
-  if (tipoDestinacionEl.value) clausulas.push(`substr(DESTINACION,6,4) = '${esc(tipoDestinacionEl.value)}'`);
+  const aduanas = aduanaMultiselect.getValues();
+  if (aduanas.length) clausulas.push(`ADU IN (${aduanas.map((v) => `'${esc(v)}'`).join(", ")})`);
+  const tipos = tipoDestinacionMultiselect.getValues();
+  if (tipos.length) clausulas.push(`substr(DESTINACION,6,4) IN (${tipos.map((v) => `'${esc(v)}'`).join(", ")})`);
   return clausulas.length ? clausulas.join(" AND ") : "1=1";
 }
 
@@ -666,9 +933,9 @@ function itemsCTE(where) {
 function renderTable(cols, rows) {
   const thead = resultEl.querySelector("thead");
   const tbody = resultEl.querySelector("tbody");
-  thead.innerHTML = "<tr>" + cols.map((c) => `<th>${c}</th>`).join("") + "</tr>";
+  thead.innerHTML = "<tr>" + cols.map((c) => `<th>${escXml(c)}</th>`).join("") + "</tr>";
   tbody.innerHTML = rows
-    .map((r) => "<tr>" + cols.map((c) => `<td>${r[c] ?? ""}</td>`).join("") + "</tr>")
+    .map((r) => "<tr>" + cols.map((c) => `<td>${escXml(decodificar(c, r[c]) ?? "")}</td>`).join("") + "</tr>")
     .join("");
 }
 
@@ -679,28 +946,52 @@ function renderBarsH(container, items) {
     container.innerHTML = '<p class="lead">Sin datos para este filtro.</p>';
     return;
   }
-  const rowH = 26, gap = 10, labelW = 230, valueW = 76;
+  const rowH = 26, gap = 10, valueW = 76;
+  const maxLabelLen = Math.max(...items.map((i) => truncar(i.label, 30).length));
+  const labelW = Math.min(230, Math.max(70, maxLabelLen * 6.4 + 8));
   const chartW = 560;
   const totalW = labelW + chartW + valueW;
   const totalH = items.length * (rowH + gap) - gap;
   const maxVal = Math.max(...items.map((i) => i.value), 1);
+  const colorSecundario = colorTema("--chart-bar-2") || COLOR_NAVY;
 
   let svg = `<svg viewBox="0 0 ${totalW} ${totalH}" width="100%" style="max-width:${totalW}px" height="${totalH}" role="img" aria-label="gráfico de barras">`;
   items.forEach((it, i) => {
     const y = i * (rowH + gap);
     const w = Math.max(3, (it.value / maxVal) * chartW);
-    const fill = i === 0 ? COLOR_CYAN : COLOR_NAVY;
-    svg += `<g>
-      <text x="0" y="${y + rowH / 2}" dominant-baseline="middle" font-size="12" fill="var(--fg)">${escXml(truncar(it.label, 30))}<title>${escXml(it.label)}</title></text>
-      <rect x="${labelW}" y="${y}" width="${w}" height="${rowH}" rx="4" fill="${fill}"><title>${escXml(it.label)}: ${escXml(fmtCompacto(it.value))} USD</title></rect>
+    const fill = i === 0 ? COLOR_CYAN : colorSecundario;
+    svg += `<g data-i="${i}">
+      <text x="0" y="${y + rowH / 2}" dominant-baseline="middle" font-size="12" fill="var(--fg)">${escXml(truncar(it.label, 30))}</text>
+      <rect x="${labelW}" y="${y}" width="${w}" height="${rowH}" rx="4" fill="${fill}" stroke="var(--border)" stroke-width="1" />
       <text x="${labelW + w + 8}" y="${y + rowH / 2}" dominant-baseline="middle" font-size="12" font-weight="700" fill="var(--fg)">${escXml(fmtCompacto(it.value))}</text>
     </g>`;
   });
   svg += "</svg>";
   container.innerHTML = svg;
+
+  container.querySelectorAll("g[data-i]").forEach((g) => {
+    const it = items[Number(g.dataset.i)];
+    const mostrar = (evt) => mostrarTooltip(evt, `<div class="tt-label">${escXml(it.label)}</div><div class="tt-valor">${escXml(fmtCompacto(it.value))} USD</div>`);
+    g.addEventListener("mouseenter", mostrar);
+    g.addEventListener("mousemove", mostrar);
+    g.addEventListener("mouseleave", ocultarTooltip);
+  });
 }
 
-function renderLineSingle(container, puntos) {
+// Tooltip con las 4 métricas que también están en las tarjetas de arriba
+// (en ese orden: FOB, importadores, despachos, ítems), cada una con su
+// variación contra el punto anterior del mismo gráfico.
+function tooltipMetricas(titulo, p, anterior) {
+  return `
+    <div class="tt-label">${escXml(titulo)}</div>
+    <div class="tt-valor">FOB: ${escXml(fmtCompacto(p.fob))} USD${deltaSpan(p.fob, anterior ? anterior.fob : null)}</div>
+    <div class="tt-valor">Importadores: ${Number(p.importadores).toLocaleString("es-AR")}${deltaSpan(p.importadores, anterior ? anterior.importadores : null)}</div>
+    <div class="tt-valor">Despachos: ${Number(p.despachos).toLocaleString("es-AR")}${deltaSpan(p.despachos, anterior ? anterior.despachos : null)}</div>
+    <div class="tt-valor">Ítems: ${Number(p.items).toLocaleString("es-AR")}${deltaSpan(p.items, anterior ? anterior.items : null)}</div>
+  `;
+}
+
+function renderLineSingle(container, puntos, modo) {
   if (!puntos.length) {
     container.innerHTML = '<p class="lead">Sin datos para este filtro.</p>';
     return { deltaPct: null, deltaAbs: null };
@@ -718,14 +1009,23 @@ function renderLineSingle(container, puntos) {
   const pasoEtiqueta = mostrarTodasEtiquetas ? 1 : Math.ceil(puntos.length / 10);
 
   const path = puntos.map((p, i) => `${i === 0 ? "M" : "L"}${x(i).toFixed(1)},${y(p.value).toFixed(1)}`).join(" ");
+  const colorLinea = colorTema("--chart-line") || COLOR_CYAN;
+  const esAnual = modo === "anual";
 
   let svg = `<svg viewBox="0 0 ${W} ${H}" width="100%" style="max-width:${W}px" height="${H}" role="img" aria-label="evolución">`;
-  svg += `<path d="${path}" fill="none" stroke="${COLOR_NAVY}" stroke-width="2.5" />`;
+  svg += `<path d="${path}" fill="none" stroke="${colorLinea}" stroke-width="3" />`;
   puntos.forEach((p, i) => {
     const cx = x(i), cy = y(p.value);
     const esUltimo = i === puntos.length - 1;
-    svg += `<circle cx="${cx.toFixed(1)}" cy="${cy.toFixed(1)}" r="${esUltimo ? 4.5 : 3}" fill="${esUltimo ? COLOR_CYAN : COLOR_NAVY}"><title>${escXml(p.label)}: ${escXml(fmtCompacto(p.value))} USD</title></circle>`;
-    if (i % pasoEtiqueta === 0 || esUltimo) {
+    svg += `<circle data-i="${i}" cx="${cx.toFixed(1)}" cy="${cy.toFixed(1)}" r="${esUltimo ? 5.5 : 4}" fill="${esUltimo ? COLOR_CYAN : colorLinea}" />`;
+    if (esAnual && esUltimo && i > 0) {
+      // Remate del año: mismo color que la línea, con el total y la
+      // variación contra el año anterior al lado.
+      const anteriorVal = puntos[i - 1].value;
+      const pct = anteriorVal !== 0 ? ((p.value - anteriorVal) / Math.abs(anteriorVal)) * 100 : null;
+      const remate = pct != null ? `${fmtCompacto(p.value)} (${pct >= 0 ? "+" : ""}${pct.toFixed(1)}%)` : fmtCompacto(p.value);
+      svg += `<text x="${cx.toFixed(1)}" y="${(y(p.value) - 10).toFixed(1)}" font-size="10" text-anchor="middle" fill="${colorLinea}" font-weight="700">${escXml(remate)}</text>`;
+    } else if (i % pasoEtiqueta === 0 || esUltimo) {
       svg += `<text x="${cx.toFixed(1)}" y="${(y(p.value) - 10).toFixed(1)}" font-size="10" text-anchor="middle" fill="var(--fg)" font-weight="600">${escXml(fmtCompacto(p.value))}</text>`;
     }
     svg += `<text x="${cx.toFixed(1)}" y="${H - 10}" font-size="10" text-anchor="middle" fill="var(--muted)">${escXml(p.label)}</text>`;
@@ -733,50 +1033,74 @@ function renderLineSingle(container, puntos) {
   svg += "</svg>";
   container.innerHTML = svg;
 
+  container.querySelectorAll("circle[data-i]").forEach((c) => {
+    const i = Number(c.dataset.i);
+    const p = puntos[i];
+    const anterior = i > 0 ? puntos[i - 1] : null;
+    const mostrar = (evt) => mostrarTooltip(evt, tooltipMetricas(p.labelLarga, p, anterior));
+    c.addEventListener("mouseenter", mostrar);
+    c.addEventListener("mousemove", mostrar);
+    c.addEventListener("mouseleave", ocultarTooltip);
+  });
+
   if (puntos.length >= 2) {
     const anterior = puntos[puntos.length - 2].value;
     const actual = puntos[puntos.length - 1].value;
     const deltaAbs = actual - anterior;
     const deltaPct = anterior !== 0 ? (deltaAbs / Math.abs(anterior)) * 100 : null;
-    return { deltaPct, deltaAbs, etiquetaAnterior: puntos[puntos.length - 2].label, etiquetaActual: puntos[puntos.length - 1].label };
+    return { deltaPct, deltaAbs, etiquetaLargaAnterior: puntos[puntos.length - 2].labelLarga };
   }
   return { deltaPct: null, deltaAbs: null };
 }
 
-function renderLineMulti(container, series, leyendaContainer) {
+function renderBarsInteranual(container, series, leyendaContainer) {
   const anios = Object.keys(series).sort();
   if (!anios.length) {
     container.innerHTML = '<p class="lead">Sin datos para este filtro.</p>';
     leyendaContainer.innerHTML = "";
     return;
   }
-  const meses = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"];
-  const W = 720, H = 240, padL = 18, padR = 18, padT = 20, padB = 26;
+  const W = 760, H = 260, padL = 34, padR = 12, padT = 16, padB = 30;
   const plotW = W - padL - padR, plotH = H - padT - padB;
-  let maxV = 0, minV = 0;
-  anios.forEach((a) => series[a].forEach((v) => { if (v != null) { maxV = Math.max(maxV, v); minV = Math.min(minV, v); } }));
-  const rango = maxV - minV || 1;
-  const x = (i) => padL + (i / 11) * plotW;
-  const y = (v) => padT + plotH - ((v - minV) / rango) * plotH;
+  let maxV = 0;
+  anios.forEach((a) => series[a].forEach((v) => { if (v) maxV = Math.max(maxV, v.fob); }));
+  maxV = maxV || 1;
+  const groupW = plotW / 12;
+  const barGap = 2;
+  const barW = Math.max(2, (groupW - barGap * (anios.length + 1)) / anios.length);
+  const y = (v) => padT + plotH - (v / maxV) * plotH;
 
   let svg = `<svg viewBox="0 0 ${W} ${H}" width="100%" style="max-width:${W}px" height="${H}" role="img" aria-label="interanual">`;
-  anios.forEach((anio, idx) => {
-    const color = PALETA_ANIOS[idx % PALETA_ANIOS.length];
-    const valores = series[anio];
-    const puntosValidos = valores.map((v, i) => (v == null ? null : [i, v])).filter(Boolean);
-    if (puntosValidos.length) {
-      const path = puntosValidos.map(([i, v], k) => `${k === 0 ? "M" : "L"}${x(i).toFixed(1)},${y(v).toFixed(1)}`).join(" ");
-      svg += `<path d="${path}" fill="none" stroke="${color}" stroke-width="2.2" opacity="0.92" />`;
-      puntosValidos.forEach(([i, v]) => {
-        svg += `<circle cx="${x(i).toFixed(1)}" cy="${y(v).toFixed(1)}" r="2.6" fill="${color}"><title>${anio} - ${meses[i]}: ${escXml(fmtCompacto(v))} USD</title></circle>`;
-      });
-    }
-  });
-  meses.forEach((m, i) => {
-    svg += `<text x="${x(i).toFixed(1)}" y="${H - 8}" font-size="10" text-anchor="middle" fill="var(--muted)">${m}</text>`;
+  for (let mes = 0; mes < 12; mes++) {
+    const groupX = padL + mes * groupW;
+    anios.forEach((anio, idx) => {
+      const v = series[anio][mes];
+      if (!v) return;
+      const color = PALETA_ANIOS[idx % PALETA_ANIOS.length];
+      const bx = groupX + barGap + idx * (barW + barGap);
+      const by = y(v.fob);
+      const bh = Math.max(1, padT + plotH - by);
+      svg += `<rect data-anio="${anio}" data-mes="${mes}" x="${bx.toFixed(1)}" y="${by.toFixed(1)}" width="${barW.toFixed(1)}" height="${bh.toFixed(1)}" rx="2" fill="${color}" stroke="var(--border)" stroke-width="0.6" />`;
+    });
+  }
+  MESES_CORTOS.forEach((m, i) => {
+    const cx = padL + i * groupW + groupW / 2;
+    svg += `<text x="${cx.toFixed(1)}" y="${H - 10}" font-size="10" text-anchor="middle" fill="var(--muted)">${m}</text>`;
   });
   svg += "</svg>";
   container.innerHTML = svg;
+
+  container.querySelectorAll("rect[data-anio]").forEach((r) => {
+    const anio = r.dataset.anio;
+    const mes = Number(r.dataset.mes);
+    const v = series[anio][mes];
+    const anioAnterior = String(Number(anio) - 1);
+    const vAnterior = series[anioAnterior] ? series[anioAnterior][mes] : null;
+    const mostrar = (evt) => mostrarTooltip(evt, tooltipMetricas(`${MESES_CORTOS[mes]} ${anio}`, v, vAnterior));
+    r.addEventListener("mouseenter", mostrar);
+    r.addEventListener("mousemove", mostrar);
+    r.addEventListener("mouseleave", ocultarTooltip);
+  });
 
   leyendaContainer.innerHTML = anios
     .map((a, idx) => `<span><span class="dot" style="background:${PALETA_ANIOS[idx % PALETA_ANIOS.length]}"></span>${a}</span>`)
@@ -786,6 +1110,7 @@ function renderLineMulti(container, series, leyendaContainer) {
 // ---------- Consultas ----------
 
 async function actualizarEvolucion(where) {
+  ocultarTooltip();
   const modo = granularidadEl.value;
   leyendaEvolucionEl.innerHTML = "";
   let resultadoDelta = { deltaPct: null };
@@ -793,18 +1118,26 @@ async function actualizarEvolucion(where) {
   if (modo === "interanual") {
     const res = await conn.query(`
       WITH items AS (${itemsCTE(where)})
-      SELECT substr(PERIODO,1,4) AS anio, CAST(substr(PERIODO,5,2) AS INTEGER) AS mes, sum(fob) AS fob
+      SELECT substr(PERIODO,1,4) AS anio, CAST(substr(PERIODO,5,2) AS INTEGER) AS mes,
+             sum(fob) AS fob, count(*) AS items,
+             approx_count_distinct(PERIODO || DESTINACION) AS despachos,
+             approx_count_distinct(importador) AS importadores
       FROM items GROUP BY 1,2 ORDER BY 1,2
     `);
     const series = {};
     res.toArray().forEach((r) => {
       const row = r.toJSON();
       if (!series[row.anio]) series[row.anio] = new Array(12).fill(null);
-      series[row.anio][row.mes - 1] = Number(row.fob);
+      series[row.anio][row.mes - 1] = {
+        fob: Number(row.fob),
+        items: Number(row.items),
+        despachos: Number(row.despachos),
+        importadores: Number(row.importadores),
+      };
     });
-    renderLineMulti(chartEvolucionEl, series, leyendaEvolucionEl);
+    renderBarsInteranual(chartEvolucionEl, series, leyendaEvolucionEl);
   } else {
-    let bucketExpr, orderExpr;
+    let bucketExpr;
     if (modo === "trimestral") {
       bucketExpr = `substr(PERIODO,1,4) || '-T' || CAST(((CAST(substr(PERIODO,5,2) AS INTEGER)-1)//3)+1 AS VARCHAR)`;
     } else if (modo === "anual") {
@@ -814,21 +1147,33 @@ async function actualizarEvolucion(where) {
     }
     const res = await conn.query(`
       WITH items AS (${itemsCTE(where)})
-      SELECT ${bucketExpr} AS bucket, sum(fob) AS fob
+      SELECT ${bucketExpr} AS bucket, sum(fob) AS fob, count(*) AS items,
+             approx_count_distinct(PERIODO || DESTINACION) AS despachos,
+             approx_count_distinct(importador) AS importadores
       FROM items GROUP BY bucket ORDER BY bucket
     `);
     const puntos = res.toArray().map((r) => {
       const row = r.toJSON();
-      return { label: row.bucket, value: Number(row.fob) };
+      return {
+        bucket: row.bucket,
+        label: formatEtiquetaEje(modo, row.bucket),
+        labelLarga: formatEtiquetaLarga(modo, row.bucket),
+        value: Number(row.fob),
+        fob: Number(row.fob),
+        items: Number(row.items),
+        despachos: Number(row.despachos),
+        importadores: Number(row.importadores),
+      };
     });
-    resultadoDelta = renderLineSingle(chartEvolucionEl, puntos);
+    resultadoDelta = renderLineSingle(chartEvolucionEl, puntos, modo);
   }
 
   if (modo !== "interanual" && resultadoDelta.deltaPct != null) {
     const positivo = resultadoDelta.deltaPct >= 0;
     resDeltaEl.textContent = (positivo ? "▲ +" : "▼ ") + resultadoDelta.deltaPct.toFixed(1) + "%";
     resDeltaEl.className = "valor delta " + (positivo ? "up" : "down");
-    resDeltaEtiquetaEl.textContent = `vs. ${resultadoDelta.etiquetaAnterior}`;
+    const etiquetaModo = ETIQUETAS_COMPARACION[modo] || "período anterior";
+    resDeltaEtiquetaEl.textContent = `vs. ${etiquetaModo} (${resultadoDelta.etiquetaLargaAnterior})`;
     resDeltaWrapEl.hidden = false;
   } else {
     resDeltaWrapEl.hidden = true;
@@ -836,6 +1181,7 @@ async function actualizarEvolucion(where) {
 }
 
 async function actualizarTops(where) {
+  ocultarTooltip();
   const [resImp, resNcm] = await Promise.all([
     conn.query(`WITH items AS (${itemsCTE(where)}) SELECT importador, sum(fob) AS fob FROM items GROUP BY importador ORDER BY fob DESC LIMIT 15`),
     conn.query(`WITH items AS (${itemsCTE(where)}) SELECT ncm, sum(fob) AS fob FROM items GROUP BY ncm ORDER BY fob DESC LIMIT 15`),
@@ -850,33 +1196,41 @@ async function aplicarFiltros() {
   try {
     const where = construirFiltro();
     ultimoFiltro = where;
+    sqlEl.value = `SELECT *\nFROM impo\nWHERE ${where}\nORDER BY PERIODO DESC\nLIMIT 500`;
     setStatusResultados("Consultando...");
     const t0 = performance.now();
 
     const resumen = await conn.query(`
       WITH items AS (${itemsCTE(where)})
-      SELECT count(*) AS items, count(DISTINCT PERIODO || DESTINACION) AS despachos, sum(fob) AS fob_usd FROM items
+      SELECT count(*) AS items,
+             approx_count_distinct(PERIODO || DESTINACION) AS despachos,
+             approx_count_distinct(importador) AS importadores,
+             sum(fob) AS fob_usd
+      FROM items
     `);
     const filaResumen = resumen.toArray()[0].toJSON();
 
-    const tabla = await conn.query(`SELECT * FROM impo WHERE ${where} ORDER BY PERIODO DESC LIMIT 500`);
+    const tabla = await conn.query(sqlEl.value);
     const cols = tabla.schema.fields.map((f) => f.name);
     const rows = tabla.toArray().map((r) => r.toJSON());
     renderTable(cols, rows);
+    ayudaResultadosEl.textContent = rows.length >= 500
+      ? `Se muestran las primeras 500 filas de la declaración en pantalla (cada línea es un concepto arancelario, por eso hay más filas acá que "Ítems" arriba). "Exportar CSV" descarga el resultado completo (hasta 200.000 filas).`
+      : `Se muestran las ${rows.length.toLocaleString("es-AR")} filas de la declaración que cumplen el filtro (cada línea es un concepto arancelario, por eso este número puede no coincidir con "Ítems" arriba).`;
 
     await actualizarEvolucion(where);
     await actualizarTops(where);
 
     const ms = Math.round(performance.now() - t0);
+    resImportadoresEl.textContent = Number(filaResumen.importadores ?? 0).toLocaleString("es-AR");
     resFilasEl.textContent = Number(filaResumen.items ?? 0).toLocaleString("es-AR");
     resDespachosEl.textContent = Number(filaResumen.despachos ?? 0).toLocaleString("es-AR");
     const fob = filaResumen.fob_usd;
     resFobEl.textContent = fob != null ? Number(fob).toLocaleString("es-AR", { maximumFractionDigits: 0 }) : "-";
-    resTiempoEl.textContent = ms + " ms";
     resumenEl.hidden = false;
 
     exportarBtn.disabled = false;
-    setStatusResultados(`Mostrando hasta 500 de ${Number(filaResumen.items ?? 0).toLocaleString("es-AR")} ítems.`, "ok");
+    setStatusResultados(`Filtro aplicado: tardó ${formatDuracion(ms)} en escanear los datos.`, "ok");
   } catch (err) {
     setStatusResultados(String(err.message || err), "error");
   } finally {
@@ -884,11 +1238,17 @@ async function aplicarFiltros() {
   }
 }
 
+function prepararSqlExport(sql) {
+  const sinPuntoYComa = sql.replace(/;\s*$/, "");
+  const sinLimit = sinPuntoYComa.replace(/\bLIMIT\s+\d+\s*$/i, "").trim();
+  return sinLimit + "\nLIMIT 200000";
+}
+
 async function exportarCsv() {
   exportarBtn.disabled = true;
   setStatusResultados("Generando CSV...");
   try {
-    const res = await conn.query(`SELECT * FROM impo WHERE ${ultimoFiltro} ORDER BY PERIODO LIMIT 200000`);
+    const res = await conn.query(prepararSqlExport(sqlEl.value));
     const cols = res.schema.fields.map((f) => f.name);
     const rows = res.toArray().map((r) => r.toJSON());
     const csvEscape = (v) => {
@@ -922,7 +1282,8 @@ async function ejecutarSql() {
     const cols = result.schema.fields.map((f) => f.name);
     const rows = result.toArray().map((r) => r.toJSON());
     renderTable(cols, rows);
-    setStatusResultados(`${rows.length} filas en ${ms} ms.`, "ok");
+    ayudaResultadosEl.textContent = `Resultado de tu consulta: ${rows.length.toLocaleString("es-AR")} filas. "Exportar CSV" usa este mismo SQL (sin el límite que tenga puesto).`;
+    setStatusResultados(`Consulta terminada: ${rows.length.toLocaleString("es-AR")} fila(s), tardó ${formatDuracion(ms)}.`, "ok");
   } catch (err) {
     setStatusResultados(String(err.message || err), "error");
   } finally {
@@ -931,8 +1292,8 @@ async function ejecutarSql() {
 }
 
 fileInputEl.addEventListener("change", (e) => {
-  const file = e.target.files[0];
-  if (file) cargarArchivoLocal(file);
+  const files = Array.from(e.target.files);
+  if (files.length) cargarArchivosLocales(files);
 });
 loadUrlBtn.addEventListener("click", () => cargarUrl(dataUrlEl.value.trim()));
 aplicarBtn.addEventListener("click", aplicarFiltros);
@@ -942,19 +1303,11 @@ limpiarBtn.addEventListener("click", () => {
   importadorEl.value = "";
   ncmEl.value = "";
   paisEl.value = "";
-  aduanaEl.value = "";
-  tipoDestinacionEl.value = "";
+  aduanaMultiselect.clear();
+  tipoDestinacionMultiselect.clear();
 });
 exportarBtn.addEventListener("click", exportarCsv);
 runSqlBtn.addEventListener("click", ejecutarSql);
-generarSqlBtn.addEventListener("click", () => {
-  try {
-    const where = construirFiltro();
-    sqlEl.value = `SELECT *\nFROM impo\nWHERE ${where}\nORDER BY PERIODO DESC\nLIMIT 500`;
-  } catch (err) {
-    setStatusResultados(String(err.message || err), "error");
-  }
-});
 granularidadEl.addEventListener("change", () => {
   if (fuenteLista) actualizarEvolucion(ultimoFiltro);
 });
