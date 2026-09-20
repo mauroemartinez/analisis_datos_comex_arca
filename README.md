@@ -20,6 +20,7 @@ Este repositorio está preparado para publicarse: no incluye bases mensuales, sa
 
 ```text
 .
+|-- assets/                           (capturas de pantalla usadas en este README)
 |-- Data/
 |   |-- descargar_historico_impo.py   (descarga + consolida el historico unico)
 |   |-- consultar_impo.py             (consultas rapidas por importador/NCM/SQL)
@@ -217,6 +218,15 @@ jupyter lab notebooks
 ## Explorar el dataset online o self-hosted (o desde un pendrive)
 
 `explorer/index.html` es una página estática, sin backend, que corre **DuckDB directo en el navegador** (vía DuckDB-WASM) contra `impo_historico.parquet`, con filtros (importador, NCM, país, aduana, tipo de destinación, rango de fechas), gráficos (evolución mensual/trimestral/anual/interanual, top 15 importadores, top 15 NCM) y un indicador de variación contra el período anterior. Sin caja de SQL obligatoria: los filtros arman las consultas solos (aunque queda una sección "Avanzado" con SQL libre para quien lo quiera).
+
+<p align="center">
+  <img src="assets/explorer-filtros.png" alt="Filtros del explorador con varios años cargados y tipos de destinación seleccionados" width="49%" />
+  <img src="assets/explorer-metricas-evolucion.png" alt="Tarjetas de métricas y gráfico de evolución mensual" width="49%" />
+</p>
+<p align="center">
+  <img src="assets/explorer-top15.png" alt="Gráficos de barras de top 15 importadores y top 15 posiciones NCM" width="49%" />
+  <img src="assets/explorer-resultados-sql.png" alt="Tabla de resultados y consulta SQL autogenerada" width="49%" />
+</p>
 
 Dos formas de usarla, sin escribir nada de código:
 

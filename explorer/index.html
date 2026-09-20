@@ -299,12 +299,9 @@
     font-weight: 800;
     font-size: 1.5rem !important;
     display: inline-block;
-    padding: 2px 12px;
-    border-radius: 999px;
   }
-  .delta.up { color: var(--delta-up); background: var(--up-bg); }
-  .delta.down { color: var(--delta-down); background: var(--down-bg); }
-  #resDeltaWrap { background: none; border: none; box-shadow: none; padding: 14px 0; }
+  .delta.up { color: var(--delta-up); }
+  .delta.down { color: var(--delta-down); }
   .table-wrap { overflow: auto; border: 1px solid var(--border); border-radius: 8px; max-height: 440px; background: var(--bg); box-shadow: var(--shadow-sm); }
   .table-wrap::-webkit-scrollbar { width: 10px; height: 10px; }
   .table-wrap::-webkit-scrollbar-track { background: var(--bg); }
@@ -512,11 +509,16 @@
   <section>
     <div class="chart-head">
       <h2 style="margin:0">Resultados</h2>
-      <button id="exportarCsv" class="secundario" disabled>Exportar CSV</button>
+      <div class="botones" style="margin:0">
+        <button id="resumirMensual" class="secundario" disabled>Resumir por mes</button>
+        <button id="exportarCsv" class="secundario" disabled>Exportar CSV</button>
+      </div>
     </div>
     <p class="ayuda-chica" id="ayudaResultados">
       Se muestran hasta 500 filas en pantalla. "Exportar CSV" descarga el
       resultado completo (hasta 200.000 filas) de la consulta actual.
+      "Resumir por mes" agrupa el filtro actual por mes (ordenado por FOB) en
+      vez de mostrar declaración por declaración.
     </p>
     <div class="table-wrap">
       <table id="result"><thead></thead><tbody></tbody></table>
@@ -738,6 +740,7 @@ const loadUrlBtn = document.getElementById("loadUrl");
 const aplicarBtn = document.getElementById("aplicar");
 const limpiarBtn = document.getElementById("limpiar");
 const exportarBtn = document.getElementById("exportarCsv");
+const resumirMensualBtn = document.getElementById("resumirMensual");
 const runSqlBtn = document.getElementById("runSql");
 const sqlEl = document.getElementById("sql");
 const ayudaResultadosEl = document.getElementById("ayudaResultados");
@@ -827,6 +830,7 @@ function fuenteConectada() {
   fuenteLista = true;
   aplicarBtn.disabled = false;
   exportarBtn.disabled = false;
+  resumirMensualBtn.disabled = false;
 }
 
 // Chrome (y el resto de los navegadores basados en Chromium) no puede volcar
@@ -1248,6 +1252,36 @@ async function exportarCsv() {
   }
 }
 
+async function resumirPorMes() {
+  if (!fuenteLista) return;
+  resumirMensualBtn.disabled = true;
+  try {
+    setStatusResultados("Resumiendo por mes...");
+    const t0 = performance.now();
+    const sql = `WITH items AS (${itemsCTE(ultimoFiltro)})
+SELECT substr(PERIODO,1,4) || '-' || substr(PERIODO,5,2) AS mes,
+       round(sum(fob)) AS fob_usd,
+       approx_count_distinct(importador) AS importadores,
+       approx_count_distinct(PERIODO || DESTINACION) AS despachos,
+       count(*) AS items
+FROM items
+GROUP BY mes
+ORDER BY fob_usd DESC`;
+    sqlEl.value = sql;
+    const result = await conn.query(sql);
+    const ms = Math.round(performance.now() - t0);
+    const cols = result.schema.fields.map((f) => f.name);
+    const rows = result.toArray().map((r) => r.toJSON());
+    renderTable(cols, rows);
+    ayudaResultadosEl.textContent = `Resumen mensual del filtro actual, ordenado por FOB: ${rows.length.toLocaleString("es-AR")} mes(es). "Exportar CSV" usa este mismo SQL.`;
+    setStatusResultados(`Resumen mensual listo: tardó ${formatDuracion(ms)}.`, "ok");
+  } catch (err) {
+    setStatusResultados(String(err.message || err), "error");
+  } finally {
+    resumirMensualBtn.disabled = false;
+  }
+}
+
 async function ejecutarSql() {
   if (!fuenteLista) return;
   runSqlBtn.disabled = true;
@@ -1284,6 +1318,7 @@ limpiarBtn.addEventListener("click", () => {
   tipoDestinacionMultiselect.clear();
 });
 exportarBtn.addEventListener("click", exportarCsv);
+resumirMensualBtn.addEventListener("click", resumirPorMes);
 runSqlBtn.addEventListener("click", ejecutarSql);
 granularidadEl.addEventListener("change", () => {
   if (fuenteLista) actualizarEvolucion(ultimoFiltro);

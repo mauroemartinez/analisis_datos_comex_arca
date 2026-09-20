@@ -21,6 +21,7 @@ intermediate that gets deleted once it is folded into that file.
 - `docs/EXPLORACION_ONLINE.md`: architecture decision for online/self-hosted exploration.
 - `.claude/skills/actualizar-historico-arca/SKILL.md`: runbook for keeping the historico up to date; tracked in Git as the one exception to the general `.claude/` ignore.
 - `exports/`: personal scratch/workspace folder for local files and exports. Fully gitignored except `exports/README.md`, which documents its purpose. Scripts never read or write here automatically.
+- `assets/`: screenshots referenced from `README.md` (and other docs). Tracked in Git; keep it to illustrative images only, never real commercial data.
 
 There is no formal `tests/` directory yet.
 
