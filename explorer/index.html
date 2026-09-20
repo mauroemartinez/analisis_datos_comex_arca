@@ -232,8 +232,7 @@
     font-weight: 400;
     cursor: pointer;
   }
-  .multiselect-toggle:hover:not(:disabled) { filter: brightness(1.03); }
-  .multiselect-toggle:disabled { opacity: 0.55; cursor: default; }
+  .multiselect-toggle:hover { filter: brightness(1.03); }
   .multiselect-panel {
     position: absolute;
     z-index: 40;
@@ -583,6 +582,13 @@ temaToggleEl.addEventListener("click", () => {
 
 const PAISES = {"101": "BURKINA FASO", "102": "ARGELIA", "103": "BOTSWANA", "104": "BURUNDI", "105": "CAMERUN", "107": "REP. CENTROAFRICANA", "108": "CONGO", "109": "REP DEM CONGO EXZAIR", "110": "COSTA DE MARFIL", "111": "CHAD", "112": "BENIN", "113": "EGIPTO", "115": "GABON", "116": "GAMBIA", "117": "GHANA", "118": "GUINEA", "119": "GUINEA ECUATORIAL", "120": "KENYA", "121": "LESOTHO", "122": "LIBERIA", "123": "LIBIA", "124": "MADAGASCAR", "125": "MALAWI", "126": "MALI", "127": "MARRUECOS", "128": "MAURICIO,ISLAS", "129": "MAURITANIA", "130": "NIGER", "131": "NIGERIA", "132": "ZIMBABWE", "133": "RWANDA", "134": "SENEGAL", "135": "SIERRA LEONA", "136": "SOMALIA", "137": "SWAZILANDIA", "138": "SUDAN", "139": "TANZANIA", "140": "TOGO", "141": "TUNEZ", "142": "UGANDA", "144": "ZAMBIA", "145": "T V REINO UNIDO AFR.", "146": "T VINC A ESPANA AFR.", "147": "T VINC A FRANCIA,AFR", "149": "ANGOLA", "150": "CABO VERDE,ISLAS", "151": "MOZAMBIQUE", "152": "SEYCHELLES", "153": "DJIBOUTI", "155": "COMORAS", "156": "GUINEA BISSAU", "157": "STO.TOME Y PRINCIPE", "158": "NAMIBIA", "159": "SUDAFRICA", "160": "ERITREA", "161": "ETIOPIA", "198": "INDET.(AFRICA)", "200": "ARGENTINA", "201": "BARBADOS", "202": "BOLIVIA", "203": "BRASIL", "204": "CANADA", "205": "COLOMBIA", "206": "COSTA RICA", "207": "CUBA", "208": "CHILE", "209": "DOMINICANA,REP.", "210": "ECUADOR", "211": "EL SALVADOR", "212": "ESTADOS UNIDOS", "213": "GUATEMALA", "214": "GUYANA", "215": "HAITI", "216": "HONDURAS", "217": "JAMAICA", "218": "MEXICO", "219": "NICARAGUA", "220": "PANAMA", "221": "PARAGUAY", "222": "PERU", "223": "PUERTO RICO(EST ASOC", "224": "TRINIDAD Y TOBAGO", "225": "URUGUAY", "226": "VENEZUELA", "227": "T V A REINO UNIDO AM", "228": "T V A DINAMARCA AMER", "229": "T V A FRANCIA, AMER", "231": "T VINC A USA, AMERIC", "232": "SURINAME", "233": "DOMINICA", "234": "SANTA LUCIA", "235": "S.VICENTE Y LAS GRAN", "236": "BELICE", "237": "ANTIGUA Y BARBUDA", "238": "S.CRISTOBAL Y NEVIS", "239": "BAHAMAS", "240": "GRENADA", "241": "ANT HOLADESAS T PA B", "242": "ARUBA", "250": "TIERRA DEL FUEGO AAE", "251": "ZF LA PLATA (BS AS)", "252": "ZF.JUSTO DARACT S LU", "253": "ZF RIO GALLEGOS S CR", "254": "ISLAS MALVINAS", "255": "Z.F.TUCUMAN", "256": "Z.F.CORDOBA", "257": "Z.F.MENDOZA", "258": "ZF GRAL PICO L PAMPA", "259": "Z.F.COMODO.RIVADAVIA", "260": "ZF IQUIQUE (CHILE)", "261": "ZF PUNTA ARENAS (CHI", "262": "Z.F.SALTA", "263": "Z.F.PASO D/L LIBRES", "264": "Z.F. PUERTO IGUAZU", "270": "ZF COLON (PANAMA)", "271": "Z.F.STA CRUZ SIERRA", "280": "ZF COLONIA (URUGUAY)", "281": "ZF FLORIDA (URUGUAY)", "282": "ZF LIBERTAD (URUGUAY", "283": "ZFZONAMERICA.EXMONTV", "284": "ZF NVA HELVECIA (URU", "285": "ZF NVA PALMIRA (URUG", "286": "ZF RIO NEGRO URUGUAY", "287": "ZF RIVERA (URUGUAY)", "288": "ZF SAN JOSE (URUGUAY", "291": "ZF MANAOS (BRASIL)", "295": "MAR TER ARG/ZONA E E", "296": "RIOS NAC ARG NAV INT", "298": "INDET.(AMERICA)", "301": "AFGANISTAN", "302": "ARABIA SAUDITA", "303": "BAHREIN", "304": "MYANMAR(EX-BIRMANIA)", "305": "BUTAN", "306": "CAMBODYA(EX-KAMPUCHE", "307": "SRI LANKA", "308": "COREA DEMOCRATICA", "309": "COREA REPUBLICANA", "310": "CHINA", "312": "FILIPINAS", "313": "TAIWAN", "315": "INDIA", "316": "INDONESIA", "317": "IRAQ", "318": "IRAN", "319": "ISRAEL", "320": "JAPON", "321": "JORDANIA", "322": "QATAR", "323": "KUWAIT", "324": "LAO", "325": "LIBANO", "326": "MALASIA", "327": "MALDIVES,ISLAS", "328": "OMAN", "329": "MONGOLIA", "330": "NEPAL", "331": "EMIRATOS ARABES,UNID", "332": "PAKISTAN", "333": "SINGAPUR", "334": "SIRIA", "335": "THAILANDIA", "337": "VIETNAM", "341": "HONG KONG R A E CHIN", "344": "MACAO (R A E CHINA)", "345": "BANGLADESH", "346": "BRUNEI", "348": "REP. DE YEMEN", "349": "ARMENIA", "350": "AZERBAIJAN", "351": "GEORGIA", "352": "KAZAJSTAN", "353": "KIRGUIZISTAN", "354": "TAYIKISTAN", "355": "TURKMENISTAN", "356": "UZBEKISTAN", "357": "T AU PALEST GAZA JER", "358": "TIMOR ORIENTAL", "398": "INDET.(ASIA)", "401": "ALBANIA", "404": "ANDORRA", "405": "AUSTRIA", "406": "BELGICA", "407": "BULGARIA", "409": "DINAMARCA", "410": "ESPAÑA", "411": "FINLANDIA", "412": "FRANCIA", "413": "GRECIA", "414": "HUNGRIA", "415": "IRLANDA", "416": "ISLANDIA", "417": "ITALIA", "418": "LIECHTENSTEIN", "419": "LUXEMBURGO", "420": "MALTA", "421": "MONACO", "422": "NORUEGA", "423": "PAISES BAJOS", "424": "POLONIA", "425": "PORTUGAL", "426": "REINO UNIDO", "427": "RUMANIA", "428": "SAN MARINO", "429": "SUECIA", "430": "SUIZA", "431": "SANTA SEDE(VATICANO)", "433": "T V A REINO UNIDO EU", "435": "CHIPRE", "436": "TURQUIA", "438": "REP. FED DE ALEMANIA", "439": "BIELORRUSIA", "440": "ESTONIA", "441": "LETONIA", "442": "LITUANIA", "443": "MOLDAVIA", "444": "RUSIA", "445": "UCRANIA", "446": "BOSNIA HERZEGOVINA", "447": "CROACIA", "448": "ESLOVAQUIA", "449": "ESLOVENIA", "450": "MACEDONIA", "451": "REP. CHECA", "452": "FED SER Y MONT YUGOE", "498": "INDET.(EUROPA)", "501": "AUSTRALIA", "503": "NAURU", "504": "NUEVA ZELANDIA", "505": "VANATU", "506": "SAMOA OCCIDENTAL", "507": "T V A AUSTRALIA OCEA", "508": "T V A REINO UNIDO OC", "509": "T V A FRANCIA (OCEAN", "510": "T V A NVA ZELANDA OC", "511": "T V A USA (OCEANIA)", "512": "FIJI, ISLAS", "513": "PAPUA NUEVA GUINEA", "514": "KIRIBATI, ISLAS", "515": "MICRONESIA,EST.FEDER", "516": "PALAU", "517": "TUVALU", "518": "SALOMON,ISLAS", "519": "TONGA", "520": "MARSHALL,ISLAS", "521": "MARIANAS,ISLAS", "598": "INDET.(OCEANIA)", "998": "INDET.(CONTINENTE)"};
 const ADUANAS = {"001": "BS.AS.(CAPITAL)", "003": "BAHIA BLANCA", "004": "BARILOCHE", "008": "CAMPANA", "010": "BARRANQUERAS", "012": "CLORINDA", "013": "COLON", "014": "COMODORO RIVADAVIA", "015": "CONCEPCION DEL URUGU", "016": "CONCORDIA", "017": "CORDOBA", "018": "CORRIENTES", "019": "PUERTO DESEADO", "020": "DIAMANTE", "023": "ESQUEL", "024": "FORMOSA", "025": "GOYA", "026": "GUALEGUAYCHU", "029": "IGUAZU", "031": "JUJUY", "033": "LA PLATA", "034": "LA QUIACA", "037": "MAR DEL PLATA", "038": "MENDOZA", "040": "NECOCHEA", "041": "PARANA", "042": "PASO DE LOS LIBRES", "045": "POCITOS", "046": "POSADAS", "047": "PUERTO MADRYN", "048": "RIO GALLEGOS", "049": "RIO GRANDE", "052": "ROSARIO", "053": "SALTA", "054": "SAN JAVIER", "055": "SAN JUAN", "057": "SAN LORENZO", "058": "S.MARTIN DE LOS ANDE", "059": "SAN NICOLAS", "060": "SAN PEDRO", "061": "SANTA CRUZ", "062": "SANTA FE", "066": "TINOGASTA", "067": "USHUAIA", "069": "VILLA CONSTITUCION", "073": "EZEIZA", "074": "TUCUMAN", "075": "NEUQUEN", "076": "ORAN", "078": "SAN RAFAEL", "079": "LA RIOJA", "080": "SAN ANTONIO OESTE", "082": "BERNARDO DE YRIGOYEN", "083": "SAN LUIS", "084": "SANTO TOME", "085": "VILLA REGINA", "086": "OBERA"};
+// No es un código oficial de "Códigos María" como los de arriba: es la
+// lista de valores de substr(DESTINACION,6,4) que aparecen en todo
+// impo_historico.parquet (relevada localmente el 2026-09-20, 683M filas,
+// 2018-2026). Se deja fija para que el filtro esté disponible de entrada
+// sin escanear el archivo cargado; si ARCA emite un código nuevo en el
+// futuro va a faltar acá hasta que se actualice esta lista a mano.
+const TIPOS_DESTINACION = ["ECA1", "ECA2", "ECA3", "ECA4", "IC01", "IC02", "IC03", "IC04", "IC05", "IC06", "IC65", "IC81", "IC82", "IC83", "IC84", "IC99", "ICR1", "ICR2", "ICR3", "ICR4", "ICR5", "IG01", "IG03", "IG04", "IG05", "IG06", "IG07", "IG81", "IG82", "IG83", "IG84", "IS06", "IS11", "IS21", "PI83", "PZF1", "ZFE1", "ZFE3", "ZFE5", "ZFE7", "ZFER", "ZFET", "ZFS1"];
 const MEDIOS_TRANSPORTE = {"1": "Propios medios", "2": "Avión", "3": "Ferrocarril", "4": "Camión", "5": "Arreo", "6": "Jangada", "7": "Oleoducto / gasoducto", "8": "Acuático", "9": "Conductor eléctrico", "A": "Vía postal"};
 const UNIDADES = {"01": "KILOGRAMO", "02": "METROS", "03": "METRO CUADRADO", "04": "METRO CUBICO", "05": "LITROS", "06": "1000 KILOWATT HORA", "07": "UNIDAD", "08": "PAR", "09": "DOCENA", "10": "QUILATE", "11": "MILLAR", "14": "GRAMO", "15": "MILIMETRO", "16": "MMCUBICO", "17": "KILOMETRO", "18": "HECTOLITRO", "20": "CENTIMETRO", "25": "JGO.PQT.MAZO NAIPES", "27": "CMCUBICO", "29": "TONELADA", "30": "DAMCUBICO", "31": "HMCUBICO", "32": "KMCUBICO", "33": "MICROGRAMO", "34": "NANOGRAMO", "35": "PICOGRAMO", "41": "MILIGRAMO", "47": "MILILITRO", "48": "CURIE", "49": "MILICURIE", "50": "MICROCURIE", "51": "UIACTHOR", "52": "MUIACTHOR", "53": "KGBASE", "54": "GRUESA", "61": "KG.BRUTO", "62": "UIACTANT", "63": "MUIACTANT", "64": "UIACTIG", "65": "MUIACTIG", "66": "KGACTIVO", "67": "GRACTIVO", "68": "GRAMO BASE"};
 const TRIBUTOS = {"010": "DERECHOS IMPORTACION", "011": "TASA DE ESTADISTICA", "012": "DER. ANTI-DUMPING 1", "013": "DERECHO COMPENSATOR.", "014": "IMPUESTO EQUIP.PREC.", "015": "DERECHO ESPECIFICO", "016": "DER. IMP.ADICIONAL", "017": "DER. ANTI-DUMPING 2", "018": "DER.IMP.AJ.EQ.PRE.1", "019": "DERECHO COMPENST.(2)", "020": "DERECHOS EXPORTACION", "021": "Dchos. Export INT.", "026": "DER.EXP.ADICIONAL", "031": "TASA DE COMPROBACION", "032": "TASA LEY 24196", "033": "MULTA ARR.FUERA TER.", "034": "DIEM-SALVAG", "040": "FDO.GRAT.LEY 23993.", "041": "MULTA DEST.FUERA TER", "043": "VARIOS", "044": "FDO.JER.LEY 23993.", "045": "MULTAS NO AUTOMATICS", "046": "MULTA NO TOMAR CONT.", "047": "MULTA FALTA DOC.COMP", "048": "MULTA TRANS.ART.320", "049": "DTO.258 PROD.EF.FIS.", "050": "D.A-DUMP 1 MERCOSUR", "051": "D.A-DUMP 2 MERCOSUR", "052": "I.EQUIP.PRECIOS MERC", "053": "D.I.AJ.EQ.PR.MERC.1", "054": "DER.IMP.AJ.EQ.PRE.2", "055": "D.I.AJ.EQ.PR.2.MERC", "056": "D.I. USADOS R.909/94", "057": "D.I. USADOS R. 12/98", "058": "D.ANTIDUM.AD-VALOR", "059": "Der.Especif.OMC", "060": "DER.ESP. CALZADO", "061": "TASA ESTAD MONT MAX", "062": "TASA ESTAD MONT MAX2", "063": "Multa falta doc.com.", "064": "Multa Dest.Fuera Ter", "065": "DIEM-CHINA", "066": "TASA REDUCIDA", "067": "COMERC.MERC.-L.25986", "210": "Der.Import.AAE", "217": "Imp.Internos AAE", "285": "Valor en Ad.AAE", "414": "INTER.RESARCITORIOS", "415": "I.V.A.", "416": "I.V.A. INTERESES", "417": "IMPUESTOS INTERNOS", "418": "IMP.TRANSF.GASOIL", "419": "IMP.INT.CIGARRILLOS", "420": "IVA DEV.REINT.REE", "421": "IMP.COMBUST.LIQUIDOS", "422": "IVA ADICIONAL INSCR.", "423": "IVA ADIC. NO INSCR.", "424": "IMP. A LAS GANANCIAS", "425": "IVA DEV. REINT. REEM", "426": "INFRAESTRUC.HIDRICA", "427": "IMP.INT.L24699 ART.3", "428": "I.COMB.LIQ.L24699 2", "429": "ING.BRUTOS BS.AS.", "433": "IVA AD NOINS NOCVDI", "434": "IMP.INT.Dec.290/00", "435": "L.COMB.LIQ.ADVALOREN", "436": "LCOMB.LIQ.L24699ADVA", "437": "IMP.INT.CIGARR.MAX.", "438": "IMP.INT.CIGARR.MIN.", "440": "AFIP L 23993 art.2 C", "441": "Gendarmeria Nac. 2 C", "442": "Prefectura N Arg.2 C", "443": "Policia Fed.Arg.2 C", "444": "POL,AERONAUTICA NAC.", "445": "GEO FSEG.DTO. 258/99", "450": "CIUD. AUT. DE BS.AS", "451": "PROV.DE CATAMARCA", "452": "PROV.DE CORDOBA", "453": "PROV.DE CORRIENTES", "454": "PROV.DEL CHACO", "455": "PROV.DEL CHUBT", "456": "PROV.DE ENTRE RIOS", "457": "PROV.DE FORMOSA", "458": "PROV. DE JUJUY", "459": "PROV.DE LA PAMPA", "460": "PROV. DE LA RIOJA", "461": "PROV. DE MENDOZA", "462": "PROV. DE MISIONES", "463": "PROV. DE NEUQUEN", "464": "PROV.DE RIO NEGRO", "465": "PROV. DE SALTA", "466": "PROV.DE SAN JUAN", "467": "PROV.DE SAN LUIS", "468": "PROV.DE STA. CRUZ", "469": "PROV. DE SANTA FE", "470": "PROV.STGO.DEL ESTERO", "471": "PRO.TIERRA DEL FUEGO", "472": "PROV. DE TUCUMAN", "500": "ARANCEL SIM IMPO", "501": "ARANCEL SIM EXPO", "502": "FACT-CONVERGENCIA(I)", "503": "FACT-CONVERGENCIA(E)", "504": "FC.AREA.AD.ESP.(E)", "505": "DEVOLUCION F.C.(E)", "506": "DEVOLUCION F.C.(I)", "600": "DIFERENCIA REINT/FC", "601": "REINTEGRO % FIJO", "603": "REINT.PROM.MINERA", "604": "REEMBOLSOS LEY 19640", "605": "REEMBOLSOS LEY 23018", "607": "EXPODTO1139/88", "608": "P.LLAVEMANOD870/03", "611": "REINTEGRO % FIJO VA", "613": "REINT.PROM.MINERA VA", "614": "REEMBOL LEY 19640 VA", "615": "REEMBOL LEY 23018 VA", "617": "EXPODTO1139/88 VA", "618": "P.LLAVEMANOD870/03VA", "710": "DER.de IMPORT. (D)", "711": "ESTADISTICA (D)", "715": "IVA GRAL.CUOTA", "716": "IVA (D)", "717": "IMPUESTOS INTERN (D)", "722": "IVA ADIC. DIFERIDO", "723": "IVA ADIC.NO INSC.(D)", "724": "IMP. GCIAS. DIFERIDO", "756": "D.I.USAD. R909/94(D)", "757": "D.I.USAD. R.12/98(D)", "761": "TASA EST.MONT.MAX(D)", "762": "TASA EST.MON.MAX2(D)", "772": "IVA AD INSCRIPTO (X)", "773": "IVA AD NO INSC.(X)", "774": "IMP.GANANCIAS (X)", "775": "IVAAD.NOINS NOCVDI(X", "780": "TOTALIZADOR", "785": "Diferen.Modulo Valor", "786": "DIF.MOD.VALOR-MERCO.", "788": "DIF.VALORES CRITERIO", "802": "FACT-CONVER.IMPO(G)", "803": "FACT-CONV.AREA A.ESP", "819": "IMP.INT.CIGARR.(G.)", "820": "DER.SALV.INTR(GTIA)", "821": "IVA.SALV.INTR(GTIA)", "822": "IVA AD.SV.INTR(GTIA)", "823": "GCIAS.SAL.INTR(GTIA)", "824": "I.INT.SAL.INTR(GTIA)", "845": "Valor Art 453 h)i)CA", "849": "DEVOL.BENEFICIOS(G.)", "850": "FALTA TIT.TRANSPORTE", "851": "ESTADISTICA (GTIA)", "852": "I.V.A. (GTIA)", "853": "IMP.INTERNOS (GTIA)", "854": "IVA ADIC.INSCR(GTIA)", "855": "IVA ADIC.NO INSC(GT)", "856": "IMP.GANANCIAS(GTIA)", "857": "DER.ANTI-DUMP 1 GTIA", "858": "DER.ANTI-DUMP 2 GTIA", "859": "IMP.INT. A-DUMP 1(G)", "860": "IVA ANTIDUMPING GTIA", "861": "IVA ADI.R.I.DUMP.GT.", "862": "IVA ADI.R.N.I.DUM.GT", "863": "IMP.GCIAS.DUMP.GTIAS", "864": "D.A-DUMP1 MERCO.GTIA", "865": "D.A-DUMP2 MERCO.GTIA", "866": "DER.IMPORTACION (G)", "867": "DER.COMPENSATOR.(G)", "868": "I.EQ.DE PRECIOS (G)", "869": "DER.ESPECIFICO (G)", "870": "DER.IMP.ADICIONAL(G)", "871": "DER.EXPORTACION (G)", "872": "TASA COM.DESTINO (G)", "873": "I.V.A. INTERESES (G)", "874": "IMP.COMB.LIQUID. (G)", "882": "MULTA RES 763/305", "883": "MULTA F. CERT. INSP.", "884": "D.I. USAD.R.12/98(G)", "885": "VALOR EN ADUANA", "886": "D.I. USAD.G.R.909/94", "887": "I.INT.L 24699 A.3(G)", "889": "I.C.LIQ.L24699 2 (G)", "891": "DIEM-CHINA (G)", "892": "DIEM IVA (G)", "893": "DIEM IVAAD (G)", "894": "DIEM IMP GCIAS (G)", "895": "DIF DIEM OMC (G)", "896": "DIF DIEM CHINA (G)", "897": "DIF DIEM DI (G)", "900": "INGRESOS BRUTOS", "901": "PLAN DE FACILIDADES"};
@@ -677,14 +683,10 @@ function crearMultiSelect(rootId, opciones, placeholder) {
   const toggleBtn = root.querySelector(".multiselect-toggle");
   const panel = root.querySelector(".multiselect-panel");
   const chipsEl = root.querySelector(".multiselect-chips");
-  let opts = opciones;
-  let seleccion = new Set();
+  const opts = opciones;
+  const seleccion = new Set();
 
   function render() {
-    if (!opts.length) {
-      panel.innerHTML = `<p style="margin:2px 4px; font-size:0.78rem; color:var(--muted);">Sin opciones para elegir todavía.</p>`;
-      return;
-    }
     panel.innerHTML = opts.map((o) => `
       <label class="multiselect-opt">
         <input type="checkbox" value="${escXml(o.value)}" ${seleccion.has(o.value) ? "checked" : ""} />
@@ -716,7 +718,7 @@ function crearMultiSelect(rootId, opciones, placeholder) {
     });
   }
 
-  toggleBtn.addEventListener("click", () => { if (!toggleBtn.disabled) panel.hidden = !panel.hidden; });
+  toggleBtn.addEventListener("click", () => { panel.hidden = !panel.hidden; });
   document.addEventListener("click", (e) => { if (!root.contains(e.target)) panel.hidden = true; });
 
   render();
@@ -725,21 +727,6 @@ function crearMultiSelect(rootId, opciones, placeholder) {
   return {
     getValues: () => Array.from(seleccion),
     clear: () => { seleccion.clear(); render(); actualizar(); },
-    setOptions: (nuevas) => {
-      opts = nuevas;
-      seleccion = new Set(Array.from(seleccion).filter((v) => nuevas.some((o) => o.value === v)));
-      render();
-      actualizar();
-    },
-    setDisabled: (disabled, label) => {
-      toggleBtn.disabled = disabled;
-      if (disabled) {
-        panel.hidden = true;
-        toggleBtn.textContent = label || "Cargá datos primero";
-      } else {
-        actualizar();
-      }
-    },
   };
 }
 
@@ -814,8 +801,11 @@ const aduanaMultiselect = crearMultiSelect(
   Object.entries(ADUANAS).sort((a, b) => a[1].localeCompare(b[1])).map(([cod, nombre]) => ({ value: cod, label: nombre })),
   "Todas"
 );
-const tipoDestinacionMultiselect = crearMultiSelect("tipoDestinacionMultiselect", [], "Todos");
-tipoDestinacionMultiselect.setDisabled(true);
+const tipoDestinacionMultiselect = crearMultiSelect(
+  "tipoDestinacionMultiselect",
+  [...TIPOS_DESTINACION].sort().map((t) => ({ value: t, label: t })),
+  "Todos"
+);
 
 let db, conn, fuenteLista = false, ultimoFiltro = "1=1";
 
@@ -833,40 +823,10 @@ async function initDb() {
   conn = await db.connect();
 }
 
-async function poblarTiposDestinacion() {
-  // Sin filtro de período esto escanea el archivo entero (cientos de millones
-  // de filas): nos quedamos con el último año para que sea rápido y no
-  // bloquee la conexión mientras el usuario aplica sus propios filtros.
-  const maxRes = await conn.query(`SELECT max(PERIODO) AS maxp FROM impo`);
-  const maxPeriodo = maxRes.toArray()[0]?.toJSON().maxp;
-  const where = maxPeriodo ? `PERIODO >= '${esc(String(Number(maxPeriodo) - 100))}'` : "1=1";
-  const res = await conn.query(`
-    SELECT substr(DESTINACION, 6, 4) AS tipo, count(*) AS n
-    FROM impo
-    WHERE ${where}
-    GROUP BY tipo
-    HAVING tipo IS NOT NULL AND tipo != ''
-    ORDER BY n DESC
-    LIMIT 40
-  `);
-  tipoDestinacionMultiselect.setOptions(res.toArray().map((r) => {
-    const row = r.toJSON();
-    return { value: row.tipo, label: row.tipo };
-  }));
-  tipoDestinacionMultiselect.setDisabled(false);
-}
-
-async function fuenteConectada() {
+function fuenteConectada() {
   fuenteLista = true;
   aplicarBtn.disabled = false;
   exportarBtn.disabled = false;
-  try {
-    await poblarTiposDestinacion();
-  } catch (err) {
-    // no bloquea el resto de la pagina si esto falla
-    console.warn("No se pudieron poblar los tipos de destinación:", err);
-    tipoDestinacionMultiselect.setDisabled(true, "No disponible");
-  }
 }
 
 // Chrome (y el resto de los navegadores basados en Chromium) no puede volcar
@@ -896,7 +856,7 @@ async function cargarArchivosLocales(files) {
     const nombres = files.map((f) => `'${esc(f.name)}'`).join(", ");
     await conn.query(`CREATE OR REPLACE VIEW impo AS SELECT * FROM read_parquet([${nombres}])`);
     setStatus(`Listo: ${files.length} archivo(s) cargado(s). Aplicá filtros o corré SQL (con varios años cargados puede tardar unos minutos: es muchísima información).`, "ok");
-    await fuenteConectada();
+    fuenteConectada();
   } catch (err) {
     setStatus("No se pudo leer el archivo: " + (err.message || err), "error");
   }
@@ -909,7 +869,7 @@ async function cargarUrl(url) {
   try {
     await conn.query(`CREATE OR REPLACE VIEW impo AS SELECT * FROM read_parquet('${esc(url)}')`);
     setStatus("Listo: fuente remota conectada. Aplicá filtros o corré SQL.", "ok");
-    await fuenteConectada();
+    fuenteConectada();
   } catch (err) {
     setStatus("No se pudo conectar: " + (err.message || err), "error");
   }
