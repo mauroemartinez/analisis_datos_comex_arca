@@ -199,8 +199,12 @@
     box-shadow: var(--shadow-btn);
     transition: transform 0.06s ease, box-shadow 0.06s ease, filter 0.15s ease;
   }
-  button:hover:not(:disabled) { filter: brightness(1.06); }
-  button:active:not(:disabled) { transform: translateY(2px); box-shadow: var(--shadow-btn-active); }
+  button:hover:not(:disabled) {
+    filter: brightness(1.1);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-btn), 0 6px 14px rgba(0, 0, 0, 0.18);
+  }
+  button:active:not(:disabled) { filter: none; transform: translateY(1px); box-shadow: var(--shadow-btn-active); }
   button.secundario {
     background: linear-gradient(180deg, var(--bg), var(--panel-2));
     color: var(--fg);
@@ -208,7 +212,11 @@
     font-weight: 600;
     box-shadow: var(--shadow-btn-sec);
   }
-  button.secundario:active:not(:disabled) { transform: translateY(2px); box-shadow: var(--shadow-btn-sec-active); }
+  button.secundario:hover:not(:disabled) {
+    border-color: var(--accent-text);
+    box-shadow: var(--shadow-btn-sec), 0 6px 14px rgba(0, 0, 0, 0.14);
+  }
+  button.secundario:active:not(:disabled) { filter: none; transform: translateY(1px); box-shadow: var(--shadow-btn-sec-active); }
   button:disabled { opacity: 0.45; cursor: default; transform: none; box-shadow: none; }
   select.chip {
     width: auto;
@@ -510,15 +518,18 @@
     <div class="chart-head">
       <h2 style="margin:0">Resultados</h2>
       <div class="botones" style="margin:0">
-        <button id="resumirMensual" class="secundario" disabled>Resumir por mes</button>
+        <button id="resumirMensual" class="secundario" disabled>Por mes</button>
+        <button id="resumirImportador" class="secundario" disabled>Por importador</button>
+        <button id="resumirAnioImportador" class="secundario" disabled>Por año e importador</button>
         <button id="exportarCsv" class="secundario" disabled>Exportar CSV</button>
       </div>
     </div>
     <p class="ayuda-chica" id="ayudaResultados">
       Se muestran hasta 500 filas en pantalla. "Exportar CSV" descarga el
-      resultado completo (hasta 200.000 filas) de la consulta actual.
-      "Resumir por mes" agrupa el filtro actual por mes (ordenado por FOB) en
-      vez de mostrar declaración por declaración.
+      resultado completo (hasta 200.000 filas) de la consulta actual. Los
+      botones "Por mes" / "Por importador" / "Por año e importador" agrupan
+      el filtro actual en vez de mostrar declaración por declaración: por
+      mes ordenado por fecha, los otros dos ordenados por FOB.
     </p>
     <div class="table-wrap">
       <table id="result"><thead></thead><tbody></tbody></table>
@@ -741,6 +752,8 @@ const aplicarBtn = document.getElementById("aplicar");
 const limpiarBtn = document.getElementById("limpiar");
 const exportarBtn = document.getElementById("exportarCsv");
 const resumirMensualBtn = document.getElementById("resumirMensual");
+const resumirImportadorBtn = document.getElementById("resumirImportador");
+const resumirAnioImportadorBtn = document.getElementById("resumirAnioImportador");
 const runSqlBtn = document.getElementById("runSql");
 const sqlEl = document.getElementById("sql");
 const ayudaResultadosEl = document.getElementById("ayudaResultados");
@@ -831,6 +844,8 @@ function fuenteConectada() {
   aplicarBtn.disabled = false;
   exportarBtn.disabled = false;
   resumirMensualBtn.disabled = false;
+  resumirImportadorBtn.disabled = false;
+  resumirAnioImportadorBtn.disabled = false;
 }
 
 // Chrome (y el resto de los navegadores basados en Chromium) no puede volcar
@@ -1252,13 +1267,8 @@ async function exportarCsv() {
   }
 }
 
-async function resumirPorMes() {
-  if (!fuenteLista) return;
-  resumirMensualBtn.disabled = true;
-  try {
-    setStatusResultados("Resumiendo por mes...");
-    const t0 = performance.now();
-    const sql = `WITH items AS (${itemsCTE(ultimoFiltro)})
+function sqlResumenMensual() {
+  return `WITH items AS (${itemsCTE(ultimoFiltro)})
 SELECT substr(PERIODO,1,4) || '-' || substr(PERIODO,5,2) AS mes,
        round(sum(fob)) AS fob_usd,
        approx_count_distinct(importador) AS importadores,
@@ -1266,19 +1276,52 @@ SELECT substr(PERIODO,1,4) || '-' || substr(PERIODO,5,2) AS mes,
        count(*) AS items
 FROM items
 GROUP BY mes
-ORDER BY fob_usd DESC`;
+ORDER BY mes`;
+}
+
+function sqlResumenImportador() {
+  return `WITH items AS (${itemsCTE(ultimoFiltro)})
+SELECT importador,
+       round(sum(fob)) AS fob_usd,
+       approx_count_distinct(PERIODO || DESTINACION) AS despachos,
+       count(*) AS items
+FROM items
+GROUP BY importador
+ORDER BY fob_usd DESC
+LIMIT 500`;
+}
+
+function sqlResumenAnioImportador() {
+  return `WITH items AS (${itemsCTE(ultimoFiltro)})
+SELECT substr(PERIODO,1,4) AS anio,
+       importador,
+       round(sum(fob)) AS fob_usd,
+       approx_count_distinct(PERIODO || DESTINACION) AS despachos,
+       count(*) AS items
+FROM items
+GROUP BY anio, importador
+ORDER BY fob_usd DESC
+LIMIT 500`;
+}
+
+async function ejecutarResumen(btn, sql, describir) {
+  if (!fuenteLista) return;
+  btn.disabled = true;
+  try {
+    setStatusResultados("Resumiendo...");
+    const t0 = performance.now();
     sqlEl.value = sql;
     const result = await conn.query(sql);
     const ms = Math.round(performance.now() - t0);
     const cols = result.schema.fields.map((f) => f.name);
     const rows = result.toArray().map((r) => r.toJSON());
     renderTable(cols, rows);
-    ayudaResultadosEl.textContent = `Resumen mensual del filtro actual, ordenado por FOB: ${rows.length.toLocaleString("es-AR")} mes(es). "Exportar CSV" usa este mismo SQL.`;
-    setStatusResultados(`Resumen mensual listo: tardó ${formatDuracion(ms)}.`, "ok");
+    ayudaResultadosEl.textContent = `${describir(rows.length)} "Exportar CSV" usa este mismo SQL.`;
+    setStatusResultados(`Resumen listo: tardó ${formatDuracion(ms)}.`, "ok");
   } catch (err) {
     setStatusResultados(String(err.message || err), "error");
   } finally {
-    resumirMensualBtn.disabled = false;
+    btn.disabled = false;
   }
 }
 
@@ -1318,7 +1361,21 @@ limpiarBtn.addEventListener("click", () => {
   tipoDestinacionMultiselect.clear();
 });
 exportarBtn.addEventListener("click", exportarCsv);
-resumirMensualBtn.addEventListener("click", resumirPorMes);
+resumirMensualBtn.addEventListener("click", () => ejecutarResumen(
+  resumirMensualBtn,
+  sqlResumenMensual(),
+  (n) => `Resumen mensual del filtro actual, ordenado por fecha: ${n.toLocaleString("es-AR")} mes(es).`
+));
+resumirImportadorBtn.addEventListener("click", () => ejecutarResumen(
+  resumirImportadorBtn,
+  sqlResumenImportador(),
+  (n) => `Resumen por importador del filtro actual, ordenado por FOB: ${n.toLocaleString("es-AR")} importador(es) (hasta 500).`
+));
+resumirAnioImportadorBtn.addEventListener("click", () => ejecutarResumen(
+  resumirAnioImportadorBtn,
+  sqlResumenAnioImportador(),
+  (n) => `Totalizador por año e importador del filtro actual, ordenado por FOB: ${n.toLocaleString("es-AR")} fila(s) (hasta 500).`
+));
 runSqlBtn.addEventListener("click", ejecutarSql);
 granularidadEl.addEventListener("change", () => {
   if (fuenteLista) actualizarEvolucion(ultimoFiltro);
