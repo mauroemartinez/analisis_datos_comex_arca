@@ -34,7 +34,9 @@ Este repositorio está preparado para publicarse: no incluye bases mensuales, sa
 |   |-- 02_analisis_intermedio.ipynb  (series de tiempo, paises, NCM)
 |   `-- 03_avanzado.ipynb             (rendimiento, memoria acotada, outliers)
 |-- explorer/
-|   `-- index.html                    (dashboard con filtros y graficos, DuckDB-WASM, sin backend)
+|   |-- index.html                    (dashboard con filtros y graficos, DuckDB-WASM, sin backend)
+|   |-- dividir_para_navegador.py     (parte impo_historico.parquet en un .parquet por año)
+|   `-- data/                         (salida de dividir_para_navegador.py, no versionada)
 |-- docs/
 |   `-- EXPLORACION_ONLINE.md         (arquitectura de exploracion online/self-hosted)
 |-- .claude/skills/actualizar-historico-arca/
@@ -220,6 +222,20 @@ Dos formas de usarla, sin escribir nada de código:
 
 - **Local, sin internet para los datos** (pensada para llevarla en un pendrive): elegís el archivo Parquet con el selector de la página; nunca se sube a ningún lado, todo el cómputo es en tu navegador. Solo necesita internet una vez, para traer DuckDB-WASM.
 - **Con una URL remota**: si el Parquet está publicado en algún object storage con soporte de Range requests, pidiendo por HTTP solo los row groups que cada consulta necesita (aprovecha el mismo orden por `PERIODO` que ya hace baratos los filtros de fecha en DuckDB nativo).
+
+### Partir el histórico en un archivo por año, para usarlo local
+
+`impo_historico.parquet` ya pesa más de 2 GiB, que es el límite que Chrome (y el resto de navegadores basados en Chromium) tiene para volcar un archivo a memoria de una sola vez. Para seguir usando el explorador local con el histórico completo, primero hay que partirlo:
+
+```powershell
+python explorer\dividir_para_navegador.py
+```
+
+Esto genera `explorer/data/impo_YYYY.parquet`, un archivo por año (medido sobre el histórico real: 2018 pesa ~104 MiB, el año más pesado hasta ahora, 2024, ~314 MiB — todos muy por debajo del límite del navegador). Conviene correrlo después de cada `--actualizar`, para que el año en curso quede al día.
+
+En el selector de archivo de `explorer/index.html` se pueden elegir **varios años a la vez**: el explorador los junta con `read_parquet([...])` de DuckDB y los trata como una sola tabla, sin que el usuario tenga que hacer nada especial. Recomendación práctica: no cargar más de ~2 GiB acumulados de una sola vez en el navegador (es decir, no los 9 años juntos) — no es solo el límite de un archivo individual, sino la memoria total que el navegador tiene que sostener para esa pestaña. Para análisis que necesiten combinar todo el histórico completo a la vez, usar los notebooks o `consultar_impo.py`/`tabla_final.py` en local: ahí el límite es la RAM de la máquina, no un techo fijo del navegador, y ya están pensados para correr con poca RAM (ver "Corrido en una máquina con 4 GB de RAM" más abajo).
+
+Por qué el archivo partido/completo no se publica en este repositorio de GitHub: incluso partido por año, cada archivo pesa entre ~100 y ~330 MiB, por encima del límite de 100 MB por archivo que Git aplica sin extensiones (Git LFS o GitHub Releases lo permiten, pero suman una cuota/costo y una pieza más para mantener sincronizada en cada actualización mensual, sin necesidad real). Por eso este repositorio publica el *código* para generar el dato, no el dato en sí: cualquiera puede reconstruir exactamente el mismo `impo_historico.parquet` corriendo `python Data\descargar_historico_impo.py --actualizar` (a mano, o pidiéndoselo a un agente de Claude Code usando la skill `actualizar-historico-arca` en `.claude/skills/`), y después partirlo local con `dividir_para_navegador.py` si lo va a usar en el explorador web.
 
 Ver `docs/EXPLORACION_ONLINE.md` para la decisión completa (por qué no una base de datos, cómo funciona por dentro, la arquitectura en capas, y los pasos concretos para publicarla de verdad con una URL).
 
