@@ -209,7 +209,7 @@ Si corrés esto en una máquina todavía más chica, bajá `memory_limit` aún m
 2. **`02_analisis_intermedio.ipynb`**: series de tiempo, variación interanual, decodificar países/aduanas con `codigos_arca.py`, rankings por NCM e importador.
 3. **`03_avanzado.ipynb`**: por qué el orden del archivo hace barato filtrar por fecha, `polars` lazy, procesar por partes con poca RAM, detección de outliers de precio, exportar subconjuntos grandes.
 
-Se versionan sin outputs (correr y guardar limpio si se editan; ver `AGENTS.md`). Requieren `jupyterlab`, `matplotlib` y `polars` de `requirements.txt`:
+Se versionan sin outputs (correr y guardar limpio si se editan). Requieren `jupyterlab`, `matplotlib` y `polars` de `requirements.txt`:
 
 ```powershell
 jupyter lab notebooks

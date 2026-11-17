@@ -18,8 +18,6 @@ venv/
 !/.claude/skills/
 /.claude/skills/*
 !/.claude/skills/actualizar-historico-arca/
-.codex/
-claude_desktop_config.json
 .mcp.json
 .env
 .env.*
