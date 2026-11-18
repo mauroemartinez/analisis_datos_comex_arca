@@ -1,58 +1,64 @@
-# Análisis Datos Comex ARCA
+# Argentine Import Data Toolkit (ARCA)
 
-Herramientas en Python para descargar, convertir, consultar y filtrar datos públicos de comercio exterior argentino publicados por ARCA.
+<p>
+  <a href="README.md"><img src="https://raw.githubusercontent.com/mauroemartinez/mauroemartinez/main/assets/lang/en-active.svg" alt="English" height="30"></a>
+  <a href="README.es.md"><img src="https://raw.githubusercontent.com/mauroemartinez/mauroemartinez/main/assets/lang/es.svg" alt="Leer en español" height="30"></a>
+</p>
 
-Fuente oficial: Información Agregada de Comercio Exterior de ARCA.
+Python tools to download, convert, query and filter the public Argentine international trade data published by ARCA.
+
+Official source: ARCA's Información Agregada de Comercio Exterior (aggregated international trade data, in Spanish).
 
 https://arca.gob.ar/operadoresComercioExterior/informacionAgregada/informacion-agregada.asp
 
-Este repositorio está preparado para publicarse: no incluye bases mensuales, salidas generadas, ni listas comerciales reales de posiciones NCM. Los notebooks en `notebooks/` sí se versionan (a propósito): son tutoriales de uso, revisados y sin outputs, no exploraciones con datos propios.
+This repository is ready to be published: it does not include monthly databases, generated outputs or real commercial lists of NCM tariff codes. The notebooks in `notebooks/` are versioned (on purpose): they are usage tutorials, reviewed and without outputs, not explorations with proprietary data.
 
-## Para qué sirve
+## What it is for
 
-- Descargar y mantener al día **un único** `Data/impo_historico.parquet` con todas las importaciones mensuales de ARCA (`--actualizar`, ver más abajo).
-- Consultar ese histórico por importador, NCM, resumen general o SQL libre.
-- Generar una tabla final mensual con una fila por ítem.
-- Filtrar posiciones NCM desde una lista local editable.
-- Explorarlo desde tutoriales (`notebooks/`) o desde un prototipo web sin backend (`explorer/`, ver `docs/EXPLORACION_ONLINE.md`).
+- Downloading and keeping up to date **a single** `Data/impo_historico.parquet` with all of ARCA's monthly imports (`--actualizar`, see below).
+- Querying that history by importer, NCM code, general summary or free-form SQL.
+- Generating a final monthly table with one row per item.
+- Filtering NCM codes from an editable local list.
+- Exploring it through tutorials (`notebooks/`) or a backend-free web prototype (`explorer/`, see `docs/EXPLORACION_ONLINE.md`, in Spanish).
 
-## Estructura
+## Structure
 
 ```text
 .
-|-- assets/                           (capturas de pantalla usadas en este README)
+|-- assets/                           (screenshots used in this README)
 |-- Data/
-|   |-- descargar_historico_impo.py   (descarga + consolida el historico unico)
-|   |-- consultar_impo.py             (consultas rapidas por importador/NCM/SQL)
-|   |-- consultar_impo_polars.py      (mismo resumen, referencia con polars)
-|   |-- tabla_final.py                (tabla de una fila por item, un periodo)
-|   |-- _fuente_impo.py               (resuelve historico vs. mensual suelto)
-|   `-- impo_historico.parquet y demas datos locales, no versionados
+|   |-- descargar_historico_impo.py   (downloads + consolidates the single history file)
+|   |-- consultar_impo.py             (quick queries by importer/NCM/SQL)
+|   |-- consultar_impo_polars.py      (same summary, polars reference)
+|   |-- tabla_final.py                (one-row-per-item table, one period)
+|   |-- _fuente_impo.py               (resolves history vs. standalone monthly file)
+|   `-- impo_historico.parquet and other local data, not versioned
 |-- codigos/
-|   `-- codigos_arca.py               (diccionarios de codigos ARCA/AFIP)
+|   `-- codigos_arca.py               (ARCA/AFIP code dictionaries)
 |-- notebooks/
-|   |-- 01_introduccion.ipynb         (basico: cargar, fechas, filtros)
-|   |-- 02_analisis_intermedio.ipynb  (series de tiempo, paises, NCM)
-|   `-- 03_avanzado.ipynb             (rendimiento, memoria acotada, outliers)
+|   |-- 01_introduccion.ipynb         (basic: loading, dates, filters)
+|   |-- 02_analisis_intermedio.ipynb  (time series, countries, NCM)
+|   `-- 03_avanzado.ipynb             (performance, bounded memory, outliers)
 |-- explorer/
-|   |-- index.html                    (dashboard con filtros y graficos, DuckDB-WASM, sin backend)
-|   |-- dividir_para_navegador.py     (parte impo_historico.parquet en un .parquet por año)
-|   `-- data/                         (salida de dividir_para_navegador.py, no versionada)
+|   |-- index.html                    (dashboard with filters and charts, DuckDB-WASM, no backend)
+|   |-- dividir_para_navegador.py     (splits impo_historico.parquet into one .parquet per year)
+|   `-- data/                         (output of dividir_para_navegador.py, not versioned)
 |-- docs/
-|   `-- EXPLORACION_ONLINE.md         (arquitectura de exploracion online/self-hosted)
+|   `-- EXPLORACION_ONLINE.md         (online/self-hosted exploration architecture, in Spanish)
 |-- .claude/skills/actualizar-historico-arca/
-|   `-- SKILL.md                      (runbook para actualizar el historico)
+|   `-- SKILL.md                      (runbook for updating the history file)
 |-- exports/
-|   `-- carpeta de trabajo local no versionada (ver más abajo)
+|   `-- local working folder, not versioned (see below)
 |-- filtrar_posiciones.py
 |-- posiciones_interes.ejemplo.txt
 |-- requirements.txt
-`-- README.md
+|-- README.md                         (this file, in English)
+`-- README.es.md                      (in Spanish)
 ```
 
-Los datos y salidas están ignorados por Git: `.csv`, `.xlsx`, `.parquet`, `.lst`, `.zip`, bases locales y exports generados. `.claude/` está ignorado salvo la skill de arriba; `*.ipynb` está ignorado salvo lo que hay en `notebooks/`.
+Data and outputs are ignored by Git: `.csv`, `.xlsx`, `.parquet`, `.lst`, `.zip`, local databases and generated exports. `.claude/` is ignored except for the skill above; `*.ipynb` is ignored except for what is in `notebooks/`.
 
-## Instalación
+## Installation
 
 ```powershell
 python -m venv .venv
@@ -60,77 +66,77 @@ python -m venv .venv
 pip install -r requirements.txt
 ```
 
-## Descargar y convertir importaciones
+## Downloading and converting imports
 
-El producto final de este pipeline es **un solo archivo**: `Data/impo_historico.parquet`, con todos los meses ya unidos. Todo lo demás (ZIP, LST, Parquet mensual) es un archivo de trabajo intermedio, y se borra solo apenas queda incorporado al histórico.
+The end product of this pipeline is **a single file**: `Data/impo_historico.parquet`, with all months already merged. Everything else (ZIP, LST, monthly Parquet) is an intermediate working file, and it is deleted automatically as soon as it has been added to the history.
 
-### Un solo comando, para todo: `--actualizar`
+### One command for everything: `--actualizar`
 
-Ya sea que sea la primera vez (`impo_historico.parquet` todavía no existe) o
-que ya tengas un histórico y quieras traer los meses nuevos publicados desde
-la última vez, el comando es siempre el mismo:
+Whether it is the first time (`impo_historico.parquet` does not exist yet) or
+you already have a history and want to bring in the new months published since
+the last run, the command is always the same:
 
 ```powershell
 python Data\descargar_historico_impo.py --actualizar
 ```
 
-- **Si `impo_historico.parquet` no existe**: hace la carga completa de todo
-  el rango que ARCA tenga publicado (puede tardar horas y usar harto disco
-  temporal para el `ORDER BY` final, aunque libera ese espacio solo al
-  terminar; ver "Corrido en una máquina con 4 GB de RAM" más abajo para lo
-  que implica en una máquina chica).
-- **Si ya existe**: mira el último período cargado, descarga y convierte
-  solo lo nuevo, y lo agrega **sin resortear los cientos de millones de
-  filas previas** (ver "Por qué DuckDB y por qué Parquet" más abajo para el
-  detalle de cómo). Es la forma pensada para correr esto cada tanto, a mano
-  o pidiéndoselo a un agente de Claude Code (ver la skill
-  `actualizar-historico-arca` en `.claude/skills/`).
-- Si ARCA todavía no publicó nada nuevo, termina enseguida sin tocar el
-  archivo. Correrlo de más no rompe nada.
+- **If `impo_historico.parquet` does not exist**: it does a full load of the
+  whole range ARCA has published (it can take hours and use a lot of temporary
+  disk space for the final `ORDER BY`, although it frees that space on its own
+  when it finishes; see "Running on a machine with 4 GB of RAM" below for what
+  that means on a small machine).
+- **If it already exists**: it checks the last loaded period, downloads and
+  converts only what is new, and appends it **without re-sorting the hundreds
+  of millions of existing rows** (see "Why DuckDB and why Parquet" below for
+  the details of how). This is the intended way to run it every so often, by
+  hand or by asking a Claude Code agent to do it (see the
+  `actualizar-historico-arca` skill in `.claude/skills/`).
+- If ARCA has not published anything new yet, it finishes right away without
+  touching the file. Running it more often than needed does not break anything.
 
-Otras banderas, para casos puntuales (la mayoría de las veces `--actualizar` solo alcanza):
+Other flags, for specific cases (most of the time `--actualizar` alone is enough):
 
-- `--desde`/`--hasta YYYYMM`, `--mes YYYYMM` (repetible): para acotar a un rango o a meses puntuales en vez de todo lo publicado.
-- `--sin-descarga --force`: no descarga nada, solo reconstruye el histórico desde los `impo_YYYYMM.parquet` que ya estén en `Data/` (resortea todo; para reparar el histórico, no para actualizarlo de rutina).
-- `--keep-mensuales`: conserva los `impo_YYYYMM.parquet` de cada mes después de fusionarlos (por defecto se borran, para no duplicar espacio en disco).
-- `--solo-listar`: lista los períodos que ARCA tiene publicados y termina, sin descargar nada.
+- `--desde`/`--hasta YYYYMM`, `--mes YYYYMM` (repeatable): to limit the run to a range or to specific months instead of everything published.
+- `--sin-descarga --force`: downloads nothing, only rebuilds the history from the `impo_YYYYMM.parquet` files already in `Data/` (re-sorts everything; meant for repairing the history, not for routine updates).
+- `--keep-mensuales`: keeps each month's `impo_YYYYMM.parquet` after merging them (by default they are deleted, to avoid doubling the disk space used).
+- `--solo-listar`: lists the periods ARCA has published and exits, without downloading anything.
 
-No todos los meses tienen el archivo detallado por ítem/importador que usa este pipeline: **febrero a julio y septiembre de 2018** solo publican una versión "agregada" (sin nombre de importador ni detalle por ítem, solo totales por NCM y país, con columnas totalmente distintas). El script los detecta solos y los salta con un aviso, sin romperse; quedan como hueco conocido en el histórico.
+Not every month has the item/importer-level detailed file this pipeline uses: **February to July and September 2018** are only published in an "aggregated" version (no importer name and no item detail, only totals by NCM code and country, with completely different columns). The script detects them on its own and skips them with a warning, without breaking; they remain a known gap in the history.
 
-### El archivo histórico único
+### The single history file
 
-`Data/impo_historico.parquet` tiene una fila por (declaración, ítem, concepto de arancel), igual que los Parquet mensuales, más una columna `PERIODO` (`YYYYMM`, texto) que identifica el mes de origen:
+`Data/impo_historico.parquet` has one row per (declaration, item, tariff concept), the same as the monthly Parquet files, plus a `PERIODO` column (`YYYYMM`, text) that identifies the source month:
 
-| Columna | Tipo | Notas |
+| Column | Type | Notes |
 |---|---|---|
-| `PERIODO` | texto `YYYYMM` | Solo en el histórico consolidado, no en los Parquet mensuales sueltos. |
-| `ADU` | texto | Código de aduana (ver `codigos/codigos_arca.py:ADUANAS`). |
-| `DESTINACION` | texto | Número de declaración/despacho. |
-| `NUM_ITEM` | entero | Ítem dentro de la declaración. |
-| `FECHA` | texto `YYYYMM` | Igual que `PERIODO`, tal cual viene del `.lst`. |
-| `NOMBRE_IMPORTADOR` | texto | Razón social. |
-| `MEDIO_TRANSPORTE` | texto | Código (ver `codigos_arca.py:MEDIOS_TRANSPORTE`). |
-| `UNIDAD_MEDIDA` | texto | Código (ver `codigos_arca.py:UNIDADES`). |
-| `CANT_UNIDAD_MEDIDA` | double | Cantidad en esa unidad. |
-| `FOB_UNITARIO_USD` | double | FOB del ítem; se repite en cada línea de tributo del mismo ítem. |
-| `FOB_TOTAL_USD` | double | FOB total de la declaración; se repite en todos sus ítems. |
-| `DIVISA` | texto | Moneda de la operación. |
-| `PAIS_ORIGEN` / `PAIS_PROCEDENCIA` | texto | Código de país (ver `codigos_arca.py:PAISES`). |
-| `POS_NCM` | texto | Posición arancelaria. |
-| `ARANCEL_CONCEPTO` | texto | Tipo de tributo de esta línea. |
-| `ARANCEL_MONTO` | double | Monto de ese tributo. |
+| `PERIODO` | text `YYYYMM` | Only in the consolidated history, not in standalone monthly Parquet files. |
+| `ADU` | text | Customs office code (see `codigos/codigos_arca.py:ADUANAS`). |
+| `DESTINACION` | text | Declaration/customs entry number. |
+| `NUM_ITEM` | integer | Item within the declaration. |
+| `FECHA` | text `YYYYMM` | Same as `PERIODO`, exactly as it comes in the `.lst`. |
+| `NOMBRE_IMPORTADOR` | text | Company name. |
+| `MEDIO_TRANSPORTE` | text | Code (see `codigos_arca.py:MEDIOS_TRANSPORTE`). |
+| `UNIDAD_MEDIDA` | text | Code (see `codigos_arca.py:UNIDADES`). |
+| `CANT_UNIDAD_MEDIDA` | double | Quantity in that unit. |
+| `FOB_UNITARIO_USD` | double | Item FOB; repeated on every tax line of the same item. |
+| `FOB_TOTAL_USD` | double | Total FOB of the declaration; repeated on all of its items. |
+| `DIVISA` | text | Currency of the transaction. |
+| `PAIS_ORIGEN` / `PAIS_PROCEDENCIA` | text | Country code (see `codigos_arca.py:PAISES`). |
+| `POS_NCM` | text | Tariff code. |
+| `ARANCEL_CONCEPTO` | text | Type of tax or duty on this line. |
+| `ARANCEL_MONTO` | double | Amount of that tax or duty. |
 
-`FECHA`/`PERIODO` son texto `YYYYMM`, no una fecha real. Para convertirlos a `DATE` (y así poder filtrar por rango, agrupar por año, etc.):
+`FECHA`/`PERIODO` are `YYYYMM` text, not an actual date. To convert them to `DATE` (so you can filter by range, group by year, etc.):
 
 ```sql
--- DuckDB / SQL: primer día del mes
+-- DuckDB / SQL: first day of the month
 strptime(PERIODO || '01', '%Y%m%d')::DATE
 
--- Filtrar un rango de fechas
+-- Filter a date range
 SELECT * FROM read_parquet('Data/impo_historico.parquet')
-WHERE PERIODO BETWEEN '202301' AND '202312';   -- todo 2023, comparación de texto YYYYMM
+WHERE PERIODO BETWEEN '202301' AND '202312';   -- all of 2023, YYYYMM text comparison
 
--- Agrupar por año (los primeros 4 caracteres de PERIODO)
+-- Group by year (the first 4 characters of PERIODO)
 SELECT substr(PERIODO, 1, 4) AS anio, sum(FOB_TOTAL_USD) FOB
 FROM read_parquet('Data/impo_historico.parquet')
 GROUP BY 1 ORDER BY 1;
@@ -144,7 +150,7 @@ df["fecha"] = pd.to_datetime(df["PERIODO"], format="%Y%m")
 ```
 
 ```python
-# polars (lazy: no carga todo a RAM, solo las columnas que se usan)
+# polars (lazy: does not load everything into RAM, only the columns it uses)
 import polars as pl
 q = (
     pl.scan_parquet("Data/impo_historico.parquet")
@@ -153,22 +159,22 @@ q = (
 )
 ```
 
-Ver `notebooks/` para tutoriales completos, de básico a avanzado, con estos y otros ejemplos.
+See `notebooks/` (in Spanish) for complete tutorials, from basic to advanced, with these and other examples.
 
-### Por qué DuckDB y por qué Parquet
+### Why DuckDB and why Parquet
 
-Dos herramientas distintas, para dos trabajos distintos:
+Two different tools, for two different jobs:
 
-- **DuckDB** es el motor de *cómputo*: parsea el `.lst` (texto separado por `'`, con sniffing de tipos tolerante a columnas rotas, comillas literales y pies de reporte, ver más abajo), corre el `ORDER BY` de la consolidación, y resuelve consultas SQL ad hoc (`consultar_impo.py`) sin necesitar un servidor de base de datos ni cargar todo a RAM. Es la pieza que hace posible procesar archivos de varios GB en una máquina de 4 GB de RAM (ver la sección siguiente).
-- **Parquet** es el formato de *almacenamiento*: columnar y comprimido (zstd), permite leer solo las columnas que hacen falta (column pruning) y saltear row groups enteros por rango de valores (predicate pushdown), en vez de leer el archivo entero para cada consulta. Además es el formato que hablan sin fricción DuckDB, pandas, polars y prácticamente cualquier herramienta de análisis moderna, así que sirve como interfaz estable entre este pipeline y lo que sea que alguien quiera hacer con los datos después.
+- **DuckDB** is the *compute* engine: it parses the `.lst` (text separated by `'`, with type sniffing that tolerates broken columns, literal quotes and report footers, see below), runs the `ORDER BY` of the consolidation, and answers ad hoc SQL queries (`consultar_impo.py`) without needing a database server or loading everything into RAM. It is the piece that makes it possible to process files of several GB on a machine with 4 GB of RAM (see "Running on a machine with 4 GB of RAM" below).
+- **Parquet** is the *storage* format: columnar and compressed (zstd), it lets you read only the columns you need (column pruning) and skip entire row groups by value range (predicate pushdown), instead of reading the whole file for every query. It is also the format that DuckDB, pandas, polars and practically any modern analysis tool read without friction, so it works as a stable interface between this pipeline and whatever anyone wants to do with the data afterwards.
 
-Un detalle que vale la pena remarcar: el histórico consolidado (`agregar_al_historico`/`combinar_historico`) evita volver a ordenar los cientos de millones de filas ya existentes en cada actualización. Como los meses nuevos son siempre posteriores a todo lo que ya está en el histórico, alcanza con ordenar cada mes nuevo por separado (chico, entra cómodo en memoria) y pegarlo después del histórico existente: `PERIODO` ya queda creciente entre archivos, así que el resultado queda bien ordenado sin un `ORDER BY` completo sobre todo el dataset. Eso es lo que hace viable correr `--actualizar` seguido, en vez de re-sortear todo cada vez (que es justamente el paso que más RAM y disco temporal consume, ver la sección de 4 GB de RAM).
+One detail worth pointing out: the consolidated history (`agregar_al_historico`/`combinar_historico`) avoids re-sorting the hundreds of millions of existing rows on every update. Since new months always come after everything already in the history, it is enough to sort each new month on its own (small, it fits comfortably in memory) and append it after the existing history: `PERIODO` is already increasing across files, so the result stays correctly sorted without a full `ORDER BY` over the whole dataset. That is what makes it viable to run `--actualizar` often, instead of re-sorting everything every time (which is precisely the step that uses the most RAM and temporary disk, see the 4 GB of RAM section).
 
-### Cuánto espacio ahorra Parquet frente al `.lst` crudo
+### How much space Parquet saves compared with the raw `.lst`
 
-El pipeline borra el `.lst` de cada mes apenas lo convierte (son texto plano sin comprimir, varios GB cada uno), así que no quedan todos guardados para medir el total exacto. Esta es una estimación a partir de una muestra de 7 meses de los que sí se pudo medir el tamaño real del `.lst` dentro del ZIP (sin necesidad de descomprimirlo, leyendo los metadatos del ZIP) contra el tamaño del Parquet mensual resultante:
+The pipeline deletes each month's `.lst` as soon as it converts it (they are uncompressed plain text, several GB each), so they are not all kept around to measure the exact total. This is an estimate based on a sample of 7 months for which the real size of the `.lst` inside the ZIP could be measured (without decompressing it, by reading the ZIP metadata) against the size of the resulting monthly Parquet:
 
-| Período | `.lst` sin comprimir | Parquet mensual | Razón |
+| Period | Uncompressed `.lst` | Monthly Parquet | Ratio |
 |---|---:|---:|---:|
 | 2018-10 | 3.75 GiB | 55.6 MiB | 69x |
 | 2018-11 | 3.18 GiB | 46.7 MiB | 68x |
@@ -178,180 +184,180 @@ El pipeline borra el `.lst` de cada mes apenas lo convierte (son texto plano sin
 | 2023-08 | 6.84 GiB | 31.8 MiB | 220x |
 | 2025-10 | 6.46 GiB | 45.3 MiB | 146x |
 
-La razón varía mucho mes a mes (51x a 261x) según qué tan repetitivos son los valores de ese mes (más importadores/NCM distintos comprime peor). Tomando la razón ponderada por tamaño de esta muestra (≈100x) y aplicándola a los 88 meses con detalle transaccional que estaban cargados al momento de medir (6.36 GiB en Parquet mensual, antes de fusionarlos):
+The ratio varies a lot from month to month (51x to 261x) depending on how repetitive that month's values are (more distinct importers/NCM codes compress worse). Taking the size-weighted ratio of this sample (≈100x) and applying it to the 88 months with transaction-level detail that were loaded at the time of measuring (6.36 GiB in monthly Parquet, before merging them):
 
-- **`.lst` crudo estimado (88 meses)**: entre ~320 GiB (extremo más comprimible) y ~1.66 TiB (extremo menos comprimible), con **~640 GiB** como estimación central.
-- **`impo_historico.parquet` real (esos mismos 88 meses)**: **2.01 GiB** (616 millones de filas, 2018-01 a 2025-11).
-- **Reducción**: entre ~160x y ~825x según el extremo, **~320x** en el caso central.
+- **Estimated raw `.lst` (88 months)**: between ~320 GiB (most compressible end) and ~1.66 TiB (least compressible end), with **~640 GiB** as the central estimate.
+- **Actual `impo_historico.parquet` (those same 88 months)**: **2.01 GiB** (616 million rows, 2018-01 to 2025-11).
+- **Reduction**: between ~160x and ~825x depending on the end, **~320x** in the central case.
 
-El histórico consolidado además pesa bastante menos que la simple suma de sus Parquet mensuales (2.01 GiB contra 6.36 GiB para esos 88 meses, ~3x menos): al quedar todo ordenado por `POS_NCM`/`DESTINACION`/ítem en un solo archivo, zstd encuentra muchos más valores repetidos consecutivos que en 88 archivos chicos ordenados cada uno por separado. Esto no es solo prolijidad: es la razón principal por la que "un solo archivo histórico" es más chico que "N archivos con la misma data".
+The consolidated history also weighs considerably less than the simple sum of its monthly Parquet files (2.01 GiB versus 6.36 GiB for those 88 months, ~3x less): with everything sorted by `POS_NCM`/`DESTINACION`/item in a single file, zstd finds many more consecutive repeated values than in 88 small files, each sorted separately. This is not just tidiness: it is the main reason why "a single history file" is smaller than "N files with the same data".
 
-(No cuenta los 7 meses de 2018 que solo tienen reporte agregado: son un formato distinto, mucho más chico, y no serían comparables.)
+(This does not count the 7 months of 2018 that only have an aggregated report: they are a different, much smaller format, and would not be comparable.)
 
-**Estado actual** (después de correr `--actualizar` por primera vez con esta versión): `impo_historico.parquet` tiene **683,858,821 filas, 97 meses, 2018-01 a 2026-08**, en **2.17 GiB**. Escalando la estimación de arriba proporcional al crecimiento en filas (683,858,821 / 616,041,305 ≈ 1.11x), el `.lst` crudo equivalente rondaría **~710 GiB** (rango ~355 GiB a ~1.8 TiB), es decir prácticamente el mismo orden de magnitud de reducción (~325x en el caso central). Esta cifra se va a volver a correr, no a recalcular a mano, en cada actualización futura: no hace falta mantenerla sincronizada a mano, es solo una foto de este momento.
+**Current status** (after running `--actualizar` for the first time with this version): `impo_historico.parquet` has **683,858,821 rows, 97 months, 2018-01 to 2026-08**, in **2.17 GiB**. Scaling the estimate above in proportion to the growth in rows (683,858,821 / 616,041,305 ≈ 1.11x), the equivalent raw `.lst` would be around **~710 GiB** (range ~355 GiB to ~1.8 TiB), that is, practically the same order of magnitude of reduction (~325x in the central case). This figure will be re-run, not recalculated by hand, on each future update: there is no need to keep it in sync by hand, it is just a snapshot of this moment.
 
-### Corrido en una máquina con 4 GB de RAM
+### Running on a machine with 4 GB of RAM
 
-Este downloader se probó bajando el histórico completo (más de 100 meses, algunos con `.lst` de varios GB de texto plano) en una notebook con **4 GB de RAM en total**, muchas veces con menos de 1 GB libre por tener Chrome, VS Code y otras apps abiertas. Eso hizo salir a la luz varios problemas que un solo mes de prueba no muestra:
+This downloader was tested by downloading the full history (more than 100 months, some with `.lst` files of several GB of plain text) on a laptop with **4 GB of RAM in total**, often with less than 1 GB free because Chrome, VS Code and other apps were open. That brought to light several problems that a single test month does not show:
 
-- **Ítems sin tributo asociado**: el campo de monto queda relleno de espacios en vez de vacío, y DuckDB no podía tipar la columna directamente desde el CSV. Se lee todo como `VARCHAR` y se castea con `TRY_CAST(NULLIF(TRIM(...), ''), tipo)`.
-- **Pie de reporte al final de cada `.lst`**: líneas en blanco más un `"N rows selected."` después de la última fila real, que rompía el conteo de columnas esperado. Se filtra validando que `FECHA` tenga formato de período (`^[0-9]{6}$`).
-- **Comillas literales en alguna razón social**: una empresa tiene un `"` como parte del nombre, y DuckDB lo tomaba como delimitador de cita en vez de texto plano. Se lee con `quotechar=""` para que no interprete ninguna comilla como tal.
-- **Sin margen de RAM para meses de varios GB**: con `PRAGMA memory_limit` bajo (ajustado a mano según la RAM libre en el momento, entre 400 MB y 1 GB) y `threads=1`, DuckDB derrama a disco en vez de intentar usar toda la RAM disponible. Y lo más importante: **cada mes se convierte en un proceso de Python aparte** (`--convertir-uno PERIODO`, vía `subprocess.run`), así el sistema operativo libera toda esa memoria al terminar ese mes en particular, en vez de depender de que el runtime la libere solo entre iteraciones de un mismo proceso de larga duración.
+- **Items with no associated tax**: the amount field is filled with spaces instead of being empty, and DuckDB could not type the column directly from the CSV. Everything is read as `VARCHAR` and cast with `TRY_CAST(NULLIF(TRIM(...), ''), tipo)`.
+- **Report footer at the end of each `.lst`**: blank lines plus a `"N rows selected."` after the last real row, which broke the expected column count. It is filtered out by checking that `FECHA` has a period format (`^[0-9]{6}$`).
+- **Literal quotes in some company names**: one company has a `"` as part of its name, and DuckDB took it as a quote delimiter instead of plain text. The file is read with `quotechar=""` so that no quote character is interpreted as one.
+- **No RAM headroom for months of several GB**: with a low `PRAGMA memory_limit` (set by hand according to the free RAM at the time, between 400 MB and 1 GB) and `threads=1`, DuckDB spills to disk instead of trying to use all the available RAM. And most importantly: **each month is converted in a separate Python process** (`--convertir-uno PERIODO`, via `subprocess.run`), so the operating system frees all that memory when that particular month finishes, instead of relying on the runtime to free it between iterations of a single long-running process.
 
-Si corrés esto en una máquina todavía más chica, bajá `memory_limit` aún más en `Data/descargar_historico_impo.py` (buscá `PRAGMA memory_limit`).
+If you run this on an even smaller machine, lower `memory_limit` further in `Data/descargar_historico_impo.py` (look for `PRAGMA memory_limit`).
 
 ## Notebooks
 
-`notebooks/` tiene tres tutoriales, de básico a avanzado, pensados para leerse en orden:
+`notebooks/` has three tutorials (in Spanish), from basic to advanced, meant to be read in order:
 
-1. **`01_introduccion.ipynb`**: cargar el histórico, columnas disponibles, fechas `YYYYMM` → `DATE`, filtros y agregados básicos.
-2. **`02_analisis_intermedio.ipynb`**: series de tiempo, variación interanual, decodificar países/aduanas con `codigos_arca.py`, rankings por NCM e importador.
-3. **`03_avanzado.ipynb`**: por qué el orden del archivo hace barato filtrar por fecha, `polars` lazy, procesar por partes con poca RAM, detección de outliers de precio, exportar subconjuntos grandes.
+1. **`01_introduccion.ipynb`**: loading the history, available columns, `YYYYMM` → `DATE` dates, basic filters and aggregates.
+2. **`02_analisis_intermedio.ipynb`**: time series, year-over-year change, decoding countries/customs offices with `codigos_arca.py`, rankings by NCM code and importer.
+3. **`03_avanzado.ipynb`**: why the order of the file makes filtering by date cheap, lazy `polars`, processing in chunks with little RAM, price outlier detection, exporting large subsets.
 
-Se versionan sin outputs (correr y guardar limpio si se editan). Requieren `jupyterlab`, `matplotlib` y `polars` de `requirements.txt`:
+They are versioned without outputs (run them and save them clean if you edit them). They require `jupyterlab`, `matplotlib` and `polars` from `requirements.txt`:
 
 ```powershell
 jupyter lab notebooks
 ```
 
-## Explorar el dataset online o self-hosted (o desde un pendrive)
+## Exploring the dataset online or self-hosted (or from a USB drive)
 
-`explorer/index.html` es una página estática, sin backend, que corre **DuckDB directo en el navegador** (vía DuckDB-WASM) contra `impo_historico.parquet`, con filtros (importador, NCM, país, aduana, tipo de destinación, rango de fechas), gráficos (evolución mensual/trimestral/anual/interanual, top 15 importadores, top 15 NCM) y un indicador de variación contra el período anterior. Sin caja de SQL obligatoria: los filtros arman las consultas solos (aunque queda una sección "Avanzado" con SQL libre para quien lo quiera).
+`explorer/index.html` is a static page, with no backend, that runs **DuckDB directly in the browser** (via DuckDB-WASM) against `impo_historico.parquet`, with filters (importer, NCM code, country, customs office, customs regime type, date range), charts (monthly/quarterly/yearly/year-over-year evolution, top 15 importers, top 15 NCM codes) and an indicator of change against the previous period. No SQL box is required: the filters build the queries on their own (although there is still an "Avanzado" (Advanced) section with free-form SQL for anyone who wants it).
 
-Filtros, con varios años cargados a la vez y selección múltiple en aduana / tipo de destinación:
+Filters, with several years loaded at once and multiple selection for customs office / customs regime type:
 
-<p align="center"><img src="assets/explorer-filtros.png" alt="Filtros del explorador con varios años cargados y tipos de destinación seleccionados" width="700" /></p>
+<p align="center"><img src="assets/explorer-filtros.png" alt="Explorer filters with several years loaded and customs regime types selected" width="700" /></p>
 
-Tarjetas de métricas (importadores, ítems, despachos, FOB, variación) y el gráfico de evolución:
+Metric cards (importers, items, customs entries, FOB, change) and the evolution chart:
 
-<p align="center"><img src="assets/explorer-metricas-evolucion.png" alt="Tarjetas de métricas y gráfico de evolución mensual" width="700" /></p>
+<p align="center"><img src="assets/explorer-metricas-evolucion.png" alt="Metric cards and monthly evolution chart" width="700" /></p>
 
-Top 15 importadores y top 15 posiciones NCM por FOB:
+Top 15 importers and top 15 NCM codes by FOB:
 
-<p align="center"><img src="assets/explorer-top15.png" alt="Gráficos de barras de top 15 importadores y top 15 posiciones NCM" width="700" /></p>
+<p align="center"><img src="assets/explorer-top15.png" alt="Bar charts of the top 15 importers and the top 15 NCM codes" width="700" /></p>
 
-Tabla de resultados, con la consulta SQL que arman los filtros (editable) y "Exportar CSV":
+Results table, with the SQL query built by the filters (editable) and "Exportar CSV" (Export CSV):
 
-<p align="center"><img src="assets/explorer-resultados-sql.png" alt="Tabla de resultados y consulta SQL autogenerada" width="700" /></p>
+<p align="center"><img src="assets/explorer-resultados-sql.png" alt="Results table and auto-generated SQL query" width="700" /></p>
 
-Dos formas de usarla, sin escribir nada de código:
+Two ways to use it, without writing any code:
 
-- **Local, sin internet para los datos** (pensada para llevarla en un pendrive): elegís el archivo Parquet con el selector de la página; nunca se sube a ningún lado, todo el cómputo es en tu navegador. Solo necesita internet una vez, para traer DuckDB-WASM.
-- **Con una URL remota**: si el Parquet está publicado en algún object storage con soporte de Range requests, pidiendo por HTTP solo los row groups que cada consulta necesita (aprovecha el mismo orden por `PERIODO` que ya hace baratos los filtros de fecha en DuckDB nativo).
+- **Local, with no internet needed for the data** (designed to be carried on a USB drive): you pick the Parquet file with the page's file selector; it is never uploaded anywhere, and all the computing happens in your browser. It only needs internet once, to fetch DuckDB-WASM.
+- **With a remote URL**: if the Parquet file is published on an object storage service that supports Range requests, the page requests over HTTP only the row groups each query needs (it takes advantage of the same sort by `PERIODO` that already makes date filters cheap in native DuckDB).
 
-### Partir el histórico en un archivo por año, para usarlo local
+### Splitting the history into one file per year, for local use
 
-`impo_historico.parquet` ya pesa más de 2 GiB, que es el límite que Chrome (y el resto de navegadores basados en Chromium) tiene para volcar un archivo a memoria de una sola vez. Para seguir usando el explorador local con el histórico completo, primero hay que partirlo:
+`impo_historico.parquet` already weighs more than 2 GiB, which is the limit Chrome (and the other Chromium-based browsers) has for loading a file into memory in one go. To keep using the local explorer with the full history, you first have to split it:
 
 ```powershell
 python explorer\dividir_para_navegador.py
 ```
 
-Esto genera `explorer/data/impo_YYYY.parquet`, un archivo por año (medido sobre el histórico real: 2018 pesa ~104 MiB, el año más pesado hasta ahora, 2024, ~314 MiB — todos muy por debajo del límite del navegador). Conviene correrlo después de cada `--actualizar`, para que el año en curso quede al día.
+This generates `explorer/data/impo_YYYY.parquet`, one file per year (measured on the real history: 2018 weighs ~104 MiB, and the heaviest year so far, 2024, ~314 MiB, all well below the browser limit). It is best to run it after each `--actualizar`, so the current year stays up to date.
 
-En el selector de archivo de `explorer/index.html` se pueden elegir **varios años a la vez**: el explorador los junta con `read_parquet([...])` de DuckDB y los trata como una sola tabla, sin que el usuario tenga que hacer nada especial. Recomendación práctica: no cargar más de ~2 GiB acumulados de una sola vez en el navegador (es decir, no los 9 años juntos) — no es solo el límite de un archivo individual, sino la memoria total que el navegador tiene que sostener para esa pestaña. Para análisis que necesiten combinar todo el histórico completo a la vez, usar los notebooks o `consultar_impo.py`/`tabla_final.py` en local: ahí el límite es la RAM de la máquina, no un techo fijo del navegador, y ya están pensados para correr con poca RAM (ver "Corrido en una máquina con 4 GB de RAM" más abajo).
+In the file selector of `explorer/index.html` you can pick **several years at once**: the explorer combines them with DuckDB's `read_parquet([...])` and treats them as a single table, without the user having to do anything special. Practical recommendation: do not load more than ~2 GiB in total at once in the browser (that is, not all 9 years together): it is not only the limit for an individual file, but the total memory the browser has to hold for that tab. For analyses that need to combine the entire history at once, use the notebooks or `consultar_impo.py`/`tabla_final.py` locally: there the limit is the machine's RAM, not a fixed browser ceiling, and they are already designed to run with little RAM (see "Running on a machine with 4 GB of RAM" above).
 
-Por qué el archivo partido/completo no se publica en este repositorio de GitHub: incluso partido por año, cada archivo pesa entre ~100 y ~330 MiB, por encima del límite de 100 MB por archivo que Git aplica sin extensiones (Git LFS o GitHub Releases lo permiten, pero suman una cuota/costo y una pieza más para mantener sincronizada en cada actualización mensual, sin necesidad real). Por eso este repositorio publica el *código* para generar el dato, no el dato en sí: cualquiera puede reconstruir exactamente el mismo `impo_historico.parquet` corriendo `python Data\descargar_historico_impo.py --actualizar` (a mano, o pidiéndoselo a un agente de Claude Code usando la skill `actualizar-historico-arca` en `.claude/skills/`), y después partirlo local con `dividir_para_navegador.py` si lo va a usar en el explorador web.
+Why the split or full file is not published in this GitHub repository: even split by year, each file weighs between ~100 and ~330 MiB, above the 100 MB per-file limit that Git applies without extensions (Git LFS or GitHub Releases allow it, but they add a quota or cost and one more piece to keep in sync on every monthly update, with no real need). That is why this repository publishes the *code* that generates the data, not the data itself: anyone can rebuild exactly the same `impo_historico.parquet` by running `python Data\descargar_historico_impo.py --actualizar` (by hand, or by asking a Claude Code agent to do it with the `actualizar-historico-arca` skill in `.claude/skills/`), and then split it locally with `dividir_para_navegador.py` if they are going to use it in the web explorer.
 
-Ver `docs/EXPLORACION_ONLINE.md` para la decisión completa (por qué no una base de datos, cómo funciona por dentro, la arquitectura en capas, y los pasos concretos para publicarla de verdad con una URL).
+See `docs/EXPLORACION_ONLINE.md` (in Spanish) for the full decision (why not a database, how it works inside, the layered architecture, and the concrete steps to actually publish it with a URL).
 
-## Consultas rápidas
+## Quick queries
 
-Resumen general (todo el histórico si `impo_historico.parquet` existe, o el último mes suelto si no):
+General summary (the whole history if `impo_historico.parquet` exists, or the latest standalone month if not):
 
 ```powershell
 python Data\consultar_impo.py --resumen
 ```
 
-Buscar por importador:
+Search by importer:
 
 ```powershell
 python Data\consultar_impo.py "IMPORTADOR"
 ```
 
-Buscar por importador y prefijo NCM:
+Search by importer and NCM prefix:
 
 ```powershell
 python Data\consultar_impo.py "IMPORTADOR" --ncm 8504
 ```
 
-Ejecutar SQL libre sobre la vista `impo`:
+Run free-form SQL on the `impo` view:
 
 ```powershell
 python Data\consultar_impo.py --sql "SELECT POS_NCM, count(*) filas FROM impo GROUP BY 1 ORDER BY filas DESC LIMIT 20"
 ```
 
-## Tabla final mensual
+## Final monthly table
 
-Sobre el histórico consolidado, sin período: toma el último disponible.
+On the consolidated history, with no period given: it takes the latest one available.
 
 ```powershell
 python Data\tabla_final.py
 ```
 
-Un período puntual del histórico:
+A specific period from the history:
 
 ```powershell
 python Data\tabla_final.py --periodo 202508
 ```
 
-Salidas locales:
+Local outputs:
 
 ```text
 Data/impo_YYYYMM_tabla_final.parquet
 Data/impo_YYYYMM_tabla_final.xlsx
 ```
 
-## Filtrar posiciones NCM
+## Filtering NCM codes
 
-El repositorio incluye una lista pública de ejemplo:
+The repository includes a public example list:
 
 ```text
 posiciones_interes.ejemplo.txt
 ```
 
-Para trabajar con una lista propia, crear una copia local:
+To work with your own list, create a local copy:
 
 ```powershell
 Copy-Item posiciones_interes.ejemplo.txt posiciones_interes.txt
 ```
 
-Luego editar `posiciones_interes.txt` y ejecutar:
+Then edit `posiciones_interes.txt` and run:
 
 ```powershell
 python filtrar_posiciones.py
 ```
 
-Forzar salida Excel:
+Force Excel output:
 
 ```powershell
 python filtrar_posiciones.py --xlsx
 ```
 
-También se puede pasar otro archivo de posiciones:
+You can also pass a different codes file:
 
 ```powershell
 python filtrar_posiciones.py mi_lista_ncm.txt
 ```
 
-## Carpeta de trabajo local (`exports/`)
+## Local working folder (`exports/`)
 
-`exports/` es una carpeta pensada para uso personal: un lugar donde cada quien puede juntar archivos propios, probar cosas y guardar exportaciones sin riesgo de subirlas por error al repositorio público. Todo su contenido está ignorado por Git (`/exports/` en `.gitignore`), salvo este mismo aviso.
+`exports/` is a folder meant for personal use: a place where anyone can collect their own files, try things out and save exports without the risk of pushing them to the public repository by mistake. All of its contents are ignored by Git (`/exports/` in `.gitignore`), except for the notice file inside it.
 
-No es obligatoria para que el código funcione: los scripts nunca leen ni escriben en `exports/` automáticamente. Es simplemente una convención para no ensuciar `Data/` (que es donde viven los scripts y las salidas propias del pipeline) con archivos personales, borradores o resultados de prueba.
+It is not required for the code to work: the scripts never read from or write to `exports/` automatically. It is simply a convention to avoid cluttering `Data/` (which is where the scripts and the pipeline's own outputs live) with personal files, drafts or test results.
 
-## Validación rápida
+## Quick validation
 
 ```powershell
 python -B -m py_compile filtrar_posiciones.py Data\consultar_impo.py Data\consultar_impo_polars.py Data\tabla_final.py Data\descargar_historico_impo.py Data\_fuente_impo.py codigos\codigos_arca.py
 python Data\descargar_historico_impo.py --actualizar
 ```
 
-`--sin-descarga --force` (reconstruye desde los `impo_YYYYMM.parquet` que haya en `Data/`) solo sirve como chequeo si corriste algo con `--keep-mensuales` antes: por defecto no quedan mensuales sueltos una vez fusionados al histórico, así que no hay nada de qué reconstruir.
+`--sin-descarga --force` (rebuilds from whatever `impo_YYYYMM.parquet` files are in `Data/`) is only useful as a check if you ran something with `--keep-mensuales` before: by default no standalone monthly files are left once they are merged into the history, so there is nothing to rebuild from.
 
-Para los notebooks, ejecutarlos de punta a punta antes de commitear (por ejemplo con `jupyter nbconvert --to notebook --execute --inplace notebooks/*.ipynb`) y despojarlos de outputs después, siguiendo la convención de "notebooks limpios" del repo.
+For the notebooks, run them from start to finish before committing (for example with `jupyter nbconvert --to notebook --execute --inplace notebooks/*.ipynb`) and strip their outputs afterwards, following the repo's "clean notebooks" convention.
 
-## Nota sobre datos
+## A note on data
 
-Los datos de ARCA son públicos, pero los recortes comerciales, análisis internos, y archivos generados no deben versionarse. Los notebooks de `notebooks/` sí se versionan porque son tutoriales de uso reescritos para publicación, sin outputs ni datos propios; cualquier notebook exploratorio con resultados o análisis internos va en `exports/` (gitignored), no en `notebooks/`. Este repo está pensado para publicar el código y mantener los datos propios en local.
+ARCA's data is public, but commercial subsets, internal analyses and generated files must not be versioned. The notebooks in `notebooks/` are versioned because they are usage tutorials rewritten for publication, with no outputs or proprietary data; any exploratory notebook with results or internal analyses goes in `exports/` (gitignored), not in `notebooks/`. This repo is meant to publish the code and keep proprietary data local.

@@ -8,7 +8,7 @@ description: Descarga los periodos nuevos de importaciones publicados por ARCA y
 Este repo mantiene un único archivo consolidado, `Data/impo_historico.parquet`,
 con todas las importaciones mensuales de ARCA (una fila por declaración,
 ítem y concepto de arancel). Esta skill automatiza traerlo al día. Antes de
-tocar nada, leé `README.md` (sección "Descargar y convertir importaciones")
+tocar nada, leé `README.es.md` (sección "Descargar y convertir importaciones")
 para el contexto completo: qué es cada archivo, por qué se usa DuckDB y
 Parquet, y las limitaciones de la máquina donde esto corrió originalmente
 (4 GB de RAM).
