@@ -26,6 +26,10 @@ https://arca.gob.ar/operadoresComercioExterior/informacionAgregada/informacion-a
 
 This repository is ready to be published: it does not include monthly databases, generated outputs or real commercial lists of NCM tariff codes. The notebooks in `notebooks/` are versioned (on purpose): they are usage tutorials, reviewed and without outputs, not explorations with proprietary data.
 
+## Stack
+
+Python with DuckDB, Polars, pandas and PyArrow over Parquet (zstd); Jupyter notebooks with Matplotlib; the web explorer is a single static page with DuckDB-WASM and hand-drawn SVG charts, published on GitHub Pages by a GitHub Actions workflow (`.github/workflows/pages.yml`).
+
 ## What it is for
 
 - Downloading and keeping up to date **a single** `Data/impo_historico.parquet` with all of ARCA's monthly imports (`--actualizar`, see below).

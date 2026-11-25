@@ -26,6 +26,10 @@ https://arca.gob.ar/operadoresComercioExterior/informacionAgregada/informacion-a
 
 Este repositorio está preparado para publicarse: no incluye bases mensuales, salidas generadas, ni listas comerciales reales de posiciones NCM. Los notebooks en `notebooks/` sí se versionan (a propósito): son tutoriales de uso, revisados y sin outputs, no exploraciones con datos propios.
 
+## Stack
+
+Python con DuckDB, Polars, pandas y PyArrow sobre Parquet (zstd); notebooks de Jupyter con Matplotlib; el explorador web es una sola página estática con DuckDB-WASM y gráficos SVG propios, publicada en GitHub Pages por un workflow de GitHub Actions (`.github/workflows/pages.yml`).
+
 ## Para qué sirve
 
 - Descargar y mantener al día **un único** `Data/impo_historico.parquet` con todas las importaciones mensuales de ARCA (`--actualizar`, ver más abajo).
