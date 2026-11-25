@@ -3,7 +3,11 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Explorador Comex ARCA</title>
+<title>Explorador Comex ARCA | GlobalAIze</title>
+<link rel="icon" href="assets/globalaize-favicon.svg" type="image/svg+xml" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=Newsreader:opsz,wght@6..72,400;6..72,500&display=swap" rel="stylesheet" />
 <style>
   :root {
     color-scheme: light dark;
@@ -357,10 +361,131 @@
   .header-row { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
   .header-row h1 { flex: 1; }
   #temaToggle { padding: 7px 14px; font-size: 0.8rem; white-space: nowrap; }
+
+  /* ===================== Marca GlobalAIze =====================
+     Colores, tipografías y vidrio mate de la marca: tinta #F0EEE9, azul
+     marino #051E45, papel #040F23 con tres luces cian y azul, paneles de
+     vidrio, series cian, violeta, oliva, azul... Va al final para pisar los
+     valores de arriba. */
+  :root {
+    --font-text: "IBM Plex Sans", system-ui, "Segoe UI", sans-serif;
+    --font-title: "Newsreader", Georgia, serif;
+    --bg: #F3F1EC;
+    --fg: #051E45;
+    --muted: #4C5B70;
+    --border: #D3DAE4;
+    --panel: rgba(255, 255, 255, 0.82);
+    --panel-2: #E9EEF5;
+    --btn-bg: #051E45;
+    --btn-fg: #FFFFFF;
+    --btn-grad-top: #123466;
+    --btn-grad-bottom: #051E45;
+    --accent-text: #1687A9;
+    --chart-line: #1687A9;
+    --chart-bar-2: #5933AB;
+    --delta-up: #299236;
+    --delta-down: #B00A1D;
+    --up: #299236;
+    --down: #B00A1D;
+    --up-bg: rgba(41, 146, 54, 0.12);
+    --down-bg: rgba(176, 10, 29, 0.12);
+    --page-bg:
+      radial-gradient(40% 55% at 20% 38%, rgb(34 181 225 / .10), transparent 70%),
+      radial-gradient(40% 55% at 82% 78%, rgb(31 79 168 / .10), transparent 70%),
+      #F3F1EC;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #040F23;
+      --fg: #F0EEE9;
+      --muted: #BBC5D1;
+      --border: #2A394D;
+      --panel: rgb(5 30 69 / .70);
+      --panel-2: rgb(13 44 95 / .55);
+      --btn-bg: #0DA4CF;
+      --btn-fg: #040F23;
+      --btn-grad-top: #1FB5E3;
+      --btn-grad-bottom: #0DA4CF;
+      --accent-text: #1FB5E3;
+      --chart-line: #0DA4CF;
+      --chart-bar-2: #795EC9;
+      --delta-up: #62D286;
+      --delta-down: #EF6661;
+      --up: #62D286;
+      --down: #EF6661;
+      --up-bg: rgba(98, 210, 134, 0.14);
+      --down-bg: rgba(239, 102, 97, 0.14);
+      --page-bg:
+        radial-gradient(40% 55% at 20% 38%, rgb(34 181 225 / .17), transparent 70%),
+        radial-gradient(40% 55% at 82% 78%, rgb(31 79 168 / .20), transparent 70%),
+        radial-gradient(45% 35% at 52% 10%, rgb(16 52 140 / .20), transparent 70%),
+        #040F23;
+    }
+  }
+  :root[data-theme="dark"] {
+      --bg: #040F23;
+      --fg: #F0EEE9;
+      --muted: #BBC5D1;
+      --border: #2A394D;
+      --panel: rgb(5 30 69 / .70);
+      --panel-2: rgb(13 44 95 / .55);
+      --btn-bg: #0DA4CF;
+      --btn-fg: #040F23;
+      --btn-grad-top: #1FB5E3;
+      --btn-grad-bottom: #0DA4CF;
+      --accent-text: #1FB5E3;
+      --chart-line: #0DA4CF;
+      --chart-bar-2: #795EC9;
+      --delta-up: #62D286;
+      --delta-down: #EF6661;
+      --up: #62D286;
+      --down: #EF6661;
+      --up-bg: rgba(98, 210, 134, 0.14);
+      --down-bg: rgba(239, 102, 97, 0.14);
+      --page-bg:
+        radial-gradient(40% 55% at 20% 38%, rgb(34 181 225 / .17), transparent 70%),
+        radial-gradient(40% 55% at 82% 78%, rgb(31 79 168 / .20), transparent 70%),
+        radial-gradient(45% 35% at 52% 10%, rgb(16 52 140 / .20), transparent 70%),
+        #040F23;
+  }
+  html { background: var(--page-bg); background-attachment: fixed; min-height: 100%; }
+  body { background: transparent; font-family: var(--font-text); }
+  h1, h2 { font-family: var(--font-title); font-weight: 500; }
+  h1 { font-size: 1.9rem; }
+  h2 { font-size: 1.15rem; }
+  section {
+    background: var(--panel);
+    border: 1.5px solid rgb(255 255 255 / .10);
+    border-radius: 14px;
+    -webkit-backdrop-filter: blur(36px) saturate(120%);
+    backdrop-filter: blur(36px) saturate(120%);
+    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.22);
+  }
+  :root[data-theme="light"] section { border-color: var(--border); box-shadow: 0 6px 18px rgba(5, 30, 69, 0.08); }
+  @media (prefers-color-scheme: light) {
+    :root:not([data-theme="dark"]) section { border-color: var(--border); box-shadow: 0 6px 18px rgba(5, 30, 69, 0.08); }
+  }
+  button, input, select, textarea { font-family: var(--font-text); }
+  .marca { display: inline-flex; align-items: center; margin-right: 14px; }
+  .marca img { height: 30px; width: auto; display: block; }
+  .marca .logo-claro { display: none; }
+  :root[data-theme="light"] .marca .logo-oscuro { display: none; }
+  :root[data-theme="light"] .marca .logo-claro { display: block; }
+  @media (prefers-color-scheme: light) {
+    :root:not([data-theme="dark"]) .marca .logo-oscuro { display: none; }
+    :root:not([data-theme="dark"]) .marca .logo-claro { display: block; }
+  }
+  .header-row { align-items: center; }
+  .pie { margin: 26px 0 8px; font-size: 0.8rem; color: var(--muted); text-align: center; }
+  .pie a { color: var(--accent-text); }
 </style>
 </head>
 <body>
   <div class="header-row">
+    <a class="marca" href="https://www.globalaize.com" target="_blank" rel="noopener" title="GlobalAIze">
+      <img class="logo-oscuro" src="assets/globalaize-logo-horizontal-es-dark.svg" alt="GlobalAIze" />
+      <img class="logo-claro" src="assets/globalaize-logo-horizontal-es.svg" alt="GlobalAIze" />
+    </a>
     <h1>Explorador Comex ARCA</h1>
     <button id="temaToggle" class="secundario" type="button"></button>
   </div>
@@ -408,8 +533,8 @@
         <div class="demo-box">
           <button id="loadDemo" disabled>Probar con datos de ejemplo</button>
           <p class="ayuda-chica" style="margin: 6px 0 0">
-            Guantes de goma y de nitrilo (posición NCM 4015), de 2018 a 2026, solo
-            importadores que son empresas. Pesa menos de 1 MB y se carga en segundos.
+            Guantes de goma y de nitrilo (posición NCM 4015), desde enero de 2024, solo
+            importadores que son empresas. Pesa menos de 300 KB y se carga en segundos.
           </p>
         </div>
         <label for="fileInput">Archivo Parquet local (recomendado)</label>
@@ -627,9 +752,9 @@ function decodificar(col, valor) {
   const nombre = dicc[String(valor).trim()];
   return nombre ?? valor;
 }
-const COLOR_NAVY = "#0B2545";
-const COLOR_CYAN = "#35D6FF";
-const PALETA_ANIOS = ["#35D6FF", "#E8A33D", "#C2588F", "#0FAE96", "#5B4B8A", "#E85D4F", "#C9962B", "#7A9CC6", "#C77DFF"];
+const COLOR_NAVY = "#051E45";
+const COLOR_CYAN = "#1FB5E3";
+const PALETA_ANIOS = ["#0DA4CF", "#795EC9", "#A69722", "#4170CB", "#C13234", "#3BAB8D", "#B33879", "#47AB4F", "#8D9AA8"];  // series de la marca GlobalAIze
 function colorTema(nombre) {
   return getComputedStyle(document.documentElement).getPropertyValue(nombre).trim();
 }
@@ -885,7 +1010,7 @@ async function cargarArchivosLocales(files) {
       await db.registerFileBuffer(file.name, buffer);
     }
     const nombres = files.map((f) => `'${esc(f.name)}'`).join(", ");
-    await conn.query(`CREATE OR REPLACE VIEW impo AS SELECT * FROM read_parquet([${nombres}])`);
+    await conn.query(`CREATE OR REPLACE VIEW impo AS SELECT * REPLACE (regexp_replace(NOMBRE_IMPORTADOR, '([A-Z])\\?([A-Z ])', '\\1Ñ\\2', 'g') AS NOMBRE_IMPORTADOR) FROM read_parquet([${nombres}])`);
     setStatus(`Listo: ${files.length} archivo(s) cargado(s). Aplicá filtros o corré SQL (con varios años cargados puede tardar unos minutos: es muchísima información).`, "ok");
     fuenteConectada();
   } catch (err) {
@@ -898,7 +1023,7 @@ async function cargarUrl(url) {
   setStatus("Conectando a " + url + "...");
   aplicarBtn.disabled = true;
   try {
-    await conn.query(`CREATE OR REPLACE VIEW impo AS SELECT * FROM read_parquet('${esc(url)}')`);
+    await conn.query(`CREATE OR REPLACE VIEW impo AS SELECT * REPLACE (regexp_replace(NOMBRE_IMPORTADOR, '([A-Z])\\?([A-Z ])', '\\1Ñ\\2', 'g') AS NOMBRE_IMPORTADOR) FROM read_parquet('${esc(url)}')`);
     setStatus("Listo: fuente remota conectada. Aplicá filtros o corré SQL.", "ok");
     fuenteConectada();
   } catch (err) {
@@ -1448,5 +1573,6 @@ initDb()
   })
   .catch((err) => setStatus("No se pudo inicializar DuckDB-WASM: " + err, "error"));
 </script>
+<p class="pie">Hecho por <a href="https://www.globalaize.com" target="_blank" rel="noopener">GlobalAIze</a>: agentes de IA, automatizaciones y análisis de datos para empresas de comercio exterior. Código abierto en <a href="https://github.com/mauroemartinez/analisis_datos_comex_arca" target="_blank" rel="noopener">GitHub</a>.</p>
 </body>
 </html>

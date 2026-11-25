@@ -6,6 +6,7 @@ on:
     paths:
       - "explorer/index.html"
       - "explorer/demo/**"
+      - "explorer/assets/**"
       - ".github/workflows/pages.yml"
   workflow_dispatch:
 
@@ -29,6 +30,7 @@ jobs:
           mkdir -p _site/demo
           cp explorer/index.html _site/
           cp explorer/demo/*.parquet _site/demo/
+          cp -r explorer/assets _site/assets
           touch _site/.nojekyll
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v4

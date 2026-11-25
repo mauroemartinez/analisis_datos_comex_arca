@@ -19,7 +19,7 @@ This repository is ready to be published: it does not include monthly databases,
 - Querying that history by importer, NCM code, general summary or free-form SQL.
 - Generating a final monthly table with one row per item.
 - Filtering NCM codes from an editable local list.
-- Exploring it through tutorials (`notebooks/`) or a backend-free web explorer (`explorer/`), which you can [try online with sample data](https://mauroemartinez.github.io/analisis_datos_comex_arca/?demo=1).
+- Exploring it through tutorials (`notebooks/`) or a backend-free web explorer (`explorer/`), which you can [try online with sample data](https://mauroemartinez.github.io/analisis_datos_comex_arca/?demo=1). A [step-by-step tutorial](docs/TUTORIAL.en.md) shows how.
 
 ## Structure
 
@@ -223,7 +223,9 @@ jupyter lab notebooks
 
 ## Exploring the dataset online or self-hosted (or from a USB drive)
 
-> **Try it online, nothing to install:** [https://mauroemartinez.github.io/analisis_datos_comex_arca/?demo=1](https://mauroemartinez.github.io/analisis_datos_comex_arca/?demo=1) opens the explorer with a sample already loaded: rubber and nitrile gloves (NCM 4015), 2018 to 2026, only importers that are companies (individuals are left out), under 1 MB. The same page also opens your own local Parquet files, which never leave your computer.
+> **Try it online, nothing to install:** [https://mauroemartinez.github.io/analisis_datos_comex_arca/?demo=1](https://mauroemartinez.github.io/analisis_datos_comex_arca/?demo=1) opens the explorer with a sample already loaded: rubber and nitrile gloves (NCM 4015), January 2024 onward, only importers that are companies (individuals are left out), under 300 KB. The same page also opens your own local Parquet files, which never leave your computer.
+>
+> **Step-by-step tutorial, with screenshots:** [docs/TUTORIAL.en.md](docs/TUTORIAL.en.md): the online explorer, the explorer with the full history, and queries with Python and SQL (including why you must collapse to one row per item before adding up FOB).
 >
 > **How it is published:** a GitHub Action (`.github/workflows/pages.yml`) copies `explorer/index.html` and the sample in `explorer/demo/` to GitHub Pages on every push that touches them. The sample is rebuilt with `python explorer/armar_demo.py Data/impo_historico.parquet explorer/demo/guantes-4015.parquet`. The full history is not published (see below).
 
@@ -231,19 +233,19 @@ jupyter lab notebooks
 
 Filters, with several years loaded at once and multiple selection for customs office / customs regime type:
 
-<p align="center"><img src="assets/explorer-filtros.png" alt="Explorer filters with several years loaded and customs regime types selected" width="700" /></p>
+<p align="center"><img src="docs/img/tutorial-1-inicio.jpg" alt="Explorer filters with several years loaded and customs regime types selected" width="700" /></p>
 
 Metric cards (importers, items, customs entries, FOB, change) and the evolution chart:
 
-<p align="center"><img src="assets/explorer-metricas-evolucion.png" alt="Metric cards and monthly evolution chart" width="700" /></p>
+<p align="center"><img src="docs/img/tutorial-2-tarjetas-y-mensual.jpg" alt="Metric cards and monthly evolution chart" width="700" /></p>
 
 Top 15 importers and top 15 NCM codes by FOB:
 
-<p align="center"><img src="assets/explorer-top15.png" alt="Bar charts of the top 15 importers and the top 15 NCM codes" width="700" /></p>
+<p align="center"><img src="docs/img/tutorial-4-rankings-y-resultados.jpg" alt="Bar charts of the top 15 importers and the top 15 NCM codes" width="700" /></p>
 
 Results table, with the SQL query built by the filters (editable) and "Exportar CSV" (Export CSV):
 
-<p align="center"><img src="assets/explorer-resultados-sql.png" alt="Results table and auto-generated SQL query" width="700" /></p>
+<p align="center"><img src="docs/img/tutorial-5-resumen-y-sql.jpg" alt="Results table and auto-generated SQL query" width="700" /></p>
 
 Two ways to use it, without writing any code:
 

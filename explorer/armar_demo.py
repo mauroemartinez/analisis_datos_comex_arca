@@ -1,4 +1,6 @@
-"""Arma el conjunto de ejemplo del explorador: guantes (NCM 4015), solo empresas.
+"""Arma el conjunto de ejemplo del explorador: guantes (NCM 4015), solo empresas,
+desde enero de dos años antes del último período disponible (con datos de 2026,
+arranca en enero de 2024).
 
 Los importadores que son personas fisicas no se publican: se conserva una fila
 solo si el nombre tiene una forma societaria o es una entidad (asociacion,
@@ -18,11 +20,14 @@ EMPRESA = (
     r"|SOCIEDAD|COOPERATIVA|ASOCIACION|FUNDACION|MUTUAL|LTDA|\bINC\.?$|\bLLC\b|\bCORP|\bLIMITED\b|\bGMBH\b"
 )
 c = duckdb.connect()
+ultimo = c.sql(f"SELECT max(PERIODO) FROM read_parquet('{src}')").fetchone()[0]
+desde_periodo = f"{int(ultimo[:4]) - 2}01"
 c.execute(
     f"""
     COPY (
         SELECT * FROM read_parquet('{src}')
         WHERE POS_NCM LIKE '4015%'
+          AND PERIODO >= '{desde_periodo}'
           AND regexp_matches(upper(trim(NOMBRE_IMPORTADOR)), '{EMPRESA}')
         ORDER BY PERIODO, DESTINACION, NUM_ITEM, ARANCEL_CONCEPTO
     ) TO '{dst}' (FORMAT parquet, COMPRESSION zstd, ROW_GROUP_SIZE 20000)

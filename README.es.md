@@ -19,7 +19,7 @@ Este repositorio está preparado para publicarse: no incluye bases mensuales, sa
 - Consultar ese histórico por importador, NCM, resumen general o SQL libre.
 - Generar una tabla final mensual con una fila por ítem.
 - Filtrar posiciones NCM desde una lista local editable.
-- Explorarlo desde tutoriales (`notebooks/`) o desde un explorador web sin backend (`explorer/`), que podés [probar online con datos de ejemplo](https://mauroemartinez.github.io/analisis_datos_comex_arca/?demo=1).
+- Explorarlo desde tutoriales (`notebooks/`) o desde un explorador web sin backend (`explorer/`), que podés [probar online con datos de ejemplo](https://mauroemartinez.github.io/analisis_datos_comex_arca/?demo=1). Un [tutorial paso a paso](docs/TUTORIAL.md) muestra cómo.
 
 ## Estructura
 
@@ -223,7 +223,9 @@ jupyter lab notebooks
 
 ## Explorar el dataset online o self-hosted (o desde un pendrive)
 
-> **Probalo online, sin instalar nada:** [https://mauroemartinez.github.io/analisis_datos_comex_arca/?demo=1](https://mauroemartinez.github.io/analisis_datos_comex_arca/?demo=1) abre el explorador con un ejemplo ya cargado: guantes de goma y de nitrilo (NCM 4015), de 2018 a 2026, solo importadores que son empresas (las personas físicas quedan afuera), menos de 1 MB. La misma página abre también tus propios Parquet locales, que nunca salen de tu computadora.
+> **Probalo online, sin instalar nada:** [https://mauroemartinez.github.io/analisis_datos_comex_arca/?demo=1](https://mauroemartinez.github.io/analisis_datos_comex_arca/?demo=1) abre el explorador con un ejemplo ya cargado: guantes de goma y de nitrilo (NCM 4015), desde enero de 2024, solo importadores que son empresas (las personas físicas quedan afuera), menos de 300 KB. La misma página abre también tus propios Parquet locales, que nunca salen de tu computadora.
+>
+> **Tutorial paso a paso, con capturas:** [docs/TUTORIAL.md](docs/TUTORIAL.md): el explorador online, el explorador con el histórico completo y las consultas con Python y SQL (incluido por qué hay que juntar una fila por ítem antes de sumar el FOB).
 >
 > **Cómo se publica:** una GitHub Action (`.github/workflows/pages.yml`) copia `explorer/index.html` y el ejemplo de `explorer/demo/` a GitHub Pages en cada push que los toca. El ejemplo se rearma con `python explorer/armar_demo.py Data/impo_historico.parquet explorer/demo/guantes-4015.parquet`. El histórico completo no se publica (ver más abajo).
 
@@ -231,19 +233,19 @@ jupyter lab notebooks
 
 Filtros, con varios años cargados a la vez y selección múltiple en aduana / tipo de destinación:
 
-<p align="center"><img src="assets/explorer-filtros.png" alt="Filtros del explorador con varios años cargados y tipos de destinación seleccionados" width="700" /></p>
+<p align="center"><img src="docs/img/tutorial-1-inicio.jpg" alt="Filtros del explorador con varios años cargados y tipos de destinación seleccionados" width="700" /></p>
 
 Tarjetas de métricas (importadores, ítems, despachos, FOB, variación) y el gráfico de evolución:
 
-<p align="center"><img src="assets/explorer-metricas-evolucion.png" alt="Tarjetas de métricas y gráfico de evolución mensual" width="700" /></p>
+<p align="center"><img src="docs/img/tutorial-2-tarjetas-y-mensual.jpg" alt="Tarjetas de métricas y gráfico de evolución mensual" width="700" /></p>
 
 Top 15 importadores y top 15 posiciones NCM por FOB:
 
-<p align="center"><img src="assets/explorer-top15.png" alt="Gráficos de barras de top 15 importadores y top 15 posiciones NCM" width="700" /></p>
+<p align="center"><img src="docs/img/tutorial-4-rankings-y-resultados.jpg" alt="Gráficos de barras de top 15 importadores y top 15 posiciones NCM" width="700" /></p>
 
 Tabla de resultados, con la consulta SQL que arman los filtros (editable) y "Exportar CSV":
 
-<p align="center"><img src="assets/explorer-resultados-sql.png" alt="Tabla de resultados y consulta SQL autogenerada" width="700" /></p>
+<p align="center"><img src="docs/img/tutorial-5-resumen-y-sql.jpg" alt="Tabla de resultados y consulta SQL autogenerada" width="700" /></p>
 
 Dos formas de usarla, sin escribir nada de código:
 
