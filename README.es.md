@@ -19,7 +19,7 @@ Este repositorio está preparado para publicarse: no incluye bases mensuales, sa
 - Consultar ese histórico por importador, NCM, resumen general o SQL libre.
 - Generar una tabla final mensual con una fila por ítem.
 - Filtrar posiciones NCM desde una lista local editable.
-- Explorarlo desde tutoriales (`notebooks/`) o desde un prototipo web sin backend (`explorer/`, ver `docs/EXPLORACION_ONLINE.md`).
+- Explorarlo desde tutoriales (`notebooks/`) o desde un explorador web sin backend (`explorer/`), que podés [probar online con datos de ejemplo](https://mauroemartinez.github.io/analisis_datos_comex_arca/?demo=1).
 
 ## Estructura
 
@@ -222,6 +222,10 @@ jupyter lab notebooks
 ```
 
 ## Explorar el dataset online o self-hosted (o desde un pendrive)
+
+> **Probalo online, sin instalar nada:** [https://mauroemartinez.github.io/analisis_datos_comex_arca/?demo=1](https://mauroemartinez.github.io/analisis_datos_comex_arca/?demo=1) abre el explorador con un ejemplo ya cargado: guantes de goma y de nitrilo (NCM 4015), de 2018 a 2026, solo importadores que son empresas (las personas físicas quedan afuera), menos de 1 MB. La misma página abre también tus propios Parquet locales, que nunca salen de tu computadora.
+>
+> **Cómo se publica:** una GitHub Action (`.github/workflows/pages.yml`) copia `explorer/index.html` y el ejemplo de `explorer/demo/` a GitHub Pages en cada push que los toca. El ejemplo se rearma con `python explorer/armar_demo.py Data/impo_historico.parquet explorer/demo/guantes-4015.parquet`. El histórico completo no se publica (ver más abajo).
 
 `explorer/index.html` es una página estática, sin backend, que corre **DuckDB directo en el navegador** (vía DuckDB-WASM) contra `impo_historico.parquet`, con filtros (importador, NCM, país, aduana, tipo de destinación, rango de fechas), gráficos (evolución mensual/trimestral/anual/interanual, top 15 importadores, top 15 NCM) y un indicador de variación contra el período anterior. Sin caja de SQL obligatoria: los filtros arman las consultas solos (aunque queda una sección "Avanzado" con SQL libre para quien lo quiera).
 

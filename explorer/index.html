@@ -186,6 +186,7 @@
     flex: 1 1 170px;
     margin: 0;
   }
+  .demo-box { margin-bottom: 16px; padding-bottom: 14px; border-bottom: 1px solid var(--border, rgba(127,127,127,.25)); }
   .botones { display: flex; gap: 10px; margin-top: 14px; flex-wrap: wrap; align-items: center; }
   button {
     font-size: 0.86rem;
@@ -404,6 +405,13 @@
   <section class="toolbar">
     <div class="toolbar-fields">
       <div class="campo-archivo">
+        <div class="demo-box">
+          <button id="loadDemo" disabled>Probar con datos de ejemplo</button>
+          <p class="ayuda-chica" style="margin: 6px 0 0">
+            Guantes de goma y de nitrilo (posición NCM 4015), de 2018 a 2026, solo
+            importadores que son empresas. Pesa menos de 1 MB y se carga en segundos.
+          </p>
+        </div>
         <label for="fileInput">Archivo Parquet local (recomendado)</label>
         <input type="file" id="fileInput" accept=".parquet" multiple disabled />
         <p class="ayuda-chica" style="margin: 6px 0 0">
@@ -748,6 +756,10 @@ const statusResultadosEl = document.getElementById("statusResultados");
 const fileInputEl = document.getElementById("fileInput");
 const dataUrlEl = document.getElementById("dataUrl");
 const loadUrlBtn = document.getElementById("loadUrl");
+const loadDemoBtn = document.getElementById("loadDemo");
+// El conjunto de ejemplo viaja con la página (explorer/demo/), así el
+// explorador publicado se puede probar sin tener el histórico.
+const DEMO_URL = new URL("demo/guantes-4015.parquet", location.href).href;
 const aplicarBtn = document.getElementById("aplicar");
 const limpiarBtn = document.getElementById("limpiar");
 const exportarBtn = document.getElementById("exportarCsv");
@@ -1350,6 +1362,10 @@ fileInputEl.addEventListener("change", (e) => {
   if (files.length) cargarArchivosLocales(files);
 });
 loadUrlBtn.addEventListener("click", () => cargarUrl(dataUrlEl.value.trim()));
+loadDemoBtn.addEventListener("click", () => {
+  dataUrlEl.value = DEMO_URL;
+  cargarUrl(DEMO_URL);
+});
 aplicarBtn.addEventListener("click", aplicarFiltros);
 limpiarBtn.addEventListener("click", () => {
   periodoDesdeEl.value = "";
@@ -1389,10 +1405,14 @@ initDb()
   .then(async () => {
     fileInputEl.disabled = false;
     loadUrlBtn.disabled = false;
+    loadDemoBtn.disabled = false;
     if (dataParam) {
       await cargarUrl(dataParam);
+    } else if (params.get("demo") === "1") {
+      dataUrlEl.value = DEMO_URL;
+      await cargarUrl(DEMO_URL);
     } else {
-      setStatus("Listo. Elegí un archivo Parquet local para empezar.");
+      setStatus("Listo. Probá con los datos de ejemplo o elegí un archivo Parquet local.");
     }
   })
   .catch((err) => setStatus("No se pudo inicializar DuckDB-WASM: " + err, "error"));

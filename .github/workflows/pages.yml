@@ -1,0 +1,40 @@
+name: Publicar el explorador en GitHub Pages
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "explorer/index.html"
+      - "explorer/demo/**"
+      - ".github/workflows/pages.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      # Solo la página y el ejemplo: los Parquet por año de explorer/data/ no se versionan.
+      - name: Armar el sitio
+        run: |
+          mkdir -p _site/demo
+          cp explorer/index.html _site/
+          cp explorer/demo/*.parquet _site/demo/
+          touch _site/.nojekyll
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+      - id: deployment
+        uses: actions/deploy-pages@v4

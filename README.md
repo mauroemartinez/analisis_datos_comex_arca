@@ -19,7 +19,7 @@ This repository is ready to be published: it does not include monthly databases,
 - Querying that history by importer, NCM code, general summary or free-form SQL.
 - Generating a final monthly table with one row per item.
 - Filtering NCM codes from an editable local list.
-- Exploring it through tutorials (`notebooks/`) or a backend-free web prototype (`explorer/`, see `docs/EXPLORACION_ONLINE.md`, in Spanish).
+- Exploring it through tutorials (`notebooks/`) or a backend-free web explorer (`explorer/`), which you can [try online with sample data](https://mauroemartinez.github.io/analisis_datos_comex_arca/?demo=1).
 
 ## Structure
 
@@ -222,6 +222,10 @@ jupyter lab notebooks
 ```
 
 ## Exploring the dataset online or self-hosted (or from a USB drive)
+
+> **Try it online, nothing to install:** [https://mauroemartinez.github.io/analisis_datos_comex_arca/?demo=1](https://mauroemartinez.github.io/analisis_datos_comex_arca/?demo=1) opens the explorer with a sample already loaded: rubber and nitrile gloves (NCM 4015), 2018 to 2026, only importers that are companies (individuals are left out), under 1 MB. The same page also opens your own local Parquet files, which never leave your computer.
+>
+> **How it is published:** a GitHub Action (`.github/workflows/pages.yml`) copies `explorer/index.html` and the sample in `explorer/demo/` to GitHub Pages on every push that touches them. The sample is rebuilt with `python explorer/armar_demo.py Data/impo_historico.parquet explorer/demo/guantes-4015.parquet`. The full history is not published (see below).
 
 `explorer/index.html` is a static page, with no backend, that runs **DuckDB directly in the browser** (via DuckDB-WASM) against `impo_historico.parquet`, with filters (importer, NCM code, country, customs office, customs regime type, date range), charts (monthly/quarterly/yearly/year-over-year evolution, top 15 importers, top 15 NCM codes) and an indicator of change against the previous period. No SQL box is required: the filters build the queries on their own (although there is still an "Avanzado" (Advanced) section with free-form SQL for anyone who wants it).
 

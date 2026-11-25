@@ -33,6 +33,8 @@ Thumbs.db
 *.xlsx
 *.xlsm
 *.parquet
+# El conjunto de ejemplo del explorador publicado (0,9 MB, solo empresas) si se versiona.
+!/explorer/demo/*.parquet
 *.feather
 *.arrow
 *.lst
