@@ -7,6 +7,19 @@
 
 Python tools to download, convert, query and filter the public Argentine international trade data published by ARCA.
 
+## In short
+
+👉 **Try it:** [mauroemartinez.github.io/analisis_datos_comex_arca/?demo=1](https://mauroemartinez.github.io/analisis_datos_comex_arca/?demo=1). It is a free GitHub page, with no server, and a small sample already loaded: rubber and nitrile gloves from January 2024 onward (under 300 KB).
+
+With this repository you can:
+
+1. **Download ARCA's official import data, for free**, for the range of months you choose.
+2. **Turn it into compressed Parquet and merge it into a single history**, as small as possible (2018 to today, about 2 GB), queried in seconds with DuckDB or Polars.
+3. **Explore it on the same page as the link above, but with your data and on your computer:** open the files you downloaded and filter by importer, NCM code, country, customs office and dates, with charts and CSV export. Nothing is uploaded anywhere.
+4. **Query it with Python or SQL** and export it to Excel.
+
+Step by step, with screenshots: [docs/TUTORIAL.en.md](docs/TUTORIAL.en.md).
+
 Official source: ARCA's Información Agregada de Comercio Exterior (aggregated international trade data, in Spanish).
 
 https://arca.gob.ar/operadoresComercioExterior/informacionAgregada/informacion-agregada.asp

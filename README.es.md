@@ -7,6 +7,19 @@
 
 Herramientas en Python para descargar, convertir, consultar y filtrar datos públicos de comercio exterior argentino publicados por ARCA.
 
+## En simple
+
+👉 **Probalo:** [mauroemartinez.github.io/analisis_datos_comex_arca/?demo=1](https://mauroemartinez.github.io/analisis_datos_comex_arca/?demo=1). Es una página gratis de GitHub, sin servidor, con un ejemplo chico ya cargado: guantes de goma y de nitrilo desde enero de 2024 (menos de 300 KB).
+
+Con este repo podés:
+
+1. **Bajar los datos oficiales de importaciones de ARCA, gratis**, del rango de meses que le digas.
+2. **Convertirlos a Parquet comprimido y unirlos en un solo histórico**, que ocupa lo menos posible (de 2018 a hoy, unos 2 GB) y se consulta en segundos con DuckDB o Polars.
+3. **Explorarlos en la misma página que el link de arriba, pero con tus datos y en tu compu:** abrís los archivos que bajaste y filtrás por importador, posición NCM, país, aduana y fechas, con gráficos y exportación a CSV. Nada se sube a ningún lado.
+4. **Consultarlos con Python o SQL** y exportarlos a Excel.
+
+El paso a paso, con capturas: [docs/TUTORIAL.md](docs/TUTORIAL.md).
+
 Fuente oficial: Información Agregada de Comercio Exterior de ARCA.
 
 https://arca.gob.ar/operadoresComercioExterior/informacionAgregada/informacion-agregada.asp
