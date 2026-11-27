@@ -17,6 +17,7 @@ With this repository you can:
 2. **Turn it into compressed Parquet and merge it into a single history**, as small as possible (2018 to today, about 2 GB), queried in seconds with DuckDB or Polars.
 3. **Explore it on the same page as the link above, but with your data and on your computer:** open the files you downloaded and filter by importer, NCM code, country, customs office and dates, with charts and CSV export. Nothing is uploaded anywhere.
 4. **Query it with Python or SQL** and export it to Excel.
+5. **See it in Tableau:** a five-page dashboard of Argentina's imports from 2019 to 2026, generated from code ([below](#tableau-dashboard)).
 
 Step by step, with screenshots: [docs/TUTORIAL.en.md](docs/TUTORIAL.en.md).
 
@@ -28,7 +29,7 @@ This repository is ready to be published: it does not include monthly databases,
 
 ## Stack
 
-Python with DuckDB, Polars, pandas and PyArrow over Parquet (zstd); Jupyter notebooks with Matplotlib; the web explorer is a single static page with DuckDB-WASM and hand-drawn SVG charts, published on GitHub Pages by a GitHub Actions workflow (`.github/workflows/pages.yml`).
+Python with DuckDB, Polars, pandas and PyArrow over Parquet (zstd); Jupyter notebooks with Matplotlib; the web explorer is a single static page with DuckDB-WASM and hand-drawn SVG charts, published on GitHub Pages by a GitHub Actions workflow (`.github/workflows/pages.yml`). The Tableau dashboard uses DuckDB, the Tableau Hyper API and Pillow, and its workbook is generated as XML from Python.
 
 ## What it is for
 
@@ -37,6 +38,24 @@ Python with DuckDB, Polars, pandas and PyArrow over Parquet (zstd); Jupyter note
 - Generating a final monthly table with one row per item.
 - Filtering NCM codes from an editable local list.
 - Exploring it through tutorials (`notebooks/`) or a backend-free web explorer (`explorer/`), which you can [try online with sample data](https://mauroemartinez.github.io/analisis_datos_comex_arca/?demo=1). A [step-by-step tutorial](docs/TUTORIAL.en.md) shows how.
+
+## Tableau dashboard
+
+![Panorama page of the Tableau dashboard](tableau/capturas/1-panorama.png)
+
+`tableau/` builds a five-page Tableau dashboard of Argentina's imports from 2019 to 2026, entirely from code:
+
+1. `preparar_datos.py`: DuckDB reads the ARCA history (655 million rows, one per tariff concept), keeps one row per item (43 million) and writes a summary of about 540,000 rows by month, HS chapter, origin and transport mode, as CSV and as a Tableau Hyper extract. It runs in under two minutes.
+2. `fondos.py`: draws each page's background (GlobalAIze glass panels, titles and navigation) with Pillow.
+3. `generar_twb.py`: writes the workbook XML: 24 sheets and 5 dashboards with navigation buttons, LOD expressions, table calculations (12-month moving average), a dual-axis chart with reference lines for policy changes, filter actions and a choropleth map. The layout comes from `diseno.py`, the single source of truth for positions and texts.
+
+Pages: Panorama, Orígenes (origins: map, who gained and lost share since 2019), Productos (products: treemap, origin mix by sector, biggest changes), Logística (transport mode by year and region, seasonality, value per item) and Método (method, sources and what was left out). Clicking an origin or a product filters the rest of its page. Electricity (HS 2716) is left out: its declarations add about USD 40 billion with items repeated beyond what the interconnection can carry, and the Method page shows why.
+
+| Origins | Products | Logistics | Method |
+|---|---|---|---|
+| ![Origins](tableau/capturas/2-origenes.png) | ![Products](tableau/capturas/3-productos.png) | ![Logistics](tableau/capturas/4-logistica.png) | ![Method](tableau/capturas/5-metodo.png) |
+
+To rebuild it: `pip install -r tableau/requirements.txt`, then `python tableau/preparar_datos.py` (needs `Data/impo_historico.parquet`), `python tableau/fondos.py` (needs the IBM Plex Sans and Newsreader fonts, from Google Fonts, in `tableau/marca/fuentes/`; they are not versioned) and `python tableau/generar_twb.py`, and open `tableau/importaciones_argentina.twb` with Tableau Public Desktop.
 
 ## Structure
 
@@ -64,6 +83,11 @@ Python with DuckDB, Polars, pandas and PyArrow over Parquet (zstd); Jupyter note
 |   `-- EXPLORACION_ONLINE.md         (online/self-hosted exploration architecture, in Spanish)
 |-- exports/
 |   `-- local working folder, not versioned (see below)
+|-- tableau/
+|   |-- preparar_datos.py              (DuckDB summary + Hyper extract)
+|   |-- fondos.py, diseno.py           (page backgrounds and layout)
+|   |-- generar_twb.py                 (writes the Tableau workbook)
+|   `-- importaciones_argentina.twb    (the generated workbook)
 |-- filtrar_posiciones.py
 |-- posiciones_interes.ejemplo.txt
 |-- requirements.txt

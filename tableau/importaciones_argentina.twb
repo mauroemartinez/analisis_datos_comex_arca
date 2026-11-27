@@ -1,0 +1,1430 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<workbook original-version='18.1' source-build='2026.3.0 (20263.25.1027.1305)' source-platform='win' version='18.1' xmlns:user='http://www.tableausoftware.com/xml/user'>
+  <document-format-change-manifest>
+    <BasicButtonObject />
+    <BasicButtonObjectTextSupport />
+    <SheetIdentifierTracking />
+    <WindowsPersistSimpleIdentifiers />
+  </document-format-change-manifest>
+  <preferences>
+    <preference name='ui.encoding.shelf.height' value='24' />
+    <preference name='ui.shelf.height' value='26' />
+  </preferences>
+  <datasources>
+    <datasource caption='Importaciones ARCA' inline='true' name='federated.importaciones' version='18.1'>
+      <connection class='federated'>
+        <named-connections>
+          <named-connection caption='importaciones_argentina' name='textscan.importaciones'>
+            <connection class='textscan' directory='.' filename="importaciones_argentina.csv" password='' server='' />
+          </named-connection>
+        </named-connections>
+        <relation connection='textscan.importaciones' name='importaciones_argentina.csv' table='[importaciones_argentina#csv]' type='table'>
+          <columns character-set='UTF-8' header='yes' locale='es_AR' separator=','>
+            <column datatype="date" name="Fecha" ordinal='0' />
+            <column datatype="string" name="Rubro" ordinal='1' />
+            <column datatype="string" name="Capítulo" ordinal='2' />
+            <column datatype="string" name="N.º de capítulo" ordinal='3' />
+            <column datatype="string" name="País de origen" ordinal='4' />
+            <column datatype="string" name="País (mapa)" ordinal='5' />
+            <column datatype="string" name="Región" ordinal='6' />
+            <column datatype="string" name="Grupo de origen" ordinal='7' />
+            <column datatype="string" name="Vía de transporte" ordinal='8' />
+            <column datatype="string" name="Vía (grupo)" ordinal='9' />
+            <column datatype="real" name="FOB USD" ordinal='10' />
+            <column datatype="integer" name="Ítems" ordinal='11' />
+            <column datatype="real" name="FOB últimos 12 meses" ordinal='12' />
+            <column datatype="real" name="FOB 12 meses anteriores" ordinal='13' />
+            <column datatype="real" name="FOB 2019" ordinal='14' />
+            <column datatype="real" name="FOB energía eléctrica" ordinal='15' />
+          </columns>
+        </relation>
+      </connection>
+      <aliases enabled='yes' />
+      <column datatype="date" name="[Fecha]" role="dimension" type="ordinal" />
+      <column datatype="string" name="[Rubro]" role="dimension" type="nominal" />
+      <column datatype="string" name="[Capítulo]" role="dimension" type="nominal" />
+      <column datatype="string" name="[N.º de capítulo]" role="dimension" type="nominal" />
+      <column datatype="string" name="[País de origen]" role="dimension" type="nominal" />
+      <column datatype="string" name="[País (mapa)]" role="dimension" type="nominal" semantic-role='[Country].[ISO3166_2]' />
+      <column datatype="string" name="[Región]" role="dimension" type="nominal" />
+      <column datatype="string" name="[Grupo de origen]" role="dimension" type="nominal" />
+      <column datatype="string" name="[Vía de transporte]" role="dimension" type="nominal" />
+      <column datatype="string" name="[Vía (grupo)]" role="dimension" type="nominal" />
+      <column datatype="real" name="[FOB USD]" role="measure" type="quantitative" />
+      <column datatype="integer" name="[Ítems]" role="measure" type="quantitative" />
+      <column datatype="real" name="[FOB últimos 12 meses]" role="measure" type="quantitative" />
+      <column datatype="real" name="[FOB 12 meses anteriores]" role="measure" type="quantitative" />
+      <column datatype="real" name="[FOB 2019]" role="measure" type="quantitative" />
+      <column datatype="real" name="[FOB energía eléctrica]" role="measure" type="quantitative" />
+      <column caption="FOB (miles de millones USD)" datatype="real" default-format="n#,##0.0" name="[c_fob_mm]" role="measure" type="quantitative"><calculation class='tableau' formula="[FOB USD] / 1000000000"></calculation></column>
+      <column caption="FOB (millones USD)" datatype="real" default-format="n#,##0" name="[c_fob_m]" role="measure" type="quantitative"><calculation class='tableau' formula="[FOB USD] / 1000000"></calculation></column>
+      <column caption="FOB de los últimos 12 meses (miles de millones USD)" datatype="real" default-format="n#,##0.0" name="[c_u12_mm]" role="measure" type="quantitative"><calculation class='tableau' formula="[FOB últimos 12 meses] / 1000000000"></calculation></column>
+      <column caption="Media móvil de 12 meses" datatype="real" default-format="n#,##0.0" name="[c_mm12]" role="measure" type="quantitative"><calculation class='tableau' formula="WINDOW_AVG(SUM([FOB USD]) / 1000000000, -11, 0)"><table-calc ordering-type='Rows' /></calculation></column>
+      <column caption="Importado en los últimos 12 meses" datatype="real" default-format='n"US$ "#,##0.0" mil M"' name="[c_kpi_u12]" role="measure" type="quantitative"><calculation class='tableau' formula="SUM([FOB últimos 12 meses]) / 1000000000"></calculation></column>
+      <column caption="Variación contra los 12 meses anteriores" datatype="real" default-format='p"▲ "0.0%;"▼ "0.0%' name="[c_var]" role="measure" type="quantitative"><calculation class='tableau' formula="SUM([FOB últimos 12 meses]) / SUM([FOB 12 meses anteriores]) - 1"></calculation></column>
+      <column caption="Peso en los últimos 12 meses" datatype="real" default-format="p0.0%" name="[c_peso]" role="measure" type="quantitative"><calculation class='tableau' formula="SUM([FOB últimos 12 meses]) / MIN({FIXED : SUM([FOB últimos 12 meses])})"></calculation></column>
+      <column caption="Peso en el total o en el origen elegido" datatype="real" default-format="p0.0%" name="[c_peso_sel]" role="measure" type="quantitative"><calculation class='tableau' formula="IF COUNTD([País de origen]) = 1 THEN SUM([FOB últimos 12 meses]) / MIN({FIXED [País de origen] : SUM([FOB últimos 12 meses])}) ELSE SUM([FOB últimos 12 meses]) / MIN({FIXED : SUM([FOB últimos 12 meses])}) END"></calculation></column>
+      <column caption="Peso en 2019" datatype="real" default-format="p0.0%" name="[c_peso_2019]" role="measure" type="quantitative"><calculation class='tableau' formula="SUM([FOB 2019]) / MIN({FIXED : SUM([FOB 2019])})"></calculation></column>
+      <column caption="Cambio de peso (puntos porcentuales)" datatype="real" default-format="n+0.0;-0.0" name="[c_cambio]" role="measure" type="quantitative"><calculation class='tableau' formula="([c_peso] - [c_peso_2019]) * 100"></calculation></column>
+      <column caption="Ganó o perdió peso" datatype="string" name="[c_signo_peso]" role="measure" type="nominal"><calculation class='tableau' formula="IF [c_cambio] &gt;= 0 THEN 'Ganó peso' ELSE 'Perdió peso' END"></calculation></column>
+      <column caption="Subió o bajó" datatype="string" name="[c_signo]" role="measure" type="nominal"><calculation class='tableau' formula="IF [c_var] &gt;= 0 THEN 'Subió' ELSE 'Bajó' END"></calculation></column>
+      <column caption="Peso en el año" datatype="real" default-format="p0%" name="[c_peso_anio]" role="measure" type="quantitative"><calculation class='tableau' formula="SUM([FOB USD]) / MIN({FIXED DATETRUNC('year', [Fecha]) : SUM([FOB USD])})"></calculation></column>
+      <column caption="Peso en el último año" datatype="real" default-format="p0%" name="[c_peso_anio_final]" role="measure" type="quantitative"><calculation class='tableau' formula="IF MIN(YEAR([Fecha])) = MIN({FIXED : MAX(YEAR([Fecha]))}) THEN [c_peso_anio] END"></calculation></column>
+      <column caption="Peso dentro del rubro" datatype="real" default-format="p0%" name="[c_peso_rubro]" role="measure" type="quantitative"><calculation class='tableau' formula="SUM([FOB últimos 12 meses]) / MIN({FIXED [Rubro] : SUM([FOB últimos 12 meses])})"></calculation></column>
+      <column caption="Peso dentro de la región" datatype="real" default-format="p0%" name="[c_peso_region]" role="measure" type="quantitative"><calculation class='tableau' formula="SUM([FOB últimos 12 meses]) / MIN({FIXED [Región] : SUM([FOB últimos 12 meses])})"></calculation></column>
+      <column caption="FOB medio por ítem (USD)" datatype="real" default-format='n"US$ "#,##0' name="[c_por_item]" role="measure" type="quantitative"><calculation class='tableau' formula="SUM([FOB últimos 12 meses]) / SUM(IF NOT ISNULL([FOB últimos 12 meses]) THEN [Ítems] END)"></calculation></column>
+      <column caption="Es un país" datatype="boolean" name="[c_ubicable]" role="dimension" type="nominal"><calculation class='tableau' formula="NOT ISNULL([País (mapa)])"></calculation></column>
+      <column caption="Combustibles (miles de millones USD)" datatype="real" default-format="n#,##0.0" name="[c_combustibles]" role="measure" type="quantitative"><calculation class='tableau' formula="(IF [Rubro] = 'Combustibles' THEN [FOB USD] END) / 1000000000"></calculation></column>
+      <column caption="Energía eléctrica declarada (miles de millones USD)" datatype="real" default-format="n#,##0.0" name="[c_electrica]" role="measure" type="quantitative"><calculation class='tableau' formula="[FOB energía eléctrica] / 1000000000"></calculation></column>
+      <column caption="Energía eléctrica declarada, donde supera a los combustibles" datatype="real" default-format="n#,##0.0" name="[c_electrica_arriba]" role="measure" type="quantitative"><calculation class='tableau' formula="IF SUM([c_electrica]) &gt; SUM([c_combustibles]) THEN SUM([c_electrica]) END"></calculation></column>
+      <column caption="Mes" datatype="string" name="[c_mes_texto]" role="dimension" type="nominal"><calculation class='tableau' formula="DATENAME('month', [Fecha]) + ' de ' + STR(YEAR([Fecha]))"></calculation></column>
+      <column caption="Ítems de despacho (miles)" datatype="real" default-format="n#,##0" name="[c_items_miles]" role="measure" type="quantitative"><calculation class='tableau' formula="[Ítems] / 1000"></calculation></column>
+      <column caption="Origen elegido" datatype="string" name="[c_origen_elegido]" role="measure" type="nominal"><calculation class='tableau' formula="IF COUNTD([País de origen]) = 1 THEN MIN([País de origen]) ELSE 'Todos los orígenes' END"></calculation></column>
+      <column caption="Rubro elegido" datatype="string" name="[c_rubro_elegido]" role="measure" type="nominal"><calculation class='tableau' formula="IF COUNTD([Rubro]) = 1 THEN MIN([Rubro]) ELSE 'Todos los rubros' END"></calculation></column>
+      <column-instance column="[Grupo de origen]" derivation="None" name="[none:Grupo de origen:nk]" pivot='key' type="nominal" />
+      <column-instance column="[Vía (grupo)]" derivation="None" name="[none:Vía (grupo):nk]" pivot='key' type="nominal" />
+      <column-instance column="[c_signo_peso]" derivation="User" name="[usr:c_signo_peso:nk]" pivot='key' type="nominal" />
+      <column-instance column="[c_signo]" derivation="User" name="[usr:c_signo:nk]" pivot='key' type="nominal" />
+      <extract count='-1' enabled='true' units='records'>
+        <connection access_mode='readonly' authentication='auth-none' author-locale='es_AR' class='hyper' dbname="importaciones_argentina.hyper" default-settings='hyper' schema='Extract' sslmode='' tablename='Extract' update-time='11/27/2026 01:00:00 AM' username='tableau-internal-user'>
+          <relation name='Extract' table='[Extract].[Extract]' type='table' />
+          <refresh incremental-updates='false' />
+        </connection>
+      </extract>
+      <style>
+        <style-rule element='mark'>
+          <encoding attr='color' field="[none:Grupo de origen:nk]" type='palette'><map to='#0da4cf'><bucket>&quot;Brasil&quot;</bucket></map><map to='#795ec9'><bucket>&quot;China&quot;</bucket></map><map to='#a69722'><bucket>&quot;Unión Europea&quot;</bucket></map><map to='#4170cb'><bucket>&quot;Estados Unidos&quot;</bucket></map><map to='#3bab8d'><bucket>&quot;Áreas especiales&quot;</bucket></map><map to='#5e6b7d'><bucket>&quot;Resto del mundo&quot;</bucket></map></encoding>
+          <encoding attr='color' field="[none:Vía (grupo):nk]" type='palette'><map to='#0da4cf'><bucket>&quot;Marítima&quot;</bucket></map><map to='#795ec9'><bucket>&quot;Camión&quot;</bucket></map><map to='#a69722'><bucket>&quot;Aérea&quot;</bucket></map><map to='#4170cb'><bucket>&quot;Ductos&quot;</bucket></map><map to='#5e6b7d'><bucket>&quot;Otras y sin informar&quot;</bucket></map></encoding>
+          <encoding attr='color' field="[usr:c_signo_peso:nk]" type='palette'><map to='#0da4cf'><bucket>&quot;Ganó peso&quot;</bucket></map><map to='#b33879'><bucket>&quot;Perdió peso&quot;</bucket></map></encoding>
+          <encoding attr='color' field="[usr:c_signo:nk]" type='palette'><map to='#0da4cf'><bucket>&quot;Subió&quot;</bucket></map><map to='#b33879'><bucket>&quot;Bajó&quot;</bucket></map></encoding>
+        </style-rule>
+      </style>
+    </datasource>
+  </datasources>
+  <actions>
+    <action caption="Elegir un origen en el panorama" name='[Action1]'>
+      <activation auto-clear='true' type='on-select' />
+      <source dashboard="Panorama" type='sheet' worksheet="Principales orígenes" />
+      <command command='tsc:tsl-filter'>
+        <param name='exclude' value="KPI origen,KPI rubro,Principales orígenes" />
+        <param name='special-fields' value='all' />
+        <param name='target' value="Panorama" />
+      </command>
+    </action>
+    <action caption="Elegir un origen en el mapa" name='[Action2]'>
+      <activation auto-clear='true' type='on-select' />
+      <source dashboard="Orígenes" type='sheet' worksheet="Mapa de orígenes" />
+      <command command='tsc:tsl-filter'>
+        <param name='exclude' value="Mapa de orígenes,Ganadores y perdedores,Peso de los grupos" />
+        <param name='special-fields' value='all' />
+        <param name='target' value="Orígenes" />
+      </command>
+    </action>
+    <action caption="Elegir un origen en el ranking" name='[Action3]'>
+      <activation auto-clear='true' type='on-select' />
+      <source dashboard="Orígenes" type='sheet' worksheet="Ganadores y perdedores" />
+      <command command='tsc:tsl-filter'>
+        <param name='exclude' value="Mapa de orígenes,Ganadores y perdedores,Peso de los grupos" />
+        <param name='special-fields' value='all' />
+        <param name='target' value="Orígenes" />
+      </command>
+    </action>
+    <action caption="Elegir un rubro en el mapa de productos" name='[Action4]'>
+      <activation auto-clear='true' type='on-select' />
+      <source dashboard="Productos" type='sheet' worksheet="Mapa de productos" />
+      <command command='tsc:tsl-filter'>
+        <param name='exclude' value="Mapa de productos,Rubro por origen,Subas y bajas" />
+        <param name='special-fields' value='all' />
+        <param name='target' value="Productos" />
+      </command>
+    </action>
+    <action caption="Elegir un rubro en la matriz" name='[Action5]'>
+      <activation auto-clear='true' type='on-select' />
+      <source dashboard="Productos" type='sheet' worksheet="Rubro por origen" />
+      <command command='tsc:tsl-filter'>
+        <param name='exclude' value="Mapa de productos,Rubro por origen,Subas y bajas" />
+        <param name='special-fields' value='all' />
+        <param name='target' value="Productos" />
+      </command>
+    </action>
+  </actions>
+  <worksheets>
+    <worksheet name="KPI importado">
+      <table>
+        <view>
+          <datasources><datasource caption='Importaciones ARCA' name='federated.importaciones' /></datasources>
+
+          <datasource-dependencies datasource='federated.importaciones'>
+            <column datatype="real" name="[FOB últimos 12 meses]" role="measure" type="quantitative" />
+            <column caption="Importado en los últimos 12 meses" datatype="real" default-format='n"US$ "#,##0.0" mil M"' name="[c_kpi_u12]" role="measure" type="quantitative"><calculation class='tableau' formula="SUM([FOB últimos 12 meses]) / 1000000000"></calculation></column>
+            <column-instance column="[c_kpi_u12]" derivation="User" name="[usr:c_kpi_u12:qk]" pivot='key' type="quantitative" />
+          </datasource-dependencies>
+
+          <aggregation value='true' />
+        </view>
+        <style>
+          <style-rule element='table'><format attr='background-color' value='#051e4501' /></style-rule>
+          <style-rule element='worksheet'>
+            <format attr='display-field-labels' scope='rows' value='false' />
+            <format attr='display-field-labels' scope='cols' value='false' />
+            <format attr='font-family' value='Tableau Book' />
+            <format attr='color' value='#BBC5D1' />
+          </style-rule>
+          <style-rule element='axis'>
+            <format attr='font-size' value='8' /><format attr='color' value='#8D9AA8' />
+            <format attr='stroke-color' value='#16284A' /><format attr='tick-color' value='#16284A' />
+          </style-rule>
+          <style-rule element='label'><format attr='font-size' value='9' /><format attr='color' value='#F0EEE9' /></style-rule>
+          <style-rule element='gridline'>
+            <format attr='line-visibility' scope='rows' value='on' />
+            <format attr='stroke-color' scope='rows' value='#16284A' />
+            <format attr='line-visibility' scope='cols' value='off' />
+          </style-rule>
+          <style-rule element='zeroline'><format attr='line-visibility' value='off' /></style-rule>
+          <style-rule element='table-div'><format attr='line-visibility' value='off' /></style-rule>
+          <style-rule element='cell'><format attr='width' value='272' /><format attr='height' value='48' /><format attr='text-align' value='left' /></style-rule>
+        </style>
+        <panes>
+          <pane selection-relaxation-option='selection-relaxation-allow'><view><breakdown value='auto' /></view><mark class="Text" /><encodings><text column="[federated.importaciones].[usr:c_kpi_u12:qk]" /></encodings><customized-label><formatted-text><run fontcolor='#f0eee9' fontname="Tableau Medium" fontsize='20'>&lt;[federated.importaciones].[usr:c_kpi_u12:qk]&gt;</run></formatted-text></customized-label><style><style-rule element='mark'><format attr='mark-labels-show' value='true' /><format attr='mark-labels-cull' value='false' /></style-rule></style></pane>
+        </panes>
+        <rows></rows>
+        <cols></cols>
+      </table>
+      <simple-id uuid='{719280EA-2670-52D6-98F3-9D7855952A82}' />
+    </worksheet>
+    <worksheet name="KPI variación">
+      <table>
+        <view>
+          <datasources><datasource caption='Importaciones ARCA' name='federated.importaciones' /></datasources>
+
+          <datasource-dependencies datasource='federated.importaciones'>
+            <column datatype="real" name="[FOB últimos 12 meses]" role="measure" type="quantitative" />
+            <column datatype="real" name="[FOB 12 meses anteriores]" role="measure" type="quantitative" />
+            <column caption="Variación contra los 12 meses anteriores" datatype="real" default-format='p"▲ "0.0%;"▼ "0.0%' name="[c_var]" role="measure" type="quantitative"><calculation class='tableau' formula="SUM([FOB últimos 12 meses]) / SUM([FOB 12 meses anteriores]) - 1"></calculation></column>
+            <column-instance column="[c_var]" derivation="User" name="[usr:c_var:qk]" pivot='key' type="quantitative" />
+          </datasource-dependencies>
+
+          <aggregation value='true' />
+        </view>
+        <style>
+          <style-rule element='table'><format attr='background-color' value='#051e4501' /></style-rule>
+          <style-rule element='worksheet'>
+            <format attr='display-field-labels' scope='rows' value='false' />
+            <format attr='display-field-labels' scope='cols' value='false' />
+            <format attr='font-family' value='Tableau Book' />
+            <format attr='color' value='#BBC5D1' />
+          </style-rule>
+          <style-rule element='axis'>
+            <format attr='font-size' value='8' /><format attr='color' value='#8D9AA8' />
+            <format attr='stroke-color' value='#16284A' /><format attr='tick-color' value='#16284A' />
+          </style-rule>
+          <style-rule element='label'><format attr='font-size' value='9' /><format attr='color' value='#F0EEE9' /></style-rule>
+          <style-rule element='gridline'>
+            <format attr='line-visibility' scope='rows' value='on' />
+            <format attr='stroke-color' scope='rows' value='#16284A' />
+            <format attr='line-visibility' scope='cols' value='off' />
+          </style-rule>
+          <style-rule element='zeroline'><format attr='line-visibility' value='off' /></style-rule>
+          <style-rule element='table-div'><format attr='line-visibility' value='off' /></style-rule>
+          <style-rule element='cell'><format attr='width' value='272' /><format attr='height' value='48' /><format attr='text-align' value='left' /></style-rule>
+        </style>
+        <panes>
+          <pane selection-relaxation-option='selection-relaxation-allow'><view><breakdown value='auto' /></view><mark class="Text" /><encodings><text column="[federated.importaciones].[usr:c_var:qk]" /></encodings><customized-label><formatted-text><run fontcolor='#f0eee9' fontname="Tableau Medium" fontsize='20'>&lt;[federated.importaciones].[usr:c_var:qk]&gt;</run></formatted-text></customized-label><style><style-rule element='mark'><format attr='mark-labels-show' value='true' /><format attr='mark-labels-cull' value='false' /></style-rule></style></pane>
+        </panes>
+        <rows></rows>
+        <cols></cols>
+      </table>
+      <simple-id uuid='{5DC8DDCA-9A4E-55B1-8364-C770250642CB}' />
+    </worksheet>
+    <worksheet name="KPI origen">
+      <table>
+        <view>
+          <datasources><datasource caption='Importaciones ARCA' name='federated.importaciones' /></datasources>
+
+          <datasource-dependencies datasource='federated.importaciones'>
+            <column datatype="string" name="[País de origen]" role="dimension" type="nominal" />
+            <column datatype="real" name="[FOB últimos 12 meses]" role="measure" type="quantitative" />
+            <column caption="Peso en los últimos 12 meses" datatype="real" default-format="p0.0%" name="[c_peso]" role="measure" type="quantitative"><calculation class='tableau' formula="SUM([FOB últimos 12 meses]) / MIN({FIXED : SUM([FOB últimos 12 meses])})"></calculation></column>
+            <column-instance column="[País de origen]" derivation="None" name="[none:País de origen:nk]" pivot='key' type="nominal" />
+            <column-instance column="[c_peso]" derivation="User" name="[usr:c_peso:qk]" pivot='key' type="quantitative" />
+            <column-instance column="[FOB últimos 12 meses]" derivation="Sum" name="[sum:FOB últimos 12 meses:qk]" pivot='key' type="quantitative" />
+          </datasource-dependencies>
+          <filter class='categorical' column="[federated.importaciones].[none:País de origen:nk]"><groupfilter count='1' end='top' function='end' units='records' user:ui-marker='end' user:ui-top-by-field='true'><groupfilter direction='DESC' expression="SUM([FOB últimos 12 meses])" function='order' user:ui-marker='order'><groupfilter function='level-members' level="[none:País de origen:nk]" user:ui-enumeration='all' user:ui-marker='enumerate' /></groupfilter></groupfilter></filter>
+          <aggregation value='true' />
+        </view>
+        <style>
+          <style-rule element='table'><format attr='background-color' value='#051e4501' /></style-rule>
+          <style-rule element='worksheet'>
+            <format attr='display-field-labels' scope='rows' value='false' />
+            <format attr='display-field-labels' scope='cols' value='false' />
+            <format attr='font-family' value='Tableau Book' />
+            <format attr='color' value='#BBC5D1' />
+          </style-rule>
+          <style-rule element='axis'>
+            <format attr='font-size' value='8' /><format attr='color' value='#8D9AA8' />
+            <format attr='stroke-color' value='#16284A' /><format attr='tick-color' value='#16284A' />
+          </style-rule>
+          <style-rule element='label'><format attr='font-size' value='9' /><format attr='color' value='#F0EEE9' /></style-rule>
+          <style-rule element='gridline'>
+            <format attr='line-visibility' scope='rows' value='on' />
+            <format attr='stroke-color' scope='rows' value='#16284A' />
+            <format attr='line-visibility' scope='cols' value='off' />
+          </style-rule>
+          <style-rule element='zeroline'><format attr='line-visibility' value='off' /></style-rule>
+          <style-rule element='table-div'><format attr='line-visibility' value='off' /></style-rule>
+          <style-rule element='cell'><format attr='width' value='272' /><format attr='height' value='48' /><format attr='text-align' value='left' /></style-rule>
+        </style>
+        <panes>
+          <pane selection-relaxation-option='selection-relaxation-allow'><view><breakdown value='auto' /></view><mark class="Text" /><encodings><text column="[federated.importaciones].[none:País de origen:nk]" /><text column="[federated.importaciones].[usr:c_peso:qk]" /></encodings><customized-label><formatted-text><run fontcolor='#f0eee9' fontname="Tableau Medium" fontsize='15'>&lt;[federated.importaciones].[none:País de origen:nk]&gt;</run><run>Æ&#10;</run><run fontcolor='#bbc5d1' fontname="Tableau Book" fontsize='11'>&lt;[federated.importaciones].[usr:c_peso:qk]&gt;</run></formatted-text></customized-label><style><style-rule element='mark'><format attr='mark-labels-show' value='true' /><format attr='mark-labels-cull' value='false' /></style-rule></style></pane>
+        </panes>
+        <rows></rows>
+        <cols></cols>
+      </table>
+      <simple-id uuid='{B851977B-EAC0-5EFC-B4B2-DB296780D537}' />
+    </worksheet>
+    <worksheet name="KPI rubro">
+      <table>
+        <view>
+          <datasources><datasource caption='Importaciones ARCA' name='federated.importaciones' /></datasources>
+
+          <datasource-dependencies datasource='federated.importaciones'>
+            <column datatype="string" name="[Rubro]" role="dimension" type="nominal" />
+            <column datatype="real" name="[FOB últimos 12 meses]" role="measure" type="quantitative" />
+            <column caption="Peso en los últimos 12 meses" datatype="real" default-format="p0.0%" name="[c_peso]" role="measure" type="quantitative"><calculation class='tableau' formula="SUM([FOB últimos 12 meses]) / MIN({FIXED : SUM([FOB últimos 12 meses])})"></calculation></column>
+            <column-instance column="[Rubro]" derivation="None" name="[none:Rubro:nk]" pivot='key' type="nominal" />
+            <column-instance column="[c_peso]" derivation="User" name="[usr:c_peso:qk]" pivot='key' type="quantitative" />
+            <column-instance column="[FOB últimos 12 meses]" derivation="Sum" name="[sum:FOB últimos 12 meses:qk]" pivot='key' type="quantitative" />
+          </datasource-dependencies>
+          <filter class='categorical' column="[federated.importaciones].[none:Rubro:nk]"><groupfilter count='1' end='top' function='end' units='records' user:ui-marker='end' user:ui-top-by-field='true'><groupfilter direction='DESC' expression="SUM([FOB últimos 12 meses])" function='order' user:ui-marker='order'><groupfilter function='level-members' level="[none:Rubro:nk]" user:ui-enumeration='all' user:ui-marker='enumerate' /></groupfilter></groupfilter></filter>
+          <aggregation value='true' />
+        </view>
+        <style>
+          <style-rule element='table'><format attr='background-color' value='#051e4501' /></style-rule>
+          <style-rule element='worksheet'>
+            <format attr='display-field-labels' scope='rows' value='false' />
+            <format attr='display-field-labels' scope='cols' value='false' />
+            <format attr='font-family' value='Tableau Book' />
+            <format attr='color' value='#BBC5D1' />
+          </style-rule>
+          <style-rule element='axis'>
+            <format attr='font-size' value='8' /><format attr='color' value='#8D9AA8' />
+            <format attr='stroke-color' value='#16284A' /><format attr='tick-color' value='#16284A' />
+          </style-rule>
+          <style-rule element='label'><format attr='font-size' value='9' /><format attr='color' value='#F0EEE9' /></style-rule>
+          <style-rule element='gridline'>
+            <format attr='line-visibility' scope='rows' value='on' />
+            <format attr='stroke-color' scope='rows' value='#16284A' />
+            <format attr='line-visibility' scope='cols' value='off' />
+          </style-rule>
+          <style-rule element='zeroline'><format attr='line-visibility' value='off' /></style-rule>
+          <style-rule element='table-div'><format attr='line-visibility' value='off' /></style-rule>
+          <style-rule element='cell'><format attr='width' value='272' /><format attr='height' value='48' /><format attr='text-align' value='left' /></style-rule>
+        </style>
+        <panes>
+          <pane selection-relaxation-option='selection-relaxation-allow'><view><breakdown value='auto' /></view><mark class="Text" /><encodings><text column="[federated.importaciones].[none:Rubro:nk]" /><text column="[federated.importaciones].[usr:c_peso:qk]" /></encodings><customized-label><formatted-text><run fontcolor='#f0eee9' fontname="Tableau Medium" fontsize='15'>&lt;[federated.importaciones].[none:Rubro:nk]&gt;</run><run>Æ&#10;</run><run fontcolor='#bbc5d1' fontname="Tableau Book" fontsize='11'>&lt;[federated.importaciones].[usr:c_peso:qk]&gt;</run></formatted-text></customized-label><style><style-rule element='mark'><format attr='mark-labels-show' value='true' /><format attr='mark-labels-cull' value='false' /></style-rule></style></pane>
+        </panes>
+        <rows></rows>
+        <cols></cols>
+      </table>
+      <simple-id uuid='{FAF07C8E-00B2-5E81-AE4E-2FFF26ED814C}' />
+    </worksheet>
+    <worksheet name="Evolución mensual">
+      <table>
+        <view>
+          <datasources><datasource caption='Importaciones ARCA' name='federated.importaciones' /></datasources>
+
+          <datasource-dependencies datasource='federated.importaciones'>
+            <column datatype="date" name="[Fecha]" role="dimension" type="ordinal" />
+            <column caption="Mes" datatype="string" name="[c_mes_texto]" role="dimension" type="nominal"><calculation class='tableau' formula="DATENAME('month', [Fecha]) + ' de ' + STR(YEAR([Fecha]))"></calculation></column>
+            <column datatype="real" name="[FOB USD]" role="measure" type="quantitative" />
+            <column caption="FOB (miles de millones USD)" datatype="real" default-format="n#,##0.0" name="[c_fob_mm]" role="measure" type="quantitative"><calculation class='tableau' formula="[FOB USD] / 1000000000"></calculation></column>
+            <column caption="Media móvil de 12 meses" datatype="real" default-format="n#,##0.0" name="[c_mm12]" role="measure" type="quantitative"><calculation class='tableau' formula="WINDOW_AVG(SUM([FOB USD]) / 1000000000, -11, 0)"><table-calc ordering-type='Rows' /></calculation></column>
+            <column-instance column="[Fecha]" derivation="None" name="[none:Fecha:qk]" pivot='key' type="quantitative" />
+            <column-instance column="[c_mes_texto]" derivation="Attribute" name="[attr:c_mes_texto:nk]" pivot='key' type="nominal" />
+            <column-instance column="[c_fob_mm]" derivation="Sum" name="[sum:c_fob_mm:qk]" pivot='key' type="quantitative" />
+            <column-instance column="[c_mm12]" derivation="User" name="[usr:c_mm12:qk]" pivot='key' type="quantitative"><table-calc ordering-type='Rows' /></column-instance>
+          </datasource-dependencies>
+
+          <aggregation value='true' />
+        </view>
+        <style>
+          <style-rule element='table'><format attr='background-color' value='#051e4501' /></style-rule>
+          <style-rule element='worksheet'>
+            <format attr='display-field-labels' scope='rows' value='false' />
+            <format attr='display-field-labels' scope='cols' value='false' />
+            <format attr='font-family' value='Tableau Book' />
+            <format attr='color' value='#BBC5D1' />
+          </style-rule>
+          <style-rule element='axis'>
+            <format attr='font-size' value='8' /><format attr='color' value='#8D9AA8' />
+            <format attr='stroke-color' value='#16284A' /><format attr='tick-color' value='#16284A' />
+          </style-rule>
+          <style-rule element='label'><format attr='font-size' value='9' /><format attr='color' value='#F0EEE9' /></style-rule>
+          <style-rule element='gridline'>
+            <format attr='line-visibility' scope='rows' value='on' />
+            <format attr='stroke-color' scope='rows' value='#16284A' />
+            <format attr='line-visibility' scope='cols' value='off' />
+          </style-rule>
+          <style-rule element='zeroline'><format attr='line-visibility' value='off' /></style-rule>
+          <style-rule element='table-div'><format attr='line-visibility' value='off' /></style-rule>
+          <style-rule element='axis'><encoding attr='space' class='0' field="[federated.importaciones].[usr:c_mm12:qk]" field-type='quantitative' fold='true' scope='rows' synchronized='true' type='space' /></style-rule><style-rule element='axis'><format attr='display' field="[federated.importaciones].[usr:c_mm12:qk]" scope="rows" value='false' /></style-rule><style-rule element='axis'><format attr='title' class='0' field="[federated.importaciones].[none:Fecha:qk]" scope="cols" value='' /></style-rule><style-rule element='axis'><format attr='title' class='0' field="[federated.importaciones].[sum:c_fob_mm:qk]" scope="rows" value='' /></style-rule><style-rule element='refline'><format attr='stroke-color' id='refline0' value='#3D5480' /><format attr='stroke-size' id='refline0' value='1' /><format attr='line-pattern-only' id='refline0' value='dashed' /><format attr='text-align' id='refline0' value='right' /><format attr='vertical-align' id='refline0' value='top' /><format attr='font-size' id='refline0' value='8' /><format attr='color' id='refline0' value='#BBC5D1' /><format attr='background-color' id='refline0' value='#00000000' /><format attr='stroke-color' id='refline1' value='#3D5480' /><format attr='stroke-size' id='refline1' value='1' /><format attr='line-pattern-only' id='refline1' value='dashed' /><format attr='text-align' id='refline1' value='right' /><format attr='vertical-align' id='refline1' value='top' /><format attr='font-size' id='refline1' value='8' /><format attr='color' id='refline1' value='#BBC5D1' /><format attr='background-color' id='refline1' value='#00000000' /><format attr='stroke-color' id='refline2' value='#3D5480' /><format attr='stroke-size' id='refline2' value='1' /><format attr='line-pattern-only' id='refline2' value='dashed' /><format attr='text-align' id='refline2' value='right' /><format attr='vertical-align' id='refline2' value='top' /><format attr='font-size' id='refline2' value='8' /><format attr='color' id='refline2' value='#BBC5D1' /><format attr='background-color' id='refline2' value='#00000000' /><format attr='stroke-color' id='refline3' value='#3D5480' /><format attr='stroke-size' id='refline3' value='1' /><format attr='line-pattern-only' id='refline3' value='dashed' /><format attr='text-align' id='refline3' value='right' /><format attr='vertical-align' id='refline3' value='top' /><format attr='font-size' id='refline3' value='8' /><format attr='color' id='refline3' value='#BBC5D1' /><format attr='background-color' id='refline3' value='#00000000' /></style-rule>
+        </style>
+        <panes>
+          <pane selection-relaxation-option='selection-relaxation-allow'><view><breakdown value='auto' /></view><mark class="Automatic" /><reference-line axis-column="[federated.importaciones].[none:Fecha:qk]" enable-instant-analytics='true' formula='constant' id='refline0' label="Cuarentena" label-type='custom' scope='per-table' value='#2020-03-01 00:00:00#' value-column="[federated.importaciones].[none:Fecha:qk]" z-order='1' /><reference-line axis-column="[federated.importaciones].[none:Fecha:qk]" enable-instant-analytics='true' formula='constant' id='refline1' label="SIRA" label-type='custom' scope='per-table' value='#2022-10-01 00:00:00#' value-column="[federated.importaciones].[none:Fecha:qk]" z-order='2' /><reference-line axis-column="[federated.importaciones].[none:Fecha:qk]" enable-instant-analytics='true' formula='constant' id='refline2' label="Devaluación" label-type='custom' scope='per-table' value='#2023-12-01 00:00:00#' value-column="[federated.importaciones].[none:Fecha:qk]" z-order='3' /><reference-line axis-column="[federated.importaciones].[none:Fecha:qk]" enable-instant-analytics='true' formula='constant' id='refline3' label="Menos cepo" label-type='custom' scope='per-table' value='#2025-04-01 00:00:00#' value-column="[federated.importaciones].[none:Fecha:qk]" z-order='4' /><style><style-rule element='mark'></style-rule></style></pane>
+          <pane id='1' y-axis-name="[federated.importaciones].[sum:c_fob_mm:qk]" selection-relaxation-option='selection-relaxation-allow'><view><breakdown value='auto' /></view><mark class="Area" /><encodings><tooltip column="[federated.importaciones].[attr:c_mes_texto:nk]" /></encodings><customized-tooltip><formatted-text><run fontcolor='#051e45' fontname="Tableau Semibold" fontsize='10'>&lt;[federated.importaciones].[attr:c_mes_texto:nk]&gt;</run><run>Æ&#10;</run><run fontcolor='#3e4e66' fontname="Tableau Book" fontsize='9'>US$ &lt;[federated.importaciones].[sum:c_fob_mm:qk]&gt; mil millones en el mes</run></formatted-text></customized-tooltip><style><style-rule element='mark'><format attr='mark-color' value='#0DA4CF' /></style-rule></style></pane>
+          <pane id='2' y-axis-name="[federated.importaciones].[usr:c_mm12:qk]" selection-relaxation-option='selection-relaxation-allow'><view><breakdown value='auto' /></view><mark class="Line" /><encodings><tooltip column="[federated.importaciones].[attr:c_mes_texto:nk]" /></encodings><customized-tooltip><formatted-text><run fontcolor='#051e45' fontname="Tableau Semibold" fontsize='10'>&lt;[federated.importaciones].[attr:c_mes_texto:nk]&gt;</run><run>Æ&#10;</run><run fontcolor='#3e4e66' fontname="Tableau Book" fontsize='9'>US$ &lt;[federated.importaciones].[usr:c_mm12:qk]&gt; mil millones por mes, media de los últimos 12</run></formatted-text></customized-tooltip><style><style-rule element='mark'><format attr='mark-color' value='#F0EEE9' /></style-rule></style></pane>
+        </panes>
+        <rows>([federated.importaciones].[sum:c_fob_mm:qk] + [federated.importaciones].[usr:c_mm12:qk])</rows>
+        <cols>[federated.importaciones].[none:Fecha:qk]</cols>
+      </table>
+      <simple-id uuid='{41591771-53FC-50F2-9DCA-BEB12E807E35}' />
+    </worksheet>
+    <worksheet name="Principales orígenes">
+      <table>
+        <view>
+          <datasources><datasource caption='Importaciones ARCA' name='federated.importaciones' /></datasources>
+
+          <datasource-dependencies datasource='federated.importaciones'>
+            <column datatype="string" name="[País de origen]" role="dimension" type="nominal" />
+            <column datatype="real" name="[FOB últimos 12 meses]" role="measure" type="quantitative" />
+            <column caption="FOB de los últimos 12 meses (miles de millones USD)" datatype="real" default-format="n#,##0.0" name="[c_u12_mm]" role="measure" type="quantitative"><calculation class='tableau' formula="[FOB últimos 12 meses] / 1000000000"></calculation></column>
+            <column caption="Peso en los últimos 12 meses" datatype="real" default-format="p0.0%" name="[c_peso]" role="measure" type="quantitative"><calculation class='tableau' formula="SUM([FOB últimos 12 meses]) / MIN({FIXED : SUM([FOB últimos 12 meses])})"></calculation></column>
+            <column datatype="string" name="[Grupo de origen]" role="dimension" type="nominal" />
+            <column-instance column="[País de origen]" derivation="None" name="[none:País de origen:nk]" pivot='key' type="nominal" />
+            <column-instance column="[c_u12_mm]" derivation="Sum" name="[sum:c_u12_mm:qk]" pivot='key' type="quantitative" />
+            <column-instance column="[c_peso]" derivation="User" name="[usr:c_peso:qk]" pivot='key' type="quantitative" />
+            <column-instance column="[Grupo de origen]" derivation="None" name="[none:Grupo de origen:nk]" pivot='key' type="nominal" />
+          </datasource-dependencies>
+          <filter class='categorical' column="[federated.importaciones].[none:País de origen:nk]"><groupfilter count='12' end='top' function='end' units='records' user:ui-marker='end' user:ui-top-by-field='true'><groupfilter direction='DESC' expression="SUM([FOB últimos 12 meses])" function='order' user:ui-marker='order'><groupfilter function='level-members' level="[none:País de origen:nk]" user:ui-enumeration='all' user:ui-marker='enumerate' /></groupfilter></groupfilter></filter>
+          <sort class='computed' column="[federated.importaciones].[none:País de origen:nk]" direction="DESC" using="[federated.importaciones].[sum:c_u12_mm:qk]" />
+          <aggregation value='true' />
+        </view>
+        <style>
+          <style-rule element='table'><format attr='background-color' value='#051e4501' /></style-rule>
+          <style-rule element='worksheet'>
+            <format attr='display-field-labels' scope='rows' value='false' />
+            <format attr='display-field-labels' scope='cols' value='false' />
+            <format attr='font-family' value='Tableau Book' />
+            <format attr='color' value='#BBC5D1' />
+          </style-rule>
+          <style-rule element='axis'>
+            <format attr='font-size' value='8' /><format attr='color' value='#8D9AA8' />
+            <format attr='stroke-color' value='#16284A' /><format attr='tick-color' value='#16284A' />
+          </style-rule>
+          <style-rule element='label'><format attr='font-size' value='9' /><format attr='color' value='#F0EEE9' /></style-rule>
+          <style-rule element='gridline'>
+            <format attr='line-visibility' scope='rows' value='on' />
+            <format attr='stroke-color' scope='rows' value='#16284A' />
+            <format attr='line-visibility' scope='cols' value='off' />
+          </style-rule>
+          <style-rule element='zeroline'><format attr='line-visibility' value='off' /></style-rule>
+          <style-rule element='table-div'><format attr='line-visibility' value='off' /></style-rule>
+          <style-rule element='axis'><format attr='display' field="[federated.importaciones].[sum:c_u12_mm:qk]" scope="cols" value='false' /></style-rule><style-rule element='header'><format attr='width' field="[federated.importaciones].[none:País de origen:nk]" value='150' /></style-rule>
+        </style>
+        <panes>
+          <pane selection-relaxation-option='selection-relaxation-allow'><view><breakdown value='auto' /></view><mark class="Bar" /><encodings><text column="[federated.importaciones].[sum:c_u12_mm:qk]" /><text column="[federated.importaciones].[usr:c_peso:qk]" /><color column="[federated.importaciones].[none:Grupo de origen:nk]" /></encodings><customized-tooltip><formatted-text><run fontcolor='#051e45' fontname="Tableau Semibold" fontsize='10'>&lt;[federated.importaciones].[none:País de origen:nk]&gt;</run><run>Æ&#10;</run><run fontcolor='#3e4e66' fontname="Tableau Book" fontsize='9'>US$ &lt;[federated.importaciones].[sum:c_u12_mm:qk]&gt; mil millones, &lt;[federated.importaciones].[usr:c_peso:qk]&gt; del total</run></formatted-text></customized-tooltip><customized-label><formatted-text><run fontcolor='#f0eee9' fontname="Tableau Medium" fontsize='9'>&lt;[federated.importaciones].[sum:c_u12_mm:qk]&gt;</run><run fontcolor='#8d9aa8' fontname="Tableau Book" fontsize='9'>   &lt;[federated.importaciones].[usr:c_peso:qk]&gt;</run></formatted-text></customized-label><style><style-rule element='mark'><format attr='mark-labels-show' value='true' /><format attr='mark-labels-cull' value='false' /></style-rule></style></pane>
+        </panes>
+        <rows>[federated.importaciones].[none:País de origen:nk]</rows>
+        <cols>[federated.importaciones].[sum:c_u12_mm:qk]</cols>
+      </table>
+      <simple-id uuid='{512835A7-3724-5F63-AAB8-F9178E069940}' />
+    </worksheet>
+    <worksheet name="Principales rubros">
+      <table>
+        <view>
+          <datasources><datasource caption='Importaciones ARCA' name='federated.importaciones' /></datasources>
+
+          <datasource-dependencies datasource='federated.importaciones'>
+            <column datatype="string" name="[Rubro]" role="dimension" type="nominal" />
+            <column datatype="real" name="[FOB últimos 12 meses]" role="measure" type="quantitative" />
+            <column caption="FOB de los últimos 12 meses (miles de millones USD)" datatype="real" default-format="n#,##0.0" name="[c_u12_mm]" role="measure" type="quantitative"><calculation class='tableau' formula="[FOB últimos 12 meses] / 1000000000"></calculation></column>
+            <column datatype="string" name="[País de origen]" role="dimension" type="nominal" />
+            <column caption="Peso en el total o en el origen elegido" datatype="real" default-format="p0.0%" name="[c_peso_sel]" role="measure" type="quantitative"><calculation class='tableau' formula="IF COUNTD([País de origen]) = 1 THEN SUM([FOB últimos 12 meses]) / MIN({FIXED [País de origen] : SUM([FOB últimos 12 meses])}) ELSE SUM([FOB últimos 12 meses]) / MIN({FIXED : SUM([FOB últimos 12 meses])}) END"></calculation></column>
+            <column-instance column="[Rubro]" derivation="None" name="[none:Rubro:nk]" pivot='key' type="nominal" />
+            <column-instance column="[c_u12_mm]" derivation="Sum" name="[sum:c_u12_mm:qk]" pivot='key' type="quantitative" />
+            <column-instance column="[c_peso_sel]" derivation="User" name="[usr:c_peso_sel:qk]" pivot='key' type="quantitative" />
+          </datasource-dependencies>
+          <filter class='categorical' column="[federated.importaciones].[none:Rubro:nk]"><groupfilter count='7' end='top' function='end' units='records' user:ui-marker='end' user:ui-top-by-field='true'><groupfilter direction='DESC' expression="SUM([FOB últimos 12 meses])" function='order' user:ui-marker='order'><groupfilter function='level-members' level="[none:Rubro:nk]" user:ui-enumeration='all' user:ui-marker='enumerate' /></groupfilter></groupfilter></filter>
+          <sort class='computed' column="[federated.importaciones].[none:Rubro:nk]" direction="DESC" using="[federated.importaciones].[sum:c_u12_mm:qk]" />
+          <aggregation value='true' />
+        </view>
+        <style>
+          <style-rule element='table'><format attr='background-color' value='#051e4501' /></style-rule>
+          <style-rule element='worksheet'>
+            <format attr='display-field-labels' scope='rows' value='false' />
+            <format attr='display-field-labels' scope='cols' value='false' />
+            <format attr='font-family' value='Tableau Book' />
+            <format attr='color' value='#BBC5D1' />
+          </style-rule>
+          <style-rule element='axis'>
+            <format attr='font-size' value='8' /><format attr='color' value='#8D9AA8' />
+            <format attr='stroke-color' value='#16284A' /><format attr='tick-color' value='#16284A' />
+          </style-rule>
+          <style-rule element='label'><format attr='font-size' value='9' /><format attr='color' value='#F0EEE9' /></style-rule>
+          <style-rule element='gridline'>
+            <format attr='line-visibility' scope='rows' value='on' />
+            <format attr='stroke-color' scope='rows' value='#16284A' />
+            <format attr='line-visibility' scope='cols' value='off' />
+          </style-rule>
+          <style-rule element='zeroline'><format attr='line-visibility' value='off' /></style-rule>
+          <style-rule element='table-div'><format attr='line-visibility' value='off' /></style-rule>
+          <style-rule element='axis'><format attr='display' field="[federated.importaciones].[sum:c_u12_mm:qk]" scope="cols" value='false' /></style-rule><style-rule element='header'><format attr='width' field="[federated.importaciones].[none:Rubro:nk]" value='196' /></style-rule>
+        </style>
+        <panes>
+          <pane selection-relaxation-option='selection-relaxation-allow'><view><breakdown value='auto' /></view><mark class="Bar" /><encodings><text column="[federated.importaciones].[sum:c_u12_mm:qk]" /><text column="[federated.importaciones].[usr:c_peso_sel:qk]" /></encodings><customized-tooltip><formatted-text><run fontcolor='#051e45' fontname="Tableau Semibold" fontsize='10'>&lt;[federated.importaciones].[none:Rubro:nk]&gt;</run><run>Æ&#10;</run><run fontcolor='#3e4e66' fontname="Tableau Book" fontsize='9'>US$ &lt;[federated.importaciones].[sum:c_u12_mm:qk]&gt; mil millones, &lt;[federated.importaciones].[usr:c_peso_sel:qk]&gt; de lo importado (o del origen elegido)</run></formatted-text></customized-tooltip><customized-label><formatted-text><run fontcolor='#f0eee9' fontname="Tableau Medium" fontsize='9'>&lt;[federated.importaciones].[sum:c_u12_mm:qk]&gt;</run><run fontcolor='#8d9aa8' fontname="Tableau Book" fontsize='9'>   &lt;[federated.importaciones].[usr:c_peso_sel:qk]&gt;</run></formatted-text></customized-label><style><style-rule element='mark'><format attr='mark-color' value='#0DA4CF' /><format attr='mark-labels-show' value='true' /><format attr='mark-labels-cull' value='false' /></style-rule></style></pane>
+        </panes>
+        <rows>[federated.importaciones].[none:Rubro:nk]</rows>
+        <cols>[federated.importaciones].[sum:c_u12_mm:qk]</cols>
+      </table>
+      <simple-id uuid='{C9623CF8-7A6B-5A86-9B92-060EA4C8E3D9}' />
+    </worksheet>
+    <worksheet name="Vías de transporte">
+      <table>
+        <view>
+          <datasources><datasource caption='Importaciones ARCA' name='federated.importaciones' /></datasources>
+
+          <datasource-dependencies datasource='federated.importaciones'>
+            <column datatype="string" name="[Vía (grupo)]" role="dimension" type="nominal" />
+            <column datatype="real" name="[FOB últimos 12 meses]" role="measure" type="quantitative" />
+            <column caption="FOB de los últimos 12 meses (miles de millones USD)" datatype="real" default-format="n#,##0.0" name="[c_u12_mm]" role="measure" type="quantitative"><calculation class='tableau' formula="[FOB últimos 12 meses] / 1000000000"></calculation></column>
+            <column datatype="string" name="[País de origen]" role="dimension" type="nominal" />
+            <column caption="Peso en el total o en el origen elegido" datatype="real" default-format="p0.0%" name="[c_peso_sel]" role="measure" type="quantitative"><calculation class='tableau' formula="IF COUNTD([País de origen]) = 1 THEN SUM([FOB últimos 12 meses]) / MIN({FIXED [País de origen] : SUM([FOB últimos 12 meses])}) ELSE SUM([FOB últimos 12 meses]) / MIN({FIXED : SUM([FOB últimos 12 meses])}) END"></calculation></column>
+            <column-instance column="[Vía (grupo)]" derivation="None" name="[none:Vía (grupo):nk]" pivot='key' type="nominal" />
+            <column-instance column="[c_u12_mm]" derivation="Sum" name="[sum:c_u12_mm:qk]" pivot='key' type="quantitative" />
+            <column-instance column="[c_peso_sel]" derivation="User" name="[usr:c_peso_sel:qk]" pivot='key' type="quantitative" />
+          </datasource-dependencies>
+          <sort class='computed' column="[federated.importaciones].[none:Vía (grupo):nk]" direction="DESC" using="[federated.importaciones].[sum:c_u12_mm:qk]" />
+          <aggregation value='true' />
+        </view>
+        <style>
+          <style-rule element='table'><format attr='background-color' value='#051e4501' /></style-rule>
+          <style-rule element='worksheet'>
+            <format attr='display-field-labels' scope='rows' value='false' />
+            <format attr='display-field-labels' scope='cols' value='false' />
+            <format attr='font-family' value='Tableau Book' />
+            <format attr='color' value='#BBC5D1' />
+          </style-rule>
+          <style-rule element='axis'>
+            <format attr='font-size' value='8' /><format attr='color' value='#8D9AA8' />
+            <format attr='stroke-color' value='#16284A' /><format attr='tick-color' value='#16284A' />
+          </style-rule>
+          <style-rule element='label'><format attr='font-size' value='9' /><format attr='color' value='#F0EEE9' /></style-rule>
+          <style-rule element='gridline'>
+            <format attr='line-visibility' scope='rows' value='on' />
+            <format attr='stroke-color' scope='rows' value='#16284A' />
+            <format attr='line-visibility' scope='cols' value='off' />
+          </style-rule>
+          <style-rule element='zeroline'><format attr='line-visibility' value='off' /></style-rule>
+          <style-rule element='table-div'><format attr='line-visibility' value='off' /></style-rule>
+          <style-rule element='axis'><format attr='display' field="[federated.importaciones].[sum:c_u12_mm:qk]" scope="cols" value='false' /></style-rule><style-rule element='header'><format attr='width' field="[federated.importaciones].[none:Vía (grupo):nk]" value='130' /></style-rule>
+        </style>
+        <panes>
+          <pane selection-relaxation-option='selection-relaxation-allow'><view><breakdown value='auto' /></view><mark class="Bar" /><encodings><text column="[federated.importaciones].[sum:c_u12_mm:qk]" /><text column="[federated.importaciones].[usr:c_peso_sel:qk]" /><color column="[federated.importaciones].[none:Vía (grupo):nk]" /></encodings><customized-tooltip><formatted-text><run fontcolor='#051e45' fontname="Tableau Semibold" fontsize='10'>&lt;[federated.importaciones].[none:Vía (grupo):nk]&gt;</run><run>Æ&#10;</run><run fontcolor='#3e4e66' fontname="Tableau Book" fontsize='9'>US$ &lt;[federated.importaciones].[sum:c_u12_mm:qk]&gt; mil millones, &lt;[federated.importaciones].[usr:c_peso_sel:qk]&gt; de lo importado (o del origen elegido)</run></formatted-text></customized-tooltip><customized-label><formatted-text><run fontcolor='#f0eee9' fontname="Tableau Medium" fontsize='9'>&lt;[federated.importaciones].[sum:c_u12_mm:qk]&gt;</run><run fontcolor='#8d9aa8' fontname="Tableau Book" fontsize='9'>   &lt;[federated.importaciones].[usr:c_peso_sel:qk]&gt;</run></formatted-text></customized-label><style><style-rule element='mark'><format attr='mark-labels-show' value='true' /><format attr='mark-labels-cull' value='false' /></style-rule></style></pane>
+        </panes>
+        <rows>[federated.importaciones].[none:Vía (grupo):nk]</rows>
+        <cols>[federated.importaciones].[sum:c_u12_mm:qk]</cols>
+      </table>
+      <simple-id uuid='{1FFDEE44-407B-5479-9F6F-FCAFCF636F36}' />
+    </worksheet>
+    <worksheet name="Mapa de orígenes">
+      <table>
+        <view>
+          <datasources><datasource caption='Importaciones ARCA' name='federated.importaciones' /></datasources>
+          <mapsources><mapsource name='Tableau' /></mapsources>
+          <datasource-dependencies datasource='federated.importaciones'>
+            <column datatype="string" name="[País (mapa)]" role="dimension" type="nominal" semantic-role='[Country].[ISO3166_2]' />
+            <column datatype="string" name="[País de origen]" role="dimension" type="nominal" />
+            <column datatype="real" name="[FOB últimos 12 meses]" role="measure" type="quantitative" />
+            <column caption="FOB de los últimos 12 meses (miles de millones USD)" datatype="real" default-format="n#,##0.0" name="[c_u12_mm]" role="measure" type="quantitative"><calculation class='tableau' formula="[FOB últimos 12 meses] / 1000000000"></calculation></column>
+            <column caption="Peso en los últimos 12 meses" datatype="real" default-format="p0.0%" name="[c_peso]" role="measure" type="quantitative"><calculation class='tableau' formula="SUM([FOB últimos 12 meses]) / MIN({FIXED : SUM([FOB últimos 12 meses])})"></calculation></column>
+            <column caption="Es un país" datatype="boolean" name="[c_ubicable]" role="dimension" type="nominal"><calculation class='tableau' formula="NOT ISNULL([País (mapa)])"></calculation></column>
+            <column-instance column="[País (mapa)]" derivation="None" name="[none:País (mapa):nk]" pivot='key' type="nominal" />
+            <column-instance column="[País de origen]" derivation="Attribute" name="[attr:País de origen:nk]" pivot='key' type="nominal" />
+            <column-instance column="[c_u12_mm]" derivation="Sum" name="[sum:c_u12_mm:qk]" pivot='key' type="quantitative" />
+            <column-instance column="[c_peso]" derivation="User" name="[usr:c_peso:qk]" pivot='key' type="quantitative" />
+            <column-instance column="[c_ubicable]" derivation="None" name="[none:c_ubicable:nk]" pivot='key' type="nominal" />
+          </datasource-dependencies>
+          <filter class='categorical' column="[federated.importaciones].[none:c_ubicable:nk]"><groupfilter function='member' level="[none:c_ubicable:nk]" member="true" user:ui-domain='database' user:ui-enumeration='inclusive' user:ui-marker='enumerate' /></filter>
+          <aggregation value='true' />
+        </view>
+        <style>
+          <style-rule element='table'><format attr='background-color' value='#051e4501' /></style-rule>
+          <style-rule element='worksheet'>
+            <format attr='display-field-labels' scope='rows' value='false' />
+            <format attr='display-field-labels' scope='cols' value='false' />
+            <format attr='font-family' value='Tableau Book' />
+            <format attr='color' value='#BBC5D1' />
+          </style-rule>
+          <style-rule element='axis'>
+            <format attr='font-size' value='8' /><format attr='color' value='#8D9AA8' />
+            <format attr='stroke-color' value='#16284A' /><format attr='tick-color' value='#16284A' />
+          </style-rule>
+          <style-rule element='label'><format attr='font-size' value='9' /><format attr='color' value='#F0EEE9' /></style-rule>
+          <style-rule element='gridline'>
+            <format attr='line-visibility' scope='rows' value='on' />
+            <format attr='stroke-color' scope='rows' value='#16284A' />
+            <format attr='line-visibility' scope='cols' value='off' />
+          </style-rule>
+          <style-rule element='zeroline'><format attr='line-visibility' value='off' /></style-rule>
+          <style-rule element='table-div'><format attr='line-visibility' value='off' /></style-rule>
+          <style-rule element='mark'><encoding attr='color' field="[federated.importaciones].[sum:c_u12_mm:qk]" type='custom-interpolated'><color-palette custom='true' name='' type='ordered-sequential'><color>#0B2E55</color><color>#0DA4CF</color><color>#8FE3FA</color></color-palette></encoding></style-rule><style-rule element='map-layer'><format attr='enabled' id='tab_base' value='false' /><format attr='enabled' id='um_lcp_enabled' value='false' /><format attr='enabled' id='tab_coastline' value='false' /><format attr='enabled' id='pp2_adminlabels' value='false' /><format attr='enabled' id='pp2_statebounds' value='false' /><format attr='enabled' id='pp2_statelabels' value='false' /><format attr='enabled' id='countrybounds_ln' value='false' /><format attr='enabled' id='countrylabels_ln' value='false' /></style-rule><style-rule element='map'><format attr='washout' value='0.0' /></style-rule>
+        </style>
+        <panes>
+          <pane selection-relaxation-option='selection-relaxation-allow'><view><breakdown value='auto' /></view><mark class="Multipolygon" /><encodings><lod column="[federated.importaciones].[none:País (mapa):nk]" /><color column="[federated.importaciones].[sum:c_u12_mm:qk]" /><geometry column="[federated.importaciones].[Geometry (generated)]" /><tooltip column="[federated.importaciones].[attr:País de origen:nk]" /><tooltip column="[federated.importaciones].[usr:c_peso:qk]" /></encodings><customized-tooltip><formatted-text><run fontcolor='#051e45' fontname="Tableau Semibold" fontsize='10'>&lt;[federated.importaciones].[attr:País de origen:nk]&gt;</run><run>Æ&#10;</run><run fontcolor='#3e4e66' fontname="Tableau Book" fontsize='9'>US$ &lt;[federated.importaciones].[sum:c_u12_mm:qk]&gt; mil millones, &lt;[federated.importaciones].[usr:c_peso:qk]&gt; del total</run></formatted-text></customized-tooltip><style><style-rule element='mark'></style-rule></style></pane>
+        </panes>
+        <rows>[federated.importaciones].[Latitude (generated)]</rows>
+        <cols>[federated.importaciones].[Longitude (generated)]</cols>
+      </table>
+      <simple-id uuid='{3C0D1C5F-91BB-5DBA-8397-F235277C80DD}' />
+    </worksheet>
+    <worksheet name="Ganadores y perdedores">
+      <table>
+        <view>
+          <datasources><datasource caption='Importaciones ARCA' name='federated.importaciones' /></datasources>
+
+          <datasource-dependencies datasource='federated.importaciones'>
+            <column datatype="string" name="[País de origen]" role="dimension" type="nominal" />
+            <column datatype="real" name="[FOB últimos 12 meses]" role="measure" type="quantitative" />
+            <column caption="Peso en los últimos 12 meses" datatype="real" default-format="p0.0%" name="[c_peso]" role="measure" type="quantitative"><calculation class='tableau' formula="SUM([FOB últimos 12 meses]) / MIN({FIXED : SUM([FOB últimos 12 meses])})"></calculation></column>
+            <column datatype="real" name="[FOB 2019]" role="measure" type="quantitative" />
+            <column caption="Peso en 2019" datatype="real" default-format="p0.0%" name="[c_peso_2019]" role="measure" type="quantitative"><calculation class='tableau' formula="SUM([FOB 2019]) / MIN({FIXED : SUM([FOB 2019])})"></calculation></column>
+            <column caption="Cambio de peso (puntos porcentuales)" datatype="real" default-format="n+0.0;-0.0" name="[c_cambio]" role="measure" type="quantitative"><calculation class='tableau' formula="([c_peso] - [c_peso_2019]) * 100"></calculation></column>
+            <column caption="Ganó o perdió peso" datatype="string" name="[c_signo_peso]" role="measure" type="nominal"><calculation class='tableau' formula="IF [c_cambio] &gt;= 0 THEN 'Ganó peso' ELSE 'Perdió peso' END"></calculation></column>
+            <column-instance column="[País de origen]" derivation="None" name="[none:País de origen:nk]" pivot='key' type="nominal" />
+            <column-instance column="[c_cambio]" derivation="User" name="[usr:c_cambio:qk]" pivot='key' type="quantitative" />
+            <column-instance column="[c_signo_peso]" derivation="User" name="[usr:c_signo_peso:nk]" pivot='key' type="nominal" />
+            <column-instance column="[c_peso]" derivation="User" name="[usr:c_peso:qk]" pivot='key' type="quantitative" />
+          </datasource-dependencies>
+          <filter class='categorical' column="[federated.importaciones].[none:País de origen:nk]"><groupfilter count='14' end='top' function='end' units='records' user:ui-marker='end' user:ui-top-by-field='true'><groupfilter direction='DESC' expression="ABS([c_cambio])" function='order' user:ui-marker='order'><groupfilter function='level-members' level="[none:País de origen:nk]" user:ui-enumeration='all' user:ui-marker='enumerate' /></groupfilter></groupfilter></filter>
+          <sort class='computed' column="[federated.importaciones].[none:País de origen:nk]" direction="DESC" using="[federated.importaciones].[usr:c_cambio:qk]" />
+          <aggregation value='true' />
+        </view>
+        <style>
+          <style-rule element='table'><format attr='background-color' value='#051e4501' /></style-rule>
+          <style-rule element='worksheet'>
+            <format attr='display-field-labels' scope='rows' value='false' />
+            <format attr='display-field-labels' scope='cols' value='false' />
+            <format attr='font-family' value='Tableau Book' />
+            <format attr='color' value='#BBC5D1' />
+          </style-rule>
+          <style-rule element='axis'>
+            <format attr='font-size' value='8' /><format attr='color' value='#8D9AA8' />
+            <format attr='stroke-color' value='#16284A' /><format attr='tick-color' value='#16284A' />
+          </style-rule>
+          <style-rule element='label'><format attr='font-size' value='9' /><format attr='color' value='#F0EEE9' /></style-rule>
+          <style-rule element='gridline'>
+            <format attr='line-visibility' scope='rows' value='on' />
+            <format attr='stroke-color' scope='rows' value='#16284A' />
+            <format attr='line-visibility' scope='cols' value='off' />
+          </style-rule>
+          <style-rule element='zeroline'><format attr='line-visibility' value='off' /></style-rule>
+          <style-rule element='table-div'><format attr='line-visibility' value='off' /></style-rule>
+          <style-rule element='axis'><format attr='display' field="[federated.importaciones].[usr:c_cambio:qk]" scope="cols" value='false' /></style-rule><style-rule element='header'><format attr='width' field="[federated.importaciones].[none:País de origen:nk]" value='196' /></style-rule>
+        </style>
+        <panes>
+          <pane selection-relaxation-option='selection-relaxation-allow'><view><breakdown value='auto' /></view><mark class="Bar" /><encodings><color column="[federated.importaciones].[usr:c_signo_peso:nk]" /><text column="[federated.importaciones].[usr:c_cambio:qk]" /><tooltip column="[federated.importaciones].[usr:c_peso:qk]" /></encodings><customized-tooltip><formatted-text><run fontcolor='#051e45' fontname="Tableau Semibold" fontsize='10'>&lt;[federated.importaciones].[none:País de origen:nk]&gt;</run><run>Æ&#10;</run><run fontcolor='#3e4e66' fontname="Tableau Book" fontsize='9'>&lt;[federated.importaciones].[usr:c_cambio:qk]&gt; puntos de peso desde 2019. Hoy pesa &lt;[federated.importaciones].[usr:c_peso:qk]&gt;</run></formatted-text></customized-tooltip><customized-label><formatted-text><run fontcolor='#f0eee9' fontname="Tableau Medium" fontsize='9'>&lt;[federated.importaciones].[usr:c_cambio:qk]&gt;</run></formatted-text></customized-label><style><style-rule element='mark'><format attr='mark-labels-show' value='true' /><format attr='mark-labels-cull' value='false' /></style-rule></style></pane>
+        </panes>
+        <rows>[federated.importaciones].[none:País de origen:nk]</rows>
+        <cols>[federated.importaciones].[usr:c_cambio:qk]</cols>
+      </table>
+      <simple-id uuid='{273519F5-CE64-5D42-8730-A9961CD18EA7}' />
+    </worksheet>
+    <worksheet name="Peso de los grupos">
+      <table>
+        <view>
+          <datasources><datasource caption='Importaciones ARCA' name='federated.importaciones' /></datasources>
+
+          <datasource-dependencies datasource='federated.importaciones'>
+            <column datatype="date" name="[Fecha]" role="dimension" type="ordinal" />
+            <column datatype="string" name="[Grupo de origen]" role="dimension" type="nominal" />
+            <column datatype="real" name="[FOB USD]" role="measure" type="quantitative" />
+            <column caption="Peso en el año" datatype="real" default-format="p0%" name="[c_peso_anio]" role="measure" type="quantitative"><calculation class='tableau' formula="SUM([FOB USD]) / MIN({FIXED DATETRUNC('year', [Fecha]) : SUM([FOB USD])})"></calculation></column>
+            <column caption="Peso en el último año" datatype="real" default-format="p0%" name="[c_peso_anio_final]" role="measure" type="quantitative"><calculation class='tableau' formula="IF MIN(YEAR([Fecha])) = MIN({FIXED : MAX(YEAR([Fecha]))}) THEN [c_peso_anio] END"></calculation></column>
+            <column-instance column="[Fecha]" derivation="Year" name="[yr:Fecha:ok]" pivot='key' type="ordinal" />
+            <column-instance column="[Grupo de origen]" derivation="None" name="[none:Grupo de origen:nk]" pivot='key' type="nominal" />
+            <column-instance column="[c_peso_anio]" derivation="User" name="[usr:c_peso_anio:qk]" pivot='key' type="quantitative" />
+            <column-instance column="[c_peso_anio_final]" derivation="User" name="[usr:c_peso_anio_final:qk]" pivot='key' type="quantitative" />
+          </datasource-dependencies>
+          <filter class='categorical' column="[federated.importaciones].[none:Grupo de origen:nk]"><groupfilter function='except' user:ui-domain='database' user:ui-enumeration='exclusive' user:ui-marker='enumerate'><groupfilter function='level-members' level="[none:Grupo de origen:nk]" /><groupfilter function='union'><groupfilter function='member' level="[none:Grupo de origen:nk]" member='"Áreas especiales"' /><groupfilter function='member' level="[none:Grupo de origen:nk]" member='"Resto del mundo"' /></groupfilter></groupfilter></filter>
+          <aggregation value='true' />
+        </view>
+        <style>
+          <style-rule element='table'><format attr='background-color' value='#051e4501' /></style-rule>
+          <style-rule element='worksheet'>
+            <format attr='display-field-labels' scope='rows' value='false' />
+            <format attr='display-field-labels' scope='cols' value='false' />
+            <format attr='font-family' value='Tableau Book' />
+            <format attr='color' value='#BBC5D1' />
+          </style-rule>
+          <style-rule element='axis'>
+            <format attr='font-size' value='8' /><format attr='color' value='#8D9AA8' />
+            <format attr='stroke-color' value='#16284A' /><format attr='tick-color' value='#16284A' />
+          </style-rule>
+          <style-rule element='label'><format attr='font-size' value='9' /><format attr='color' value='#F0EEE9' /></style-rule>
+          <style-rule element='gridline'>
+            <format attr='line-visibility' scope='rows' value='on' />
+            <format attr='stroke-color' scope='rows' value='#16284A' />
+            <format attr='line-visibility' scope='cols' value='off' />
+          </style-rule>
+          <style-rule element='zeroline'><format attr='line-visibility' value='off' /></style-rule>
+          <style-rule element='table-div'><format attr='line-visibility' value='off' /></style-rule>
+          <style-rule element='axis'><format attr='title' class='0' field="[federated.importaciones].[usr:c_peso_anio:qk]" scope="rows" value='' /></style-rule><style-rule element='axis'><encoding attr='space' class='0' field="[federated.importaciones].[usr:c_peso_anio:qk]" field-type='quantitative' min='0.05' range-type='fixedmin' scope="rows" type='space' /></style-rule>
+        </style>
+        <panes>
+          <pane selection-relaxation-option='selection-relaxation-allow'><view><breakdown value='auto' /></view><mark class="Line" /><encodings><color column="[federated.importaciones].[none:Grupo de origen:nk]" /><text column="[federated.importaciones].[usr:c_peso_anio_final:qk]" /><tooltip column="[federated.importaciones].[usr:c_peso_anio:qk]" /></encodings><customized-tooltip><formatted-text><run fontcolor='#051e45' fontname="Tableau Semibold" fontsize='10'>&lt;[federated.importaciones].[none:Grupo de origen:nk]&gt;, &lt;[federated.importaciones].[yr:Fecha:ok]&gt;</run><run>Æ&#10;</run><run fontcolor='#3e4e66' fontname="Tableau Book" fontsize='9'>&lt;[federated.importaciones].[usr:c_peso_anio:qk]&gt; del FOB de ese año</run></formatted-text></customized-tooltip><customized-label><formatted-text><run fontcolor='#f0eee9' fontname="Tableau Medium" fontsize='8'>&lt;[federated.importaciones].[usr:c_peso_anio_final:qk]&gt;</run></formatted-text></customized-label><style><style-rule element='mark'><format attr='mark-labels-show' value='true' /><format attr='mark-labels-cull' value='false' /></style-rule></style></pane>
+        </panes>
+        <rows>[federated.importaciones].[usr:c_peso_anio:qk]</rows>
+        <cols>[federated.importaciones].[yr:Fecha:ok]</cols>
+      </table>
+      <simple-id uuid='{D26B87A9-2F42-5154-934B-48C88D914F50}' />
+    </worksheet>
+    <worksheet name="Evolución del origen">
+      <table>
+        <view>
+          <datasources><datasource caption='Importaciones ARCA' name='federated.importaciones' /></datasources>
+
+          <datasource-dependencies datasource='federated.importaciones'>
+            <column datatype="date" name="[Fecha]" role="dimension" type="ordinal" />
+            <column caption="Mes" datatype="string" name="[c_mes_texto]" role="dimension" type="nominal"><calculation class='tableau' formula="DATENAME('month', [Fecha]) + ' de ' + STR(YEAR([Fecha]))"></calculation></column>
+            <column datatype="real" name="[FOB USD]" role="measure" type="quantitative" />
+            <column caption="FOB (millones USD)" datatype="real" default-format="n#,##0" name="[c_fob_m]" role="measure" type="quantitative"><calculation class='tableau' formula="[FOB USD] / 1000000"></calculation></column>
+            <column-instance column="[Fecha]" derivation="None" name="[none:Fecha:qk]" pivot='key' type="quantitative" />
+            <column-instance column="[c_mes_texto]" derivation="Attribute" name="[attr:c_mes_texto:nk]" pivot='key' type="nominal" />
+            <column-instance column="[c_fob_m]" derivation="Sum" name="[sum:c_fob_m:qk]" pivot='key' type="quantitative" />
+          </datasource-dependencies>
+
+          <aggregation value='true' />
+        </view>
+        <style>
+          <style-rule element='table'><format attr='background-color' value='#051e4501' /></style-rule>
+          <style-rule element='worksheet'>
+            <format attr='display-field-labels' scope='rows' value='false' />
+            <format attr='display-field-labels' scope='cols' value='false' />
+            <format attr='font-family' value='Tableau Book' />
+            <format attr='color' value='#BBC5D1' />
+          </style-rule>
+          <style-rule element='axis'>
+            <format attr='font-size' value='8' /><format attr='color' value='#8D9AA8' />
+            <format attr='stroke-color' value='#16284A' /><format attr='tick-color' value='#16284A' />
+          </style-rule>
+          <style-rule element='label'><format attr='font-size' value='9' /><format attr='color' value='#F0EEE9' /></style-rule>
+          <style-rule element='gridline'>
+            <format attr='line-visibility' scope='rows' value='on' />
+            <format attr='stroke-color' scope='rows' value='#16284A' />
+            <format attr='line-visibility' scope='cols' value='off' />
+          </style-rule>
+          <style-rule element='zeroline'><format attr='line-visibility' value='off' /></style-rule>
+          <style-rule element='table-div'><format attr='line-visibility' value='off' /></style-rule>
+          <style-rule element='axis'><format attr='title' class='0' field="[federated.importaciones].[none:Fecha:qk]" scope="cols" value='' /></style-rule><style-rule element='axis'><format attr='title' class='0' field="[federated.importaciones].[sum:c_fob_m:qk]" scope="rows" value='' /></style-rule>
+        </style>
+        <panes>
+          <pane selection-relaxation-option='selection-relaxation-allow'><view><breakdown value='auto' /></view><mark class="Area" /><encodings><tooltip column="[federated.importaciones].[attr:c_mes_texto:nk]" /></encodings><customized-tooltip><formatted-text><run fontcolor='#051e45' fontname="Tableau Semibold" fontsize='10'>&lt;[federated.importaciones].[attr:c_mes_texto:nk]&gt;</run><run>Æ&#10;</run><run fontcolor='#3e4e66' fontname="Tableau Book" fontsize='9'>US$ &lt;[federated.importaciones].[sum:c_fob_m:qk]&gt; millones en el mes</run></formatted-text></customized-tooltip><style><style-rule element='mark'><format attr='mark-color' value='#0DA4CF' /></style-rule></style></pane>
+        </panes>
+        <rows>[federated.importaciones].[sum:c_fob_m:qk]</rows>
+        <cols>[federated.importaciones].[none:Fecha:qk]</cols>
+      </table>
+      <simple-id uuid='{D1CA3F03-2404-59DC-BB78-A30BD3C2F545}' />
+    </worksheet>
+    <worksheet name="Origen elegido">
+      <table>
+        <view>
+          <datasources><datasource caption='Importaciones ARCA' name='federated.importaciones' /></datasources>
+
+          <datasource-dependencies datasource='federated.importaciones'>
+            <column datatype="string" name="[País de origen]" role="dimension" type="nominal" />
+            <column caption="Origen elegido" datatype="string" name="[c_origen_elegido]" role="measure" type="nominal"><calculation class='tableau' formula="IF COUNTD([País de origen]) = 1 THEN MIN([País de origen]) ELSE 'Todos los orígenes' END"></calculation></column>
+            <column-instance column="[c_origen_elegido]" derivation="User" name="[usr:c_origen_elegido:nk]" pivot='key' type="nominal" />
+          </datasource-dependencies>
+
+          <aggregation value='true' />
+        </view>
+        <style>
+          <style-rule element='table'><format attr='background-color' value='#051e4501' /></style-rule>
+          <style-rule element='worksheet'>
+            <format attr='display-field-labels' scope='rows' value='false' />
+            <format attr='display-field-labels' scope='cols' value='false' />
+            <format attr='font-family' value='Tableau Book' />
+            <format attr='color' value='#BBC5D1' />
+          </style-rule>
+          <style-rule element='axis'>
+            <format attr='font-size' value='8' /><format attr='color' value='#8D9AA8' />
+            <format attr='stroke-color' value='#16284A' /><format attr='tick-color' value='#16284A' />
+          </style-rule>
+          <style-rule element='label'><format attr='font-size' value='9' /><format attr='color' value='#F0EEE9' /></style-rule>
+          <style-rule element='gridline'>
+            <format attr='line-visibility' scope='rows' value='on' />
+            <format attr='stroke-color' scope='rows' value='#16284A' />
+            <format attr='line-visibility' scope='cols' value='off' />
+          </style-rule>
+          <style-rule element='zeroline'><format attr='line-visibility' value='off' /></style-rule>
+          <style-rule element='table-div'><format attr='line-visibility' value='off' /></style-rule>
+          <style-rule element='cell'><format attr='width' value='214' /><format attr='height' value='22' /><format attr='text-align' value='right' /></style-rule>
+        </style>
+        <panes>
+          <pane selection-relaxation-option='selection-relaxation-allow'><view><breakdown value='auto' /></view><mark class="Text" /><encodings><text column="[federated.importaciones].[usr:c_origen_elegido:nk]" /></encodings><customized-label><formatted-text><run fontcolor='#f0eee9' fontname="Tableau Medium" fontsize='10'>&lt;[federated.importaciones].[usr:c_origen_elegido:nk]&gt;</run></formatted-text></customized-label><style><style-rule element='mark'><format attr='mark-labels-show' value='true' /><format attr='mark-labels-cull' value='false' /></style-rule></style></pane>
+        </panes>
+        <rows></rows>
+        <cols></cols>
+      </table>
+      <simple-id uuid='{8155A05C-EE0C-5D17-BF59-E1FA0277C9C6}' />
+    </worksheet>
+    <worksheet name="Mapa de productos">
+      <table>
+        <view>
+          <datasources><datasource caption='Importaciones ARCA' name='federated.importaciones' /></datasources>
+
+          <datasource-dependencies datasource='federated.importaciones'>
+            <column datatype="string" name="[Rubro]" role="dimension" type="nominal" />
+            <column datatype="string" name="[Capítulo]" role="dimension" type="nominal" />
+            <column datatype="real" name="[FOB últimos 12 meses]" role="measure" type="quantitative" />
+            <column caption="FOB de los últimos 12 meses (miles de millones USD)" datatype="real" default-format="n#,##0.0" name="[c_u12_mm]" role="measure" type="quantitative"><calculation class='tableau' formula="[FOB últimos 12 meses] / 1000000000"></calculation></column>
+            <column caption="Peso en los últimos 12 meses" datatype="real" default-format="p0.0%" name="[c_peso]" role="measure" type="quantitative"><calculation class='tableau' formula="SUM([FOB últimos 12 meses]) / MIN({FIXED : SUM([FOB últimos 12 meses])})"></calculation></column>
+            <column-instance column="[Rubro]" derivation="None" name="[none:Rubro:nk]" pivot='key' type="nominal" />
+            <column-instance column="[Capítulo]" derivation="None" name="[none:Capítulo:nk]" pivot='key' type="nominal" />
+            <column-instance column="[c_u12_mm]" derivation="Sum" name="[sum:c_u12_mm:qk]" pivot='key' type="quantitative" />
+            <column-instance column="[c_peso]" derivation="User" name="[usr:c_peso:qk]" pivot='key' type="quantitative" />
+          </datasource-dependencies>
+
+          <aggregation value='true' />
+        </view>
+        <style>
+          <style-rule element='table'><format attr='background-color' value='#051e4501' /></style-rule>
+          <style-rule element='worksheet'>
+            <format attr='display-field-labels' scope='rows' value='false' />
+            <format attr='display-field-labels' scope='cols' value='false' />
+            <format attr='font-family' value='Tableau Book' />
+            <format attr='color' value='#BBC5D1' />
+          </style-rule>
+          <style-rule element='axis'>
+            <format attr='font-size' value='8' /><format attr='color' value='#8D9AA8' />
+            <format attr='stroke-color' value='#16284A' /><format attr='tick-color' value='#16284A' />
+          </style-rule>
+          <style-rule element='label'><format attr='font-size' value='9' /><format attr='color' value='#F0EEE9' /></style-rule>
+          <style-rule element='gridline'>
+            <format attr='line-visibility' scope='rows' value='on' />
+            <format attr='stroke-color' scope='rows' value='#16284A' />
+            <format attr='line-visibility' scope='cols' value='off' />
+          </style-rule>
+          <style-rule element='zeroline'><format attr='line-visibility' value='off' /></style-rule>
+          <style-rule element='table-div'><format attr='line-visibility' value='off' /></style-rule>
+          <style-rule element='mark'><encoding attr='color' field="[federated.importaciones].[sum:c_u12_mm:qk]" type='custom-interpolated'><color-palette custom='true' name='' type='ordered-sequential'><color>#0B2E55</color><color>#0DA4CF</color></color-palette></encoding></style-rule>
+        </style>
+        <panes>
+          <pane selection-relaxation-option='selection-relaxation-allow'><view><breakdown value='auto' /></view><mark class="Square" /><encodings><size column="[federated.importaciones].[sum:c_u12_mm:qk]" /><color column="[federated.importaciones].[sum:c_u12_mm:qk]" /><lod column="[federated.importaciones].[none:Rubro:nk]" /><text column="[federated.importaciones].[none:Capítulo:nk]" /><text column="[federated.importaciones].[usr:c_peso:qk]" /></encodings><customized-tooltip><formatted-text><run fontcolor='#051e45' fontname="Tableau Semibold" fontsize='10'>&lt;[federated.importaciones].[none:Capítulo:nk]&gt;</run><run fontcolor='#3e4e66' fontname="Tableau Book" fontsize='9'>  (&lt;[federated.importaciones].[none:Rubro:nk]&gt;)</run><run>Æ&#10;</run><run fontcolor='#3e4e66' fontname="Tableau Book" fontsize='9'>US$ &lt;[federated.importaciones].[sum:c_u12_mm:qk]&gt; mil millones, &lt;[federated.importaciones].[usr:c_peso:qk]&gt; del total</run></formatted-text></customized-tooltip><customized-label><formatted-text><run fontcolor='#f0eee9' fontname="Tableau Medium" fontsize='9'>&lt;[federated.importaciones].[none:Capítulo:nk]&gt;</run><run>Æ&#10;</run><run fontcolor='#f0eee9' fontname="Tableau Book" fontsize='8'>&lt;[federated.importaciones].[usr:c_peso:qk]&gt;</run></formatted-text></customized-label><style><style-rule element='mark'><format attr='mark-labels-show' value='true' /><format attr='mark-labels-cull' value='false' /><format attr='has-stroke' value='true' /><format attr='stroke-color' value='#040F23' /></style-rule></style></pane>
+        </panes>
+        <rows></rows>
+        <cols></cols>
+      </table>
+      <simple-id uuid='{2FB6B058-E1C0-5AA3-99A1-D9AD734B15BB}' />
+    </worksheet>
+    <worksheet name="Rubro por origen">
+      <table>
+        <view>
+          <datasources><datasource caption='Importaciones ARCA' name='federated.importaciones' /></datasources>
+
+          <datasource-dependencies datasource='federated.importaciones'>
+            <column datatype="string" name="[Rubro]" role="dimension" type="nominal" />
+            <column datatype="string" name="[Grupo de origen]" role="dimension" type="nominal" />
+            <column datatype="real" name="[FOB últimos 12 meses]" role="measure" type="quantitative" />
+            <column caption="Peso dentro del rubro" datatype="real" default-format="p0%" name="[c_peso_rubro]" role="measure" type="quantitative"><calculation class='tableau' formula="SUM([FOB últimos 12 meses]) / MIN({FIXED [Rubro] : SUM([FOB últimos 12 meses])})"></calculation></column>
+            <column caption="FOB de los últimos 12 meses (miles de millones USD)" datatype="real" default-format="n#,##0.0" name="[c_u12_mm]" role="measure" type="quantitative"><calculation class='tableau' formula="[FOB últimos 12 meses] / 1000000000"></calculation></column>
+            <column-instance column="[Rubro]" derivation="None" name="[none:Rubro:nk]" pivot='key' type="nominal" />
+            <column-instance column="[Grupo de origen]" derivation="None" name="[none:Grupo de origen:nk]" pivot='key' type="nominal" />
+            <column-instance column="[c_peso_rubro]" derivation="User" name="[usr:c_peso_rubro:qk]" pivot='key' type="quantitative" />
+            <column-instance column="[c_u12_mm]" derivation="Sum" name="[sum:c_u12_mm:qk]" pivot='key' type="quantitative" />
+          </datasource-dependencies>
+          <filter class='categorical' column="[federated.importaciones].[none:Rubro:nk]"><groupfilter count='10' end='top' function='end' units='records' user:ui-marker='end' user:ui-top-by-field='true'><groupfilter direction='DESC' expression="SUM([FOB últimos 12 meses])" function='order' user:ui-marker='order'><groupfilter function='level-members' level="[none:Rubro:nk]" user:ui-enumeration='all' user:ui-marker='enumerate' /></groupfilter></groupfilter></filter>
+          <sort class='computed' column="[federated.importaciones].[none:Rubro:nk]" direction="DESC" using="[federated.importaciones].[sum:c_u12_mm:qk]" />
+          <sort class='manual' column="[federated.importaciones].[none:Grupo de origen:nk]" direction='ASC'><dictionary><bucket>&quot;Brasil&quot;</bucket><bucket>&quot;China&quot;</bucket><bucket>&quot;Unión Europea&quot;</bucket><bucket>&quot;Estados Unidos&quot;</bucket><bucket>&quot;Resto del mundo&quot;</bucket><bucket>&quot;Áreas especiales&quot;</bucket></dictionary></sort>
+          <aggregation value='true' />
+        </view>
+        <style>
+          <style-rule element='table'><format attr='background-color' value='#051e4501' /></style-rule>
+          <style-rule element='worksheet'>
+            <format attr='display-field-labels' scope='rows' value='false' />
+            <format attr='display-field-labels' scope='cols' value='false' />
+            <format attr='font-family' value='Tableau Book' />
+            <format attr='color' value='#BBC5D1' />
+          </style-rule>
+          <style-rule element='axis'>
+            <format attr='font-size' value='8' /><format attr='color' value='#8D9AA8' />
+            <format attr='stroke-color' value='#16284A' /><format attr='tick-color' value='#16284A' />
+          </style-rule>
+          <style-rule element='label'><format attr='font-size' value='9' /><format attr='color' value='#F0EEE9' /></style-rule>
+          <style-rule element='gridline'>
+            <format attr='line-visibility' scope='rows' value='on' />
+            <format attr='stroke-color' scope='rows' value='#16284A' />
+            <format attr='line-visibility' scope='cols' value='off' />
+          </style-rule>
+          <style-rule element='zeroline'><format attr='line-visibility' value='off' /></style-rule>
+          <style-rule element='table-div'><format attr='line-visibility' value='off' /></style-rule>
+          <style-rule element='mark'><encoding attr='color' field="[federated.importaciones].[usr:c_peso_rubro:qk]" type='custom-interpolated'><color-palette custom='true' name='' type='ordered-sequential'><color>#0B2E55</color><color>#0DA4CF</color></color-palette></encoding></style-rule><style-rule element='header'><format attr='width' field="[federated.importaciones].[none:Rubro:nk]" value='226' /></style-rule><style-rule element='label'><format attr='font-size' field="[federated.importaciones].[none:Grupo de origen:nk]" value='8' /></style-rule>
+        </style>
+        <panes>
+          <pane selection-relaxation-option='selection-relaxation-allow'><view><breakdown value='auto' /></view><mark class="Square" /><encodings><color column="[federated.importaciones].[usr:c_peso_rubro:qk]" /><text column="[federated.importaciones].[usr:c_peso_rubro:qk]" /></encodings><customized-tooltip><formatted-text><run fontcolor='#051e45' fontname="Tableau Semibold" fontsize='10'>&lt;[federated.importaciones].[none:Rubro:nk]&gt;, &lt;[federated.importaciones].[none:Grupo de origen:nk]&gt;</run><run>Æ&#10;</run><run fontcolor='#3e4e66' fontname="Tableau Book" fontsize='9'>&lt;[federated.importaciones].[usr:c_peso_rubro:qk]&gt; de lo que se importa en esa fila</run></formatted-text></customized-tooltip><customized-label><formatted-text><run fontcolor='#f0eee9' fontname="Tableau Medium" fontsize='9'>&lt;[federated.importaciones].[usr:c_peso_rubro:qk]&gt;</run></formatted-text></customized-label><style><style-rule element='mark'><format attr='mark-labels-show' value='true' /><format attr='mark-labels-cull' value='false' /></style-rule></style></pane>
+        </panes>
+        <rows>[federated.importaciones].[none:Rubro:nk]</rows>
+        <cols>[federated.importaciones].[none:Grupo de origen:nk]</cols>
+      </table>
+      <simple-id uuid='{4AE9FE4C-5D18-5E4C-B940-7D92675FEBD6}' />
+    </worksheet>
+    <worksheet name="Subas y bajas">
+      <table>
+        <view>
+          <datasources><datasource caption='Importaciones ARCA' name='federated.importaciones' /></datasources>
+
+          <datasource-dependencies datasource='federated.importaciones'>
+            <column datatype="string" name="[Capítulo]" role="dimension" type="nominal" />
+            <column datatype="real" name="[FOB últimos 12 meses]" role="measure" type="quantitative" />
+            <column datatype="real" name="[FOB 12 meses anteriores]" role="measure" type="quantitative" />
+            <column caption="Variación contra los 12 meses anteriores" datatype="real" default-format='p"▲ "0.0%;"▼ "0.0%' name="[c_var]" role="measure" type="quantitative"><calculation class='tableau' formula="SUM([FOB últimos 12 meses]) / SUM([FOB 12 meses anteriores]) - 1"></calculation></column>
+            <column caption="Subió o bajó" datatype="string" name="[c_signo]" role="measure" type="nominal"><calculation class='tableau' formula="IF [c_var] &gt;= 0 THEN 'Subió' ELSE 'Bajó' END"></calculation></column>
+            <column-instance column="[Capítulo]" derivation="None" name="[none:Capítulo:nk]" pivot='key' type="nominal" />
+            <column-instance column="[c_var]" derivation="User" name="[usr:c_var:qk]" pivot='key' type="quantitative" />
+            <column-instance column="[c_signo]" derivation="User" name="[usr:c_signo:nk]" pivot='key' type="nominal" />
+            <column-instance column="[FOB últimos 12 meses]" derivation="Sum" name="[sum:FOB últimos 12 meses:qk]" pivot='key' type="quantitative" />
+          </datasource-dependencies>
+          <filter class='quantitative' column="[federated.importaciones].[sum:FOB últimos 12 meses:qk]" included-values='in-range'><min>1000000000</min></filter>
+          <sort class='computed' column="[federated.importaciones].[none:Capítulo:nk]" direction="DESC" using="[federated.importaciones].[usr:c_var:qk]" />
+          <aggregation value='true' />
+        </view>
+        <style>
+          <style-rule element='table'><format attr='background-color' value='#051e4501' /></style-rule>
+          <style-rule element='worksheet'>
+            <format attr='display-field-labels' scope='rows' value='false' />
+            <format attr='display-field-labels' scope='cols' value='false' />
+            <format attr='font-family' value='Tableau Book' />
+            <format attr='color' value='#BBC5D1' />
+          </style-rule>
+          <style-rule element='axis'>
+            <format attr='font-size' value='8' /><format attr='color' value='#8D9AA8' />
+            <format attr='stroke-color' value='#16284A' /><format attr='tick-color' value='#16284A' />
+          </style-rule>
+          <style-rule element='label'><format attr='font-size' value='9' /><format attr='color' value='#F0EEE9' /></style-rule>
+          <style-rule element='gridline'>
+            <format attr='line-visibility' scope='rows' value='on' />
+            <format attr='stroke-color' scope='rows' value='#16284A' />
+            <format attr='line-visibility' scope='cols' value='off' />
+          </style-rule>
+          <style-rule element='zeroline'><format attr='line-visibility' value='off' /></style-rule>
+          <style-rule element='table-div'><format attr='line-visibility' value='off' /></style-rule>
+          <style-rule element='axis'><format attr='display' field="[federated.importaciones].[usr:c_var:qk]" scope="cols" value='false' /></style-rule><style-rule element='header'><format attr='width' field="[federated.importaciones].[none:Capítulo:nk]" value='196' /></style-rule>
+        </style>
+        <panes>
+          <pane selection-relaxation-option='selection-relaxation-allow'><view><breakdown value='auto' /></view><mark class="Bar" /><encodings><color column="[federated.importaciones].[usr:c_signo:nk]" /><text column="[federated.importaciones].[usr:c_var:qk]" /></encodings><customized-label><formatted-text><run fontcolor='#f0eee9' fontname="Tableau Medium" fontsize='9'>&lt;[federated.importaciones].[usr:c_var:qk]&gt;</run></formatted-text></customized-label><style><style-rule element='mark'><format attr='mark-labels-show' value='true' /><format attr='mark-labels-cull' value='false' /></style-rule></style></pane>
+        </panes>
+        <rows>[federated.importaciones].[none:Capítulo:nk]</rows>
+        <cols>[federated.importaciones].[usr:c_var:qk]</cols>
+      </table>
+      <simple-id uuid='{6D4956ED-C4B5-5812-A2C4-DDBFD0083D11}' />
+    </worksheet>
+    <worksheet name="Evolución del rubro">
+      <table>
+        <view>
+          <datasources><datasource caption='Importaciones ARCA' name='federated.importaciones' /></datasources>
+
+          <datasource-dependencies datasource='federated.importaciones'>
+            <column datatype="date" name="[Fecha]" role="dimension" type="ordinal" />
+            <column caption="Mes" datatype="string" name="[c_mes_texto]" role="dimension" type="nominal"><calculation class='tableau' formula="DATENAME('month', [Fecha]) + ' de ' + STR(YEAR([Fecha]))"></calculation></column>
+            <column datatype="real" name="[FOB USD]" role="measure" type="quantitative" />
+            <column caption="FOB (millones USD)" datatype="real" default-format="n#,##0" name="[c_fob_m]" role="measure" type="quantitative"><calculation class='tableau' formula="[FOB USD] / 1000000"></calculation></column>
+            <column-instance column="[Fecha]" derivation="None" name="[none:Fecha:qk]" pivot='key' type="quantitative" />
+            <column-instance column="[c_mes_texto]" derivation="Attribute" name="[attr:c_mes_texto:nk]" pivot='key' type="nominal" />
+            <column-instance column="[c_fob_m]" derivation="Sum" name="[sum:c_fob_m:qk]" pivot='key' type="quantitative" />
+          </datasource-dependencies>
+
+          <aggregation value='true' />
+        </view>
+        <style>
+          <style-rule element='table'><format attr='background-color' value='#051e4501' /></style-rule>
+          <style-rule element='worksheet'>
+            <format attr='display-field-labels' scope='rows' value='false' />
+            <format attr='display-field-labels' scope='cols' value='false' />
+            <format attr='font-family' value='Tableau Book' />
+            <format attr='color' value='#BBC5D1' />
+          </style-rule>
+          <style-rule element='axis'>
+            <format attr='font-size' value='8' /><format attr='color' value='#8D9AA8' />
+            <format attr='stroke-color' value='#16284A' /><format attr='tick-color' value='#16284A' />
+          </style-rule>
+          <style-rule element='label'><format attr='font-size' value='9' /><format attr='color' value='#F0EEE9' /></style-rule>
+          <style-rule element='gridline'>
+            <format attr='line-visibility' scope='rows' value='on' />
+            <format attr='stroke-color' scope='rows' value='#16284A' />
+            <format attr='line-visibility' scope='cols' value='off' />
+          </style-rule>
+          <style-rule element='zeroline'><format attr='line-visibility' value='off' /></style-rule>
+          <style-rule element='table-div'><format attr='line-visibility' value='off' /></style-rule>
+          <style-rule element='axis'><format attr='title' class='0' field="[federated.importaciones].[none:Fecha:qk]" scope="cols" value='' /></style-rule><style-rule element='axis'><format attr='title' class='0' field="[federated.importaciones].[sum:c_fob_m:qk]" scope="rows" value='' /></style-rule>
+        </style>
+        <panes>
+          <pane selection-relaxation-option='selection-relaxation-allow'><view><breakdown value='auto' /></view><mark class="Area" /><encodings><tooltip column="[federated.importaciones].[attr:c_mes_texto:nk]" /></encodings><customized-tooltip><formatted-text><run fontcolor='#051e45' fontname="Tableau Semibold" fontsize='10'>&lt;[federated.importaciones].[attr:c_mes_texto:nk]&gt;</run><run>Æ&#10;</run><run fontcolor='#3e4e66' fontname="Tableau Book" fontsize='9'>US$ &lt;[federated.importaciones].[sum:c_fob_m:qk]&gt; millones en el mes</run></formatted-text></customized-tooltip><style><style-rule element='mark'><format attr='mark-color' value='#0DA4CF' /></style-rule></style></pane>
+        </panes>
+        <rows>[federated.importaciones].[sum:c_fob_m:qk]</rows>
+        <cols>[federated.importaciones].[none:Fecha:qk]</cols>
+      </table>
+      <simple-id uuid='{6EC41FF5-B4F9-5C62-A1F9-C5AB06EC3299}' />
+    </worksheet>
+    <worksheet name="Rubro elegido">
+      <table>
+        <view>
+          <datasources><datasource caption='Importaciones ARCA' name='federated.importaciones' /></datasources>
+
+          <datasource-dependencies datasource='federated.importaciones'>
+            <column datatype="string" name="[Rubro]" role="dimension" type="nominal" />
+            <column caption="Rubro elegido" datatype="string" name="[c_rubro_elegido]" role="measure" type="nominal"><calculation class='tableau' formula="IF COUNTD([Rubro]) = 1 THEN MIN([Rubro]) ELSE 'Todos los rubros' END"></calculation></column>
+            <column-instance column="[c_rubro_elegido]" derivation="User" name="[usr:c_rubro_elegido:nk]" pivot='key' type="nominal" />
+          </datasource-dependencies>
+
+          <aggregation value='true' />
+        </view>
+        <style>
+          <style-rule element='table'><format attr='background-color' value='#051e4501' /></style-rule>
+          <style-rule element='worksheet'>
+            <format attr='display-field-labels' scope='rows' value='false' />
+            <format attr='display-field-labels' scope='cols' value='false' />
+            <format attr='font-family' value='Tableau Book' />
+            <format attr='color' value='#BBC5D1' />
+          </style-rule>
+          <style-rule element='axis'>
+            <format attr='font-size' value='8' /><format attr='color' value='#8D9AA8' />
+            <format attr='stroke-color' value='#16284A' /><format attr='tick-color' value='#16284A' />
+          </style-rule>
+          <style-rule element='label'><format attr='font-size' value='9' /><format attr='color' value='#F0EEE9' /></style-rule>
+          <style-rule element='gridline'>
+            <format attr='line-visibility' scope='rows' value='on' />
+            <format attr='stroke-color' scope='rows' value='#16284A' />
+            <format attr='line-visibility' scope='cols' value='off' />
+          </style-rule>
+          <style-rule element='zeroline'><format attr='line-visibility' value='off' /></style-rule>
+          <style-rule element='table-div'><format attr='line-visibility' value='off' /></style-rule>
+          <style-rule element='cell'><format attr='width' value='214' /><format attr='height' value='22' /><format attr='text-align' value='right' /></style-rule>
+        </style>
+        <panes>
+          <pane selection-relaxation-option='selection-relaxation-allow'><view><breakdown value='auto' /></view><mark class="Text" /><encodings><text column="[federated.importaciones].[usr:c_rubro_elegido:nk]" /></encodings><customized-label><formatted-text><run fontcolor='#f0eee9' fontname="Tableau Medium" fontsize='10'>&lt;[federated.importaciones].[usr:c_rubro_elegido:nk]&gt;</run></formatted-text></customized-label><style><style-rule element='mark'><format attr='mark-labels-show' value='true' /><format attr='mark-labels-cull' value='false' /></style-rule></style></pane>
+        </panes>
+        <rows></rows>
+        <cols></cols>
+      </table>
+      <simple-id uuid='{C3C22AD8-3C15-5644-A4E4-010ABF758974}' />
+    </worksheet>
+    <worksheet name="Vías por año">
+      <table>
+        <view>
+          <datasources><datasource caption='Importaciones ARCA' name='federated.importaciones' /></datasources>
+
+          <datasource-dependencies datasource='federated.importaciones'>
+            <column datatype="date" name="[Fecha]" role="dimension" type="ordinal" />
+            <column datatype="string" name="[Vía (grupo)]" role="dimension" type="nominal" />
+            <column datatype="real" name="[FOB USD]" role="measure" type="quantitative" />
+            <column caption="Peso en el año" datatype="real" default-format="p0%" name="[c_peso_anio]" role="measure" type="quantitative"><calculation class='tableau' formula="SUM([FOB USD]) / MIN({FIXED DATETRUNC('year', [Fecha]) : SUM([FOB USD])})"></calculation></column>
+            <column-instance column="[Fecha]" derivation="Year" name="[yr:Fecha:ok]" pivot='key' type="ordinal" />
+            <column-instance column="[Vía (grupo)]" derivation="None" name="[none:Vía (grupo):nk]" pivot='key' type="nominal" />
+            <column-instance column="[c_peso_anio]" derivation="User" name="[usr:c_peso_anio:qk]" pivot='key' type="quantitative" />
+          </datasource-dependencies>
+          <sort class='manual' column="[federated.importaciones].[none:Vía (grupo):nk]" direction='ASC'><dictionary><bucket>&quot;Marítima&quot;</bucket><bucket>&quot;Camión&quot;</bucket><bucket>&quot;Aérea&quot;</bucket><bucket>&quot;Ductos&quot;</bucket><bucket>&quot;Otras y sin informar&quot;</bucket></dictionary></sort>
+          <aggregation value='true' />
+        </view>
+        <style>
+          <style-rule element='table'><format attr='background-color' value='#051e4501' /></style-rule>
+          <style-rule element='worksheet'>
+            <format attr='display-field-labels' scope='rows' value='false' />
+            <format attr='display-field-labels' scope='cols' value='false' />
+            <format attr='font-family' value='Tableau Book' />
+            <format attr='color' value='#BBC5D1' />
+          </style-rule>
+          <style-rule element='axis'>
+            <format attr='font-size' value='8' /><format attr='color' value='#8D9AA8' />
+            <format attr='stroke-color' value='#16284A' /><format attr='tick-color' value='#16284A' />
+          </style-rule>
+          <style-rule element='label'><format attr='font-size' value='9' /><format attr='color' value='#F0EEE9' /></style-rule>
+          <style-rule element='gridline'>
+            <format attr='line-visibility' scope='rows' value='on' />
+            <format attr='stroke-color' scope='rows' value='#16284A' />
+            <format attr='line-visibility' scope='cols' value='off' />
+          </style-rule>
+          <style-rule element='zeroline'><format attr='line-visibility' value='off' /></style-rule>
+          <style-rule element='table-div'><format attr='line-visibility' value='off' /></style-rule>
+          <style-rule element='axis'><format attr='display' field="[federated.importaciones].[usr:c_peso_anio:qk]" scope="rows" value='false' /></style-rule>
+        </style>
+        <panes>
+          <pane selection-relaxation-option='selection-relaxation-allow'><view><breakdown value='auto' /></view><mark class="Bar" /><encodings><color column="[federated.importaciones].[none:Vía (grupo):nk]" /><text column="[federated.importaciones].[usr:c_peso_anio:qk]" /></encodings><customized-label><formatted-text><run fontcolor='#f0eee9' fontname="Tableau Medium" fontsize='8'>&lt;[federated.importaciones].[usr:c_peso_anio:qk]&gt;</run></formatted-text></customized-label><style><style-rule element='mark'><format attr='mark-labels-show' value='true' /><format attr='mark-labels-cull' value='false' /></style-rule></style></pane>
+        </panes>
+        <rows>[federated.importaciones].[usr:c_peso_anio:qk]</rows>
+        <cols>[federated.importaciones].[yr:Fecha:ok]</cols>
+      </table>
+      <simple-id uuid='{C4C2DB86-4DC5-571E-A35F-B13D4AB614BE}' />
+    </worksheet>
+    <worksheet name="Región por vía">
+      <table>
+        <view>
+          <datasources><datasource caption='Importaciones ARCA' name='federated.importaciones' /></datasources>
+
+          <datasource-dependencies datasource='federated.importaciones'>
+            <column datatype="string" name="[Región]" role="dimension" type="nominal" />
+            <column datatype="string" name="[Vía (grupo)]" role="dimension" type="nominal" />
+            <column datatype="real" name="[FOB últimos 12 meses]" role="measure" type="quantitative" />
+            <column caption="Peso dentro de la región" datatype="real" default-format="p0%" name="[c_peso_region]" role="measure" type="quantitative"><calculation class='tableau' formula="SUM([FOB últimos 12 meses]) / MIN({FIXED [Región] : SUM([FOB últimos 12 meses])})"></calculation></column>
+            <column caption="FOB de los últimos 12 meses (miles de millones USD)" datatype="real" default-format="n#,##0.0" name="[c_u12_mm]" role="measure" type="quantitative"><calculation class='tableau' formula="[FOB últimos 12 meses] / 1000000000"></calculation></column>
+            <column-instance column="[Región]" derivation="None" name="[none:Región:nk]" pivot='key' type="nominal" />
+            <column-instance column="[Vía (grupo)]" derivation="None" name="[none:Vía (grupo):nk]" pivot='key' type="nominal" />
+            <column-instance column="[c_peso_region]" derivation="User" name="[usr:c_peso_region:qk]" pivot='key' type="quantitative" />
+            <column-instance column="[c_u12_mm]" derivation="Sum" name="[sum:c_u12_mm:qk]" pivot='key' type="quantitative" />
+          </datasource-dependencies>
+          <filter class='categorical' column="[federated.importaciones].[none:Región:nk]"><groupfilter function='except' user:ui-domain='database' user:ui-enumeration='exclusive' user:ui-marker='enumerate'><groupfilter function='level-members' level="[none:Región:nk]" /><groupfilter function='member' level="[none:Región:nk]" member='"Otros"' /></groupfilter></filter>
+          <sort class='computed' column="[federated.importaciones].[none:Región:nk]" direction="DESC" using="[federated.importaciones].[sum:c_u12_mm:qk]" />
+          <sort class='manual' column="[federated.importaciones].[none:Vía (grupo):nk]" direction='ASC'><dictionary><bucket>&quot;Marítima&quot;</bucket><bucket>&quot;Camión&quot;</bucket><bucket>&quot;Aérea&quot;</bucket><bucket>&quot;Ductos&quot;</bucket><bucket>&quot;Otras y sin informar&quot;</bucket></dictionary></sort>
+          <aggregation value='true' />
+        </view>
+        <style>
+          <style-rule element='table'><format attr='background-color' value='#051e4501' /></style-rule>
+          <style-rule element='worksheet'>
+            <format attr='display-field-labels' scope='rows' value='false' />
+            <format attr='display-field-labels' scope='cols' value='false' />
+            <format attr='font-family' value='Tableau Book' />
+            <format attr='color' value='#BBC5D1' />
+          </style-rule>
+          <style-rule element='axis'>
+            <format attr='font-size' value='8' /><format attr='color' value='#8D9AA8' />
+            <format attr='stroke-color' value='#16284A' /><format attr='tick-color' value='#16284A' />
+          </style-rule>
+          <style-rule element='label'><format attr='font-size' value='9' /><format attr='color' value='#F0EEE9' /></style-rule>
+          <style-rule element='gridline'>
+            <format attr='line-visibility' scope='rows' value='on' />
+            <format attr='stroke-color' scope='rows' value='#16284A' />
+            <format attr='line-visibility' scope='cols' value='off' />
+          </style-rule>
+          <style-rule element='zeroline'><format attr='line-visibility' value='off' /></style-rule>
+          <style-rule element='table-div'><format attr='line-visibility' value='off' /></style-rule>
+          <style-rule element='mark'><encoding attr='color' field="[federated.importaciones].[usr:c_peso_region:qk]" type='custom-interpolated'><color-palette custom='true' name='' type='ordered-sequential'><color>#0B2E55</color><color>#0DA4CF</color></color-palette></encoding></style-rule><style-rule element='header'><format attr='width' field="[federated.importaciones].[none:Región:nk]" value='150' /></style-rule><style-rule element='label'><format attr='font-size' field="[federated.importaciones].[none:Vía (grupo):nk]" value='8' /></style-rule>
+        </style>
+        <panes>
+          <pane selection-relaxation-option='selection-relaxation-allow'><view><breakdown value='auto' /></view><mark class="Square" /><encodings><color column="[federated.importaciones].[usr:c_peso_region:qk]" /><text column="[federated.importaciones].[usr:c_peso_region:qk]" /></encodings><customized-tooltip><formatted-text><run fontcolor='#051e45' fontname="Tableau Semibold" fontsize='10'>&lt;[federated.importaciones].[none:Región:nk]&gt;, &lt;[federated.importaciones].[none:Vía (grupo):nk]&gt;</run><run>Æ&#10;</run><run fontcolor='#3e4e66' fontname="Tableau Book" fontsize='9'>&lt;[federated.importaciones].[usr:c_peso_region:qk]&gt; de lo que se importa en esa fila</run></formatted-text></customized-tooltip><customized-label><formatted-text><run fontcolor='#f0eee9' fontname="Tableau Medium" fontsize='9'>&lt;[federated.importaciones].[usr:c_peso_region:qk]&gt;</run></formatted-text></customized-label><style><style-rule element='mark'><format attr='mark-labels-show' value='true' /><format attr='mark-labels-cull' value='false' /></style-rule></style></pane>
+        </panes>
+        <rows>[federated.importaciones].[none:Región:nk]</rows>
+        <cols>[federated.importaciones].[none:Vía (grupo):nk]</cols>
+      </table>
+      <simple-id uuid='{E249904C-9751-5582-AFBD-489FF1267126}' />
+    </worksheet>
+    <worksheet name="Calendario">
+      <table>
+        <view>
+          <datasources><datasource caption='Importaciones ARCA' name='federated.importaciones' /></datasources>
+
+          <datasource-dependencies datasource='federated.importaciones'>
+            <column datatype="date" name="[Fecha]" role="dimension" type="ordinal" />
+            <column datatype="real" name="[FOB USD]" role="measure" type="quantitative" />
+            <column caption="FOB (miles de millones USD)" datatype="real" default-format="n#,##0.0" name="[c_fob_mm]" role="measure" type="quantitative"><calculation class='tableau' formula="[FOB USD] / 1000000000"></calculation></column>
+            <column-instance column="[Fecha]" derivation="Year" name="[yr:Fecha:ok]" pivot='key' type="ordinal" />
+            <column-instance column="[Fecha]" derivation="Month" name="[mn:Fecha:ok]" pivot='key' type="ordinal" />
+            <column-instance column="[c_fob_mm]" derivation="Sum" name="[sum:c_fob_mm:qk]" pivot='key' type="quantitative" />
+          </datasource-dependencies>
+
+          <aggregation value='true' />
+        </view>
+        <style>
+          <style-rule element='table'><format attr='background-color' value='#051e4501' /></style-rule>
+          <style-rule element='worksheet'>
+            <format attr='display-field-labels' scope='rows' value='false' />
+            <format attr='display-field-labels' scope='cols' value='false' />
+            <format attr='font-family' value='Tableau Book' />
+            <format attr='color' value='#BBC5D1' />
+          </style-rule>
+          <style-rule element='axis'>
+            <format attr='font-size' value='8' /><format attr='color' value='#8D9AA8' />
+            <format attr='stroke-color' value='#16284A' /><format attr='tick-color' value='#16284A' />
+          </style-rule>
+          <style-rule element='label'><format attr='font-size' value='9' /><format attr='color' value='#F0EEE9' /></style-rule>
+          <style-rule element='gridline'>
+            <format attr='line-visibility' scope='rows' value='on' />
+            <format attr='stroke-color' scope='rows' value='#16284A' />
+            <format attr='line-visibility' scope='cols' value='off' />
+          </style-rule>
+          <style-rule element='zeroline'><format attr='line-visibility' value='off' /></style-rule>
+          <style-rule element='table-div'><format attr='line-visibility' value='off' /></style-rule>
+          <style-rule element='mark'><encoding attr='color' field="[federated.importaciones].[sum:c_fob_mm:qk]" type='custom-interpolated'><color-palette custom='true' name='' type='ordered-sequential'><color>#0B2E55</color><color>#0DA4CF</color></color-palette></encoding></style-rule><style-rule element='header'><format attr='width' field="[federated.importaciones].[yr:Fecha:ok]" value='46' /></style-rule><style-rule element='label'><format attr='font-size' field="[federated.importaciones].[mn:Fecha:ok]" value='8' /></style-rule>
+        </style>
+        <panes>
+          <pane selection-relaxation-option='selection-relaxation-allow'><view><breakdown value='auto' /></view><mark class="Square" /><encodings><color column="[federated.importaciones].[sum:c_fob_mm:qk]" /><text column="[federated.importaciones].[sum:c_fob_mm:qk]" /></encodings><customized-label><formatted-text><run fontcolor='#f0eee9' fontname="Tableau Medium" fontsize='9'>&lt;[federated.importaciones].[sum:c_fob_mm:qk]&gt;</run></formatted-text></customized-label><style><style-rule element='mark'><format attr='mark-labels-show' value='true' /><format attr='mark-labels-cull' value='false' /></style-rule></style></pane>
+        </panes>
+        <rows>[federated.importaciones].[yr:Fecha:ok]</rows>
+        <cols>[federated.importaciones].[mn:Fecha:ok]</cols>
+      </table>
+      <simple-id uuid='{5725C858-2227-5C44-81F1-60BD2C28617D}' />
+    </worksheet>
+    <worksheet name="Valor por ítem">
+      <table>
+        <view>
+          <datasources><datasource caption='Importaciones ARCA' name='federated.importaciones' /></datasources>
+
+          <datasource-dependencies datasource='federated.importaciones'>
+            <column datatype="string" name="[Vía (grupo)]" role="dimension" type="nominal" />
+            <column datatype="real" name="[FOB últimos 12 meses]" role="measure" type="quantitative" />
+            <column datatype="integer" name="[Ítems]" role="measure" type="quantitative" />
+            <column caption="FOB medio por ítem (USD)" datatype="real" default-format='n"US$ "#,##0' name="[c_por_item]" role="measure" type="quantitative"><calculation class='tableau' formula="SUM([FOB últimos 12 meses]) / SUM(IF NOT ISNULL([FOB últimos 12 meses]) THEN [Ítems] END)"></calculation></column>
+            <column-instance column="[Vía (grupo)]" derivation="None" name="[none:Vía (grupo):nk]" pivot='key' type="nominal" />
+            <column-instance column="[c_por_item]" derivation="User" name="[usr:c_por_item:qk]" pivot='key' type="quantitative" />
+          </datasource-dependencies>
+          <filter class='categorical' column="[federated.importaciones].[none:Vía (grupo):nk]"><groupfilter function='except' user:ui-domain='database' user:ui-enumeration='exclusive' user:ui-marker='enumerate'><groupfilter function='level-members' level="[none:Vía (grupo):nk]" /><groupfilter function='member' level="[none:Vía (grupo):nk]" member='"Ductos"' /></groupfilter></filter>
+          <sort class='computed' column="[federated.importaciones].[none:Vía (grupo):nk]" direction="DESC" using="[federated.importaciones].[usr:c_por_item:qk]" />
+          <aggregation value='true' />
+        </view>
+        <style>
+          <style-rule element='table'><format attr='background-color' value='#051e4501' /></style-rule>
+          <style-rule element='worksheet'>
+            <format attr='display-field-labels' scope='rows' value='false' />
+            <format attr='display-field-labels' scope='cols' value='false' />
+            <format attr='font-family' value='Tableau Book' />
+            <format attr='color' value='#BBC5D1' />
+          </style-rule>
+          <style-rule element='axis'>
+            <format attr='font-size' value='8' /><format attr='color' value='#8D9AA8' />
+            <format attr='stroke-color' value='#16284A' /><format attr='tick-color' value='#16284A' />
+          </style-rule>
+          <style-rule element='label'><format attr='font-size' value='9' /><format attr='color' value='#F0EEE9' /></style-rule>
+          <style-rule element='gridline'>
+            <format attr='line-visibility' scope='rows' value='on' />
+            <format attr='stroke-color' scope='rows' value='#16284A' />
+            <format attr='line-visibility' scope='cols' value='off' />
+          </style-rule>
+          <style-rule element='zeroline'><format attr='line-visibility' value='off' /></style-rule>
+          <style-rule element='table-div'><format attr='line-visibility' value='off' /></style-rule>
+          <style-rule element='axis'><format attr='display' field="[federated.importaciones].[usr:c_por_item:qk]" scope="cols" value='false' /></style-rule>
+        </style>
+        <panes>
+          <pane selection-relaxation-option='selection-relaxation-allow'><view><breakdown value='auto' /></view><mark class="Bar" /><encodings><color column="[federated.importaciones].[none:Vía (grupo):nk]" /><text column="[federated.importaciones].[usr:c_por_item:qk]" /></encodings><customized-label><formatted-text><run fontcolor='#f0eee9' fontname="Tableau Medium" fontsize='9'>&lt;[federated.importaciones].[usr:c_por_item:qk]&gt;</run></formatted-text></customized-label><style><style-rule element='mark'><format attr='mark-labels-show' value='true' /><format attr='mark-labels-cull' value='false' /></style-rule></style></pane>
+        </panes>
+        <rows>[federated.importaciones].[none:Vía (grupo):nk]</rows>
+        <cols>[federated.importaciones].[usr:c_por_item:qk]</cols>
+      </table>
+      <simple-id uuid='{5ED191B4-D287-5EBC-AB44-045185FC66D1}' />
+    </worksheet>
+    <worksheet name="Energía eléctrica">
+      <table>
+        <view>
+          <datasources><datasource caption='Importaciones ARCA' name='federated.importaciones' /></datasources>
+
+          <datasource-dependencies datasource='federated.importaciones'>
+            <column datatype="date" name="[Fecha]" role="dimension" type="ordinal" />
+            <column datatype="string" name="[Rubro]" role="dimension" type="nominal" />
+            <column datatype="real" name="[FOB USD]" role="measure" type="quantitative" />
+            <column caption="Combustibles (miles de millones USD)" datatype="real" default-format="n#,##0.0" name="[c_combustibles]" role="measure" type="quantitative"><calculation class='tableau' formula="(IF [Rubro] = 'Combustibles' THEN [FOB USD] END) / 1000000000"></calculation></column>
+            <column datatype="real" name="[FOB energía eléctrica]" role="measure" type="quantitative" />
+            <column caption="Energía eléctrica declarada (miles de millones USD)" datatype="real" default-format="n#,##0.0" name="[c_electrica]" role="measure" type="quantitative"><calculation class='tableau' formula="[FOB energía eléctrica] / 1000000000"></calculation></column>
+            <column caption="Energía eléctrica declarada, donde supera a los combustibles" datatype="real" default-format="n#,##0.0" name="[c_electrica_arriba]" role="measure" type="quantitative"><calculation class='tableau' formula="IF SUM([c_electrica]) &gt; SUM([c_combustibles]) THEN SUM([c_electrica]) END"></calculation></column>
+            <column-instance column="[Fecha]" derivation="Year" name="[yr:Fecha:ok]" pivot='key' type="ordinal" />
+            <column-instance column="[c_combustibles]" derivation="Sum" name="[sum:c_combustibles:qk]" pivot='key' type="quantitative" />
+            <column-instance column="[c_electrica]" derivation="Sum" name="[sum:c_electrica:qk]" pivot='key' type="quantitative" />
+            <column-instance column="[c_electrica_arriba]" derivation="User" name="[usr:c_electrica_arriba:qk]" pivot='key' type="quantitative" />
+          </datasource-dependencies>
+
+          <aggregation value='true' />
+        </view>
+        <style>
+          <style-rule element='table'><format attr='background-color' value='#051e4501' /></style-rule>
+          <style-rule element='worksheet'>
+            <format attr='display-field-labels' scope='rows' value='false' />
+            <format attr='display-field-labels' scope='cols' value='false' />
+            <format attr='font-family' value='Tableau Book' />
+            <format attr='color' value='#BBC5D1' />
+          </style-rule>
+          <style-rule element='axis'>
+            <format attr='font-size' value='8' /><format attr='color' value='#8D9AA8' />
+            <format attr='stroke-color' value='#16284A' /><format attr='tick-color' value='#16284A' />
+          </style-rule>
+          <style-rule element='label'><format attr='font-size' value='9' /><format attr='color' value='#F0EEE9' /></style-rule>
+          <style-rule element='gridline'>
+            <format attr='line-visibility' scope='rows' value='on' />
+            <format attr='stroke-color' scope='rows' value='#16284A' />
+            <format attr='line-visibility' scope='cols' value='off' />
+          </style-rule>
+          <style-rule element='zeroline'><format attr='line-visibility' value='off' /></style-rule>
+          <style-rule element='table-div'><format attr='line-visibility' value='off' /></style-rule>
+          <style-rule element='axis'><encoding attr='space' class='0' field="[federated.importaciones].[sum:c_electrica:qk]" field-type='quantitative' fold='true' scope='rows' synchronized='true' type='space' /></style-rule><style-rule element='axis'><format attr='display' field="[federated.importaciones].[sum:c_electrica:qk]" scope="rows" value='false' /></style-rule><style-rule element='axis'><format attr='display' field="[federated.importaciones].[sum:c_combustibles:qk]" scope="rows" value='false' /></style-rule>
+        </style>
+        <panes>
+          <pane selection-relaxation-option='selection-relaxation-allow'><view><breakdown value='auto' /></view><mark class="Automatic" /><style><style-rule element='mark'></style-rule></style></pane>
+          <pane id='1' y-axis-name="[federated.importaciones].[sum:c_combustibles:qk]" selection-relaxation-option='selection-relaxation-allow'><view><breakdown value='auto' /></view><mark class="Bar" /><encodings><text column="[federated.importaciones].[sum:c_combustibles:qk]" /></encodings><customized-tooltip><formatted-text><run fontcolor='#051e45' fontname="Tableau Semibold" fontsize='10'>&lt;[federated.importaciones].[yr:Fecha:ok]&gt;</run><run>Æ&#10;</run><run fontcolor='#3e4e66' fontname="Tableau Book" fontsize='9'>Combustibles: US$ &lt;[federated.importaciones].[sum:c_combustibles:qk]&gt; mil millones</run></formatted-text></customized-tooltip><customized-label><formatted-text><run fontcolor='#f0eee9' fontname="Tableau Medium" fontsize='8'>&lt;[federated.importaciones].[sum:c_combustibles:qk]&gt;</run></formatted-text></customized-label><style><style-rule element='mark'><format attr='mark-color' value='#0DA4CF' /><format attr='mark-labels-show' value='true' /><format attr='mark-labels-cull' value='false' /></style-rule></style></pane>
+          <pane id='2' y-axis-name="[federated.importaciones].[sum:c_electrica:qk]" selection-relaxation-option='selection-relaxation-allow'><view><breakdown value='auto' /></view><mark class="Line" /><encodings><text column="[federated.importaciones].[usr:c_electrica_arriba:qk]" /></encodings><customized-tooltip><formatted-text><run fontcolor='#051e45' fontname="Tableau Semibold" fontsize='10'>&lt;[federated.importaciones].[yr:Fecha:ok]&gt;</run><run>Æ&#10;</run><run fontcolor='#3e4e66' fontname="Tableau Book" fontsize='9'>Energía eléctrica declarada: US$ &lt;[federated.importaciones].[sum:c_electrica:qk]&gt; mil millones</run></formatted-text></customized-tooltip><customized-label><formatted-text><run fontcolor='#b33879' fontname="Tableau Medium" fontsize='8'>&lt;[federated.importaciones].[usr:c_electrica_arriba:qk]&gt;</run></formatted-text></customized-label><style><style-rule element='mark'><format attr='mark-color' value='#B33879' /><format attr='mark-labels-show' value='true' /><format attr='mark-labels-cull' value='false' /></style-rule></style></pane>
+        </panes>
+        <rows>([federated.importaciones].[sum:c_combustibles:qk] + [federated.importaciones].[sum:c_electrica:qk])</rows>
+        <cols>[federated.importaciones].[yr:Fecha:ok]</cols>
+      </table>
+      <simple-id uuid='{29F579C5-ABA3-54BA-9667-95C39381EAE9}' />
+    </worksheet>
+    <worksheet name="Cobertura">
+      <table>
+        <view>
+          <datasources><datasource caption='Importaciones ARCA' name='federated.importaciones' /></datasources>
+
+          <datasource-dependencies datasource='federated.importaciones'>
+            <column datatype="date" name="[Fecha]" role="dimension" type="ordinal" />
+            <column caption="Mes" datatype="string" name="[c_mes_texto]" role="dimension" type="nominal"><calculation class='tableau' formula="DATENAME('month', [Fecha]) + ' de ' + STR(YEAR([Fecha]))"></calculation></column>
+            <column datatype="integer" name="[Ítems]" role="measure" type="quantitative" />
+            <column caption="Ítems de despacho (miles)" datatype="real" default-format="n#,##0" name="[c_items_miles]" role="measure" type="quantitative"><calculation class='tableau' formula="[Ítems] / 1000"></calculation></column>
+            <column-instance column="[Fecha]" derivation="None" name="[none:Fecha:qk]" pivot='key' type="quantitative" />
+            <column-instance column="[c_mes_texto]" derivation="Attribute" name="[attr:c_mes_texto:nk]" pivot='key' type="nominal" />
+            <column-instance column="[c_items_miles]" derivation="Sum" name="[sum:c_items_miles:qk]" pivot='key' type="quantitative" />
+          </datasource-dependencies>
+
+          <aggregation value='true' />
+        </view>
+        <style>
+          <style-rule element='table'><format attr='background-color' value='#051e4501' /></style-rule>
+          <style-rule element='worksheet'>
+            <format attr='display-field-labels' scope='rows' value='false' />
+            <format attr='display-field-labels' scope='cols' value='false' />
+            <format attr='font-family' value='Tableau Book' />
+            <format attr='color' value='#BBC5D1' />
+          </style-rule>
+          <style-rule element='axis'>
+            <format attr='font-size' value='8' /><format attr='color' value='#8D9AA8' />
+            <format attr='stroke-color' value='#16284A' /><format attr='tick-color' value='#16284A' />
+          </style-rule>
+          <style-rule element='label'><format attr='font-size' value='9' /><format attr='color' value='#F0EEE9' /></style-rule>
+          <style-rule element='gridline'>
+            <format attr='line-visibility' scope='rows' value='on' />
+            <format attr='stroke-color' scope='rows' value='#16284A' />
+            <format attr='line-visibility' scope='cols' value='off' />
+          </style-rule>
+          <style-rule element='zeroline'><format attr='line-visibility' value='off' /></style-rule>
+          <style-rule element='table-div'><format attr='line-visibility' value='off' /></style-rule>
+          <style-rule element='axis'><format attr='title' class='0' field="[federated.importaciones].[none:Fecha:qk]" scope="cols" value='' /></style-rule><style-rule element='axis'><format attr='title' class='0' field="[federated.importaciones].[sum:c_items_miles:qk]" scope="rows" value='' /></style-rule>
+        </style>
+        <panes>
+          <pane selection-relaxation-option='selection-relaxation-allow'><view><breakdown value='auto' /></view><mark class="Area" /><encodings><tooltip column="[federated.importaciones].[attr:c_mes_texto:nk]" /></encodings><customized-tooltip><formatted-text><run fontcolor='#051e45' fontname="Tableau Semibold" fontsize='10'>&lt;[federated.importaciones].[attr:c_mes_texto:nk]&gt;</run><run>Æ&#10;</run><run fontcolor='#3e4e66' fontname="Tableau Book" fontsize='9'>&lt;[federated.importaciones].[sum:c_items_miles:qk]&gt; mil ítems de despacho</run></formatted-text></customized-tooltip><style><style-rule element='mark'><format attr='mark-color' value='#3BAB8D' /></style-rule></style></pane>
+        </panes>
+        <rows>[federated.importaciones].[sum:c_items_miles:qk]</rows>
+        <cols>[federated.importaciones].[none:Fecha:qk]</cols>
+      </table>
+      <simple-id uuid='{713FC0BC-C315-5ED8-A888-01475E2EC9D5}' />
+    </worksheet>
+  </worksheets>
+  <dashboards>
+    <dashboard name="Panorama">
+      <style><style-rule element='table'><format attr='background-color' value='#040F23' /></style-rule></style>
+      <size maxheight='720' maxwidth='1280' minheight='720' minwidth='1280' sizing-mode='fixed' />
+      <zones>
+        <zone h='100000' id='2' type-v2='layout-basic' w='100000' x='0' y='0'>
+          <zone floating='true' id='3' is-centered='0' is-scaled='1' param='fondos/panorama.png' type-v2='bitmap' h='100000' w='100000' x='0' y='0' />
+          <zone floating='true' id='4' name="KPI importado" show-title='false' h='7222' w='21641' x='2500' y='15139'><zone-style><format attr='border-style' value='none' /><format attr='margin' value='0' /><format attr='padding' value='0' /><format attr='background-color' value='#00000000' /></zone-style></zone>
+          <zone floating='true' id='5' name="KPI variación" show-title='false' h='7222' w='21641' x='26953' y='15139'><zone-style><format attr='border-style' value='none' /><format attr='margin' value='0' /><format attr='padding' value='0' /><format attr='background-color' value='#00000000' /></zone-style></zone>
+          <zone floating='true' id='6' name="KPI origen" show-title='false' h='7222' w='21641' x='51406' y='15139'><zone-style><format attr='border-style' value='none' /><format attr='margin' value='0' /><format attr='padding' value='0' /><format attr='background-color' value='#00000000' /></zone-style></zone>
+          <zone floating='true' id='7' name="KPI rubro" show-title='false' h='7222' w='21641' x='75859' y='15139'><zone-style><format attr='border-style' value='none' /><format attr='margin' value='0' /><format attr='padding' value='0' /><format attr='background-color' value='#00000000' /></zone-style></zone>
+          <zone floating='true' id='8' name="Evolución mensual" show-title='false' h='25833' w='62188' x='2500' y='34444'><zone-style><format attr='border-style' value='none' /><format attr='margin' value='0' /><format attr='padding' value='0' /><format attr='background-color' value='#00000000' /></zone-style></zone>
+          <zone floating='true' id='9' name="Principales orígenes" show-title='false' h='60278' w='30000' x='67500' y='34444'><zone-style><format attr='border-style' value='none' /><format attr='margin' value='0' /><format attr='padding' value='0' /><format attr='background-color' value='#00000000' /></zone-style></zone>
+          <zone floating='true' id='10' name="Principales rubros" show-title='false' h='23611' w='29688' x='2500' y='71111'><zone-style><format attr='border-style' value='none' /><format attr='margin' value='0' /><format attr='padding' value='0' /><format attr='background-color' value='#00000000' /></zone-style></zone>
+          <zone floating='true' id='11' name="Vías de transporte" show-title='false' h='23611' w='29688' x='35000' y='71111'><zone-style><format attr='border-style' value='none' /><format attr='margin' value='0' /><format attr='padding' value='0' /><format attr='background-color' value='#00000000' /></zone-style></zone>
+          <zone floating='true' id='12' type-v2='dashboard-object' h='4167' w='6719' x='69375' y='4028'><button action='tabdoc:goto-sheet window-id=&quot;{6444AC9B-3992-5DA7-B03C-5E50435E787D}&quot;' button-type='text'><button-visual-state><caption>&#160;</caption><tooltip-text>Ir a Orígenes</tooltip-text><button-caption-font-style fontcolor='#00000000' fontname="Tableau Book" fontsize='8' /></button-visual-state></button><zone-style><format attr='border-style' value='none' /><format attr='margin' value='0' /><format attr='padding' value='0' /><format attr='background-color' value='#00000000' /></zone-style></zone>
+          <zone floating='true' id='13' type-v2='dashboard-object' h='4167' w='6719' x='76406' y='4028'><button action='tabdoc:goto-sheet window-id=&quot;{A496FA3A-823E-5591-A4A0-B52CCB497EB2}&quot;' button-type='text'><button-visual-state><caption>&#160;</caption><tooltip-text>Ir a Productos</tooltip-text><button-caption-font-style fontcolor='#00000000' fontname="Tableau Book" fontsize='8' /></button-visual-state></button><zone-style><format attr='border-style' value='none' /><format attr='margin' value='0' /><format attr='padding' value='0' /><format attr='background-color' value='#00000000' /></zone-style></zone>
+          <zone floating='true' id='14' type-v2='dashboard-object' h='4167' w='6719' x='83438' y='4028'><button action='tabdoc:goto-sheet window-id=&quot;{7C105042-AC4E-5909-B76A-93B6D2581402}&quot;' button-type='text'><button-visual-state><caption>&#160;</caption><tooltip-text>Ir a Logística</tooltip-text><button-caption-font-style fontcolor='#00000000' fontname="Tableau Book" fontsize='8' /></button-visual-state></button><zone-style><format attr='border-style' value='none' /><format attr='margin' value='0' /><format attr='padding' value='0' /><format attr='background-color' value='#00000000' /></zone-style></zone>
+          <zone floating='true' id='15' type-v2='dashboard-object' h='4167' w='6719' x='90469' y='4028'><button action='tabdoc:goto-sheet window-id=&quot;{373A22A3-CB06-51AB-94C7-A1A06D2032CA}&quot;' button-type='text'><button-visual-state><caption>&#160;</caption><tooltip-text>Ir a Método</tooltip-text><button-caption-font-style fontcolor='#00000000' fontname="Tableau Book" fontsize='8' /></button-visual-state></button><zone-style><format attr='border-style' value='none' /><format attr='margin' value='0' /><format attr='padding' value='0' /><format attr='background-color' value='#00000000' /></zone-style></zone>
+        </zone>
+      </zones>
+      <simple-id uuid='{C3A1CDF2-EC37-54BD-9577-B692EABB29DE}' />
+    </dashboard>
+    <dashboard name="Orígenes">
+      <style><style-rule element='table'><format attr='background-color' value='#040F23' /></style-rule></style>
+      <size maxheight='720' maxwidth='1280' minheight='720' minwidth='1280' sizing-mode='fixed' />
+      <zones>
+        <zone h='100000' id='2' type-v2='layout-basic' w='100000' x='0' y='0'>
+          <zone floating='true' id='3' is-centered='0' is-scaled='1' param='fondos/origenes.png' type-v2='bitmap' h='100000' w='100000' x='0' y='0' />
+          <zone floating='true' id='4' name="Mapa de orígenes" show-title='false' h='40833' w='57500' x='2500' y='20000'><zone-style><format attr='border-style' value='none' /><format attr='margin' value='0' /><format attr='padding' value='0' /><format attr='background-color' value='#00000000' /></zone-style></zone>
+          <zone floating='true' id='5' name="Ganadores y perdedores" show-title='false' h='40833' w='34688' x='62812' y='20000'><zone-style><format attr='border-style' value='none' /><format attr='margin' value='0' /><format attr='padding' value='0' /><format attr='background-color' value='#00000000' /></zone-style></zone>
+          <zone floating='true' id='6' name="Peso de los grupos" show-title='false' h='23056' w='45938' x='2500' y='71667'><zone-style><format attr='border-style' value='none' /><format attr='margin' value='0' /><format attr='padding' value='0' /><format attr='background-color' value='#00000000' /></zone-style></zone>
+          <zone floating='true' id='7' name="Evolución del origen" show-title='false' h='23056' w='46250' x='51250' y='71667'><zone-style><format attr='border-style' value='none' /><format attr='margin' value='0' /><format attr='padding' value='0' /><format attr='background-color' value='#00000000' /></zone-style></zone>
+          <zone floating='true' id='8' name="Origen elegido" show-title='false' h='3611' w='17188' x='80000' y='65139'><zone-style><format attr='border-style' value='none' /><format attr='margin' value='0' /><format attr='padding' value='0' /><format attr='background-color' value='#00000000' /></zone-style></zone>
+          <zone floating='true' id='9' type-v2='dashboard-object' h='4167' w='6719' x='62344' y='4028'><button action='tabdoc:goto-sheet window-id=&quot;{6B13AE2C-F5AD-5A87-8195-34F78242F6BC}&quot;' button-type='text'><button-visual-state><caption>&#160;</caption><tooltip-text>Ir a Panorama</tooltip-text><button-caption-font-style fontcolor='#00000000' fontname="Tableau Book" fontsize='8' /></button-visual-state></button><zone-style><format attr='border-style' value='none' /><format attr='margin' value='0' /><format attr='padding' value='0' /><format attr='background-color' value='#00000000' /></zone-style></zone>
+          <zone floating='true' id='10' type-v2='dashboard-object' h='4167' w='6719' x='76406' y='4028'><button action='tabdoc:goto-sheet window-id=&quot;{A496FA3A-823E-5591-A4A0-B52CCB497EB2}&quot;' button-type='text'><button-visual-state><caption>&#160;</caption><tooltip-text>Ir a Productos</tooltip-text><button-caption-font-style fontcolor='#00000000' fontname="Tableau Book" fontsize='8' /></button-visual-state></button><zone-style><format attr='border-style' value='none' /><format attr='margin' value='0' /><format attr='padding' value='0' /><format attr='background-color' value='#00000000' /></zone-style></zone>
+          <zone floating='true' id='11' type-v2='dashboard-object' h='4167' w='6719' x='83438' y='4028'><button action='tabdoc:goto-sheet window-id=&quot;{7C105042-AC4E-5909-B76A-93B6D2581402}&quot;' button-type='text'><button-visual-state><caption>&#160;</caption><tooltip-text>Ir a Logística</tooltip-text><button-caption-font-style fontcolor='#00000000' fontname="Tableau Book" fontsize='8' /></button-visual-state></button><zone-style><format attr='border-style' value='none' /><format attr='margin' value='0' /><format attr='padding' value='0' /><format attr='background-color' value='#00000000' /></zone-style></zone>
+          <zone floating='true' id='12' type-v2='dashboard-object' h='4167' w='6719' x='90469' y='4028'><button action='tabdoc:goto-sheet window-id=&quot;{373A22A3-CB06-51AB-94C7-A1A06D2032CA}&quot;' button-type='text'><button-visual-state><caption>&#160;</caption><tooltip-text>Ir a Método</tooltip-text><button-caption-font-style fontcolor='#00000000' fontname="Tableau Book" fontsize='8' /></button-visual-state></button><zone-style><format attr='border-style' value='none' /><format attr='margin' value='0' /><format attr='padding' value='0' /><format attr='background-color' value='#00000000' /></zone-style></zone>
+        </zone>
+      </zones>
+      <simple-id uuid='{455FBC1B-B58D-5A09-80BC-450F9E2CC724}' />
+    </dashboard>
+    <dashboard name="Productos">
+      <style><style-rule element='table'><format attr='background-color' value='#040F23' /></style-rule></style>
+      <size maxheight='720' maxwidth='1280' minheight='720' minwidth='1280' sizing-mode='fixed' />
+      <zones>
+        <zone h='100000' id='2' type-v2='layout-basic' w='100000' x='0' y='0'>
+          <zone floating='true' id='3' is-centered='0' is-scaled='1' param='fondos/productos.png' type-v2='bitmap' h='100000' w='100000' x='0' y='0' />
+          <zone floating='true' id='4' name="Mapa de productos" show-title='false' h='40833' w='45938' x='2500' y='20000'><zone-style><format attr='border-style' value='none' /><format attr='margin' value='0' /><format attr='padding' value='0' /><format attr='background-color' value='#00000000' /></zone-style></zone>
+          <zone floating='true' id='5' name="Rubro por origen" show-title='false' h='40833' w='46250' x='51250' y='20000'><zone-style><format attr='border-style' value='none' /><format attr='margin' value='0' /><format attr='padding' value='0' /><format attr='background-color' value='#00000000' /></zone-style></zone>
+          <zone floating='true' id='6' name="Subas y bajas" show-title='false' h='23056' w='45938' x='2500' y='71667'><zone-style><format attr='border-style' value='none' /><format attr='margin' value='0' /><format attr='padding' value='0' /><format attr='background-color' value='#00000000' /></zone-style></zone>
+          <zone floating='true' id='7' name="Evolución del rubro" show-title='false' h='23056' w='46250' x='51250' y='71667'><zone-style><format attr='border-style' value='none' /><format attr='margin' value='0' /><format attr='padding' value='0' /><format attr='background-color' value='#00000000' /></zone-style></zone>
+          <zone floating='true' id='8' name="Rubro elegido" show-title='false' h='3611' w='17188' x='80000' y='65139'><zone-style><format attr='border-style' value='none' /><format attr='margin' value='0' /><format attr='padding' value='0' /><format attr='background-color' value='#00000000' /></zone-style></zone>
+          <zone floating='true' id='9' type-v2='dashboard-object' h='4167' w='6719' x='62344' y='4028'><button action='tabdoc:goto-sheet window-id=&quot;{6B13AE2C-F5AD-5A87-8195-34F78242F6BC}&quot;' button-type='text'><button-visual-state><caption>&#160;</caption><tooltip-text>Ir a Panorama</tooltip-text><button-caption-font-style fontcolor='#00000000' fontname="Tableau Book" fontsize='8' /></button-visual-state></button><zone-style><format attr='border-style' value='none' /><format attr='margin' value='0' /><format attr='padding' value='0' /><format attr='background-color' value='#00000000' /></zone-style></zone>
+          <zone floating='true' id='10' type-v2='dashboard-object' h='4167' w='6719' x='69375' y='4028'><button action='tabdoc:goto-sheet window-id=&quot;{6444AC9B-3992-5DA7-B03C-5E50435E787D}&quot;' button-type='text'><button-visual-state><caption>&#160;</caption><tooltip-text>Ir a Orígenes</tooltip-text><button-caption-font-style fontcolor='#00000000' fontname="Tableau Book" fontsize='8' /></button-visual-state></button><zone-style><format attr='border-style' value='none' /><format attr='margin' value='0' /><format attr='padding' value='0' /><format attr='background-color' value='#00000000' /></zone-style></zone>
+          <zone floating='true' id='11' type-v2='dashboard-object' h='4167' w='6719' x='83438' y='4028'><button action='tabdoc:goto-sheet window-id=&quot;{7C105042-AC4E-5909-B76A-93B6D2581402}&quot;' button-type='text'><button-visual-state><caption>&#160;</caption><tooltip-text>Ir a Logística</tooltip-text><button-caption-font-style fontcolor='#00000000' fontname="Tableau Book" fontsize='8' /></button-visual-state></button><zone-style><format attr='border-style' value='none' /><format attr='margin' value='0' /><format attr='padding' value='0' /><format attr='background-color' value='#00000000' /></zone-style></zone>
+          <zone floating='true' id='12' type-v2='dashboard-object' h='4167' w='6719' x='90469' y='4028'><button action='tabdoc:goto-sheet window-id=&quot;{373A22A3-CB06-51AB-94C7-A1A06D2032CA}&quot;' button-type='text'><button-visual-state><caption>&#160;</caption><tooltip-text>Ir a Método</tooltip-text><button-caption-font-style fontcolor='#00000000' fontname="Tableau Book" fontsize='8' /></button-visual-state></button><zone-style><format attr='border-style' value='none' /><format attr='margin' value='0' /><format attr='padding' value='0' /><format attr='background-color' value='#00000000' /></zone-style></zone>
+        </zone>
+      </zones>
+      <simple-id uuid='{CF81A7AC-D555-571D-B9B8-D2D4486E8483}' />
+    </dashboard>
+    <dashboard name="Logística">
+      <style><style-rule element='table'><format attr='background-color' value='#040F23' /></style-rule></style>
+      <size maxheight='720' maxwidth='1280' minheight='720' minwidth='1280' sizing-mode='fixed' />
+      <zones>
+        <zone h='100000' id='2' type-v2='layout-basic' w='100000' x='0' y='0'>
+          <zone floating='true' id='3' is-centered='0' is-scaled='1' param='fondos/logistica.png' type-v2='bitmap' h='100000' w='100000' x='0' y='0' />
+          <zone floating='true' id='4' name="Vías por año" show-title='false' h='31944' w='45938' x='2500' y='20000'><zone-style><format attr='border-style' value='none' /><format attr='margin' value='0' /><format attr='padding' value='0' /><format attr='background-color' value='#00000000' /></zone-style></zone>
+          <zone floating='true' id='5' name="Región por vía" show-title='false' h='31944' w='46250' x='51250' y='20000'><zone-style><format attr='border-style' value='none' /><format attr='margin' value='0' /><format attr='padding' value='0' /><format attr='background-color' value='#00000000' /></zone-style></zone>
+          <zone floating='true' id='6' name="Calendario" show-title='false' h='31944' w='62188' x='2500' y='62778'><zone-style><format attr='border-style' value='none' /><format attr='margin' value='0' /><format attr='padding' value='0' /><format attr='background-color' value='#00000000' /></zone-style></zone>
+          <zone floating='true' id='7' name="Valor por ítem" show-title='false' h='31944' w='30000' x='67500' y='62778'><zone-style><format attr='border-style' value='none' /><format attr='margin' value='0' /><format attr='padding' value='0' /><format attr='background-color' value='#00000000' /></zone-style></zone>
+          <zone floating='true' id='8' type-v2='dashboard-object' h='4167' w='6719' x='62344' y='4028'><button action='tabdoc:goto-sheet window-id=&quot;{6B13AE2C-F5AD-5A87-8195-34F78242F6BC}&quot;' button-type='text'><button-visual-state><caption>&#160;</caption><tooltip-text>Ir a Panorama</tooltip-text><button-caption-font-style fontcolor='#00000000' fontname="Tableau Book" fontsize='8' /></button-visual-state></button><zone-style><format attr='border-style' value='none' /><format attr='margin' value='0' /><format attr='padding' value='0' /><format attr='background-color' value='#00000000' /></zone-style></zone>
+          <zone floating='true' id='9' type-v2='dashboard-object' h='4167' w='6719' x='69375' y='4028'><button action='tabdoc:goto-sheet window-id=&quot;{6444AC9B-3992-5DA7-B03C-5E50435E787D}&quot;' button-type='text'><button-visual-state><caption>&#160;</caption><tooltip-text>Ir a Orígenes</tooltip-text><button-caption-font-style fontcolor='#00000000' fontname="Tableau Book" fontsize='8' /></button-visual-state></button><zone-style><format attr='border-style' value='none' /><format attr='margin' value='0' /><format attr='padding' value='0' /><format attr='background-color' value='#00000000' /></zone-style></zone>
+          <zone floating='true' id='10' type-v2='dashboard-object' h='4167' w='6719' x='76406' y='4028'><button action='tabdoc:goto-sheet window-id=&quot;{A496FA3A-823E-5591-A4A0-B52CCB497EB2}&quot;' button-type='text'><button-visual-state><caption>&#160;</caption><tooltip-text>Ir a Productos</tooltip-text><button-caption-font-style fontcolor='#00000000' fontname="Tableau Book" fontsize='8' /></button-visual-state></button><zone-style><format attr='border-style' value='none' /><format attr='margin' value='0' /><format attr='padding' value='0' /><format attr='background-color' value='#00000000' /></zone-style></zone>
+          <zone floating='true' id='11' type-v2='dashboard-object' h='4167' w='6719' x='90469' y='4028'><button action='tabdoc:goto-sheet window-id=&quot;{373A22A3-CB06-51AB-94C7-A1A06D2032CA}&quot;' button-type='text'><button-visual-state><caption>&#160;</caption><tooltip-text>Ir a Método</tooltip-text><button-caption-font-style fontcolor='#00000000' fontname="Tableau Book" fontsize='8' /></button-visual-state></button><zone-style><format attr='border-style' value='none' /><format attr='margin' value='0' /><format attr='padding' value='0' /><format attr='background-color' value='#00000000' /></zone-style></zone>
+        </zone>
+      </zones>
+      <simple-id uuid='{6C7F5946-D3D1-514D-A0D6-1877235DB484}' />
+    </dashboard>
+    <dashboard name="Método">
+      <style><style-rule element='table'><format attr='background-color' value='#040F23' /></style-rule></style>
+      <size maxheight='720' maxwidth='1280' minheight='720' minwidth='1280' sizing-mode='fixed' />
+      <zones>
+        <zone h='100000' id='2' type-v2='layout-basic' w='100000' x='0' y='0'>
+          <zone floating='true' id='3' is-centered='0' is-scaled='1' param='fondos/metodo.png' type-v2='bitmap' h='100000' w='100000' x='0' y='0' />
+          <zone floating='true' id='4' name="Energía eléctrica" show-title='false' h='31944' w='46250' x='51250' y='20000'><zone-style><format attr='border-style' value='none' /><format attr='margin' value='0' /><format attr='padding' value='0' /><format attr='background-color' value='#00000000' /></zone-style></zone>
+          <zone floating='true' id='5' name="Cobertura" show-title='false' h='31944' w='46250' x='51250' y='62778'><zone-style><format attr='border-style' value='none' /><format attr='margin' value='0' /><format attr='padding' value='0' /><format attr='background-color' value='#00000000' /></zone-style></zone>
+          <zone floating='true' id='6' type-v2='dashboard-object' h='4167' w='6719' x='62344' y='4028'><button action='tabdoc:goto-sheet window-id=&quot;{6B13AE2C-F5AD-5A87-8195-34F78242F6BC}&quot;' button-type='text'><button-visual-state><caption>&#160;</caption><tooltip-text>Ir a Panorama</tooltip-text><button-caption-font-style fontcolor='#00000000' fontname="Tableau Book" fontsize='8' /></button-visual-state></button><zone-style><format attr='border-style' value='none' /><format attr='margin' value='0' /><format attr='padding' value='0' /><format attr='background-color' value='#00000000' /></zone-style></zone>
+          <zone floating='true' id='7' type-v2='dashboard-object' h='4167' w='6719' x='69375' y='4028'><button action='tabdoc:goto-sheet window-id=&quot;{6444AC9B-3992-5DA7-B03C-5E50435E787D}&quot;' button-type='text'><button-visual-state><caption>&#160;</caption><tooltip-text>Ir a Orígenes</tooltip-text><button-caption-font-style fontcolor='#00000000' fontname="Tableau Book" fontsize='8' /></button-visual-state></button><zone-style><format attr='border-style' value='none' /><format attr='margin' value='0' /><format attr='padding' value='0' /><format attr='background-color' value='#00000000' /></zone-style></zone>
+          <zone floating='true' id='8' type-v2='dashboard-object' h='4167' w='6719' x='76406' y='4028'><button action='tabdoc:goto-sheet window-id=&quot;{A496FA3A-823E-5591-A4A0-B52CCB497EB2}&quot;' button-type='text'><button-visual-state><caption>&#160;</caption><tooltip-text>Ir a Productos</tooltip-text><button-caption-font-style fontcolor='#00000000' fontname="Tableau Book" fontsize='8' /></button-visual-state></button><zone-style><format attr='border-style' value='none' /><format attr='margin' value='0' /><format attr='padding' value='0' /><format attr='background-color' value='#00000000' /></zone-style></zone>
+          <zone floating='true' id='9' type-v2='dashboard-object' h='4167' w='6719' x='83438' y='4028'><button action='tabdoc:goto-sheet window-id=&quot;{7C105042-AC4E-5909-B76A-93B6D2581402}&quot;' button-type='text'><button-visual-state><caption>&#160;</caption><tooltip-text>Ir a Logística</tooltip-text><button-caption-font-style fontcolor='#00000000' fontname="Tableau Book" fontsize='8' /></button-visual-state></button><zone-style><format attr='border-style' value='none' /><format attr='margin' value='0' /><format attr='padding' value='0' /><format attr='background-color' value='#00000000' /></zone-style></zone>
+        </zone>
+      </zones>
+      <simple-id uuid='{53037FB1-4632-5FFA-A4CD-B78472614FA6}' />
+    </dashboard>
+  </dashboards>
+  <windows source-height='30'>
+    <window class='worksheet' hidden='true' name="KPI importado"><cards><edge name='left'><strip size='160'><card type='pages' /><card type='filters' /><card type='marks' /></strip></edge><edge name='top'><strip size='2147483647'><card type='columns' /></strip><strip size='2147483647'><card type='rows' /></strip></edge></cards><simple-id uuid='{26C9D5C6-B80C-5C0A-B7C1-8745F9E80B7B}' /></window>
+    <window class='worksheet' hidden='true' name="KPI variación"><cards><edge name='left'><strip size='160'><card type='pages' /><card type='filters' /><card type='marks' /></strip></edge><edge name='top'><strip size='2147483647'><card type='columns' /></strip><strip size='2147483647'><card type='rows' /></strip></edge></cards><simple-id uuid='{C85198E6-3434-510A-A31F-1CEC3D496C3A}' /></window>
+    <window class='worksheet' hidden='true' name="KPI origen"><cards><edge name='left'><strip size='160'><card type='pages' /><card type='filters' /><card type='marks' /></strip></edge><edge name='top'><strip size='2147483647'><card type='columns' /></strip><strip size='2147483647'><card type='rows' /></strip></edge></cards><simple-id uuid='{06FEF472-67F3-57EA-B22D-5BE3AF54D9CF}' /></window>
+    <window class='worksheet' hidden='true' name="KPI rubro"><cards><edge name='left'><strip size='160'><card type='pages' /><card type='filters' /><card type='marks' /></strip></edge><edge name='top'><strip size='2147483647'><card type='columns' /></strip><strip size='2147483647'><card type='rows' /></strip></edge></cards><simple-id uuid='{0334081D-3C85-5F79-BF10-0CBEA000CEFA}' /></window>
+    <window class='worksheet' hidden='true' name="Evolución mensual"><cards><edge name='left'><strip size='160'><card type='pages' /><card type='filters' /><card type='marks' /></strip></edge><edge name='top'><strip size='2147483647'><card type='columns' /></strip><strip size='2147483647'><card type='rows' /></strip></edge></cards><simple-id uuid='{CB8A3C79-A091-5EF4-A061-50F5F76F2EE6}' /></window>
+    <window class='worksheet' hidden='true' name="Principales orígenes"><cards><edge name='left'><strip size='160'><card type='pages' /><card type='filters' /><card type='marks' /></strip></edge><edge name='top'><strip size='2147483647'><card type='columns' /></strip><strip size='2147483647'><card type='rows' /></strip></edge></cards><simple-id uuid='{C25321A9-2B88-5255-865E-FD568F77928E}' /></window>
+    <window class='worksheet' hidden='true' name="Principales rubros"><cards><edge name='left'><strip size='160'><card type='pages' /><card type='filters' /><card type='marks' /></strip></edge><edge name='top'><strip size='2147483647'><card type='columns' /></strip><strip size='2147483647'><card type='rows' /></strip></edge></cards><simple-id uuid='{1E32CA57-816C-5E48-BCF7-8D8DF037A54B}' /></window>
+    <window class='worksheet' hidden='true' name="Vías de transporte"><cards><edge name='left'><strip size='160'><card type='pages' /><card type='filters' /><card type='marks' /></strip></edge><edge name='top'><strip size='2147483647'><card type='columns' /></strip><strip size='2147483647'><card type='rows' /></strip></edge></cards><simple-id uuid='{5CED6D1C-A9A5-55F0-9E2C-EBC35E2D5901}' /></window>
+    <window class='worksheet' hidden='true' name="Mapa de orígenes"><cards><edge name='left'><strip size='160'><card type='pages' /><card type='filters' /><card type='marks' /></strip></edge><edge name='top'><strip size='2147483647'><card type='columns' /></strip><strip size='2147483647'><card type='rows' /></strip></edge></cards><simple-id uuid='{3629C5E2-D8E8-569A-B632-886AE958566F}' /></window>
+    <window class='worksheet' hidden='true' name="Ganadores y perdedores"><cards><edge name='left'><strip size='160'><card type='pages' /><card type='filters' /><card type='marks' /></strip></edge><edge name='top'><strip size='2147483647'><card type='columns' /></strip><strip size='2147483647'><card type='rows' /></strip></edge></cards><simple-id uuid='{B555F4B1-6D97-5AD9-B3EB-E3914746AB8A}' /></window>
+    <window class='worksheet' hidden='true' name="Peso de los grupos"><cards><edge name='left'><strip size='160'><card type='pages' /><card type='filters' /><card type='marks' /></strip></edge><edge name='top'><strip size='2147483647'><card type='columns' /></strip><strip size='2147483647'><card type='rows' /></strip></edge></cards><simple-id uuid='{0CFA95C8-8CE9-57F8-9A75-01CB9763CE6D}' /></window>
+    <window class='worksheet' hidden='true' name="Evolución del origen"><cards><edge name='left'><strip size='160'><card type='pages' /><card type='filters' /><card type='marks' /></strip></edge><edge name='top'><strip size='2147483647'><card type='columns' /></strip><strip size='2147483647'><card type='rows' /></strip></edge></cards><simple-id uuid='{739C96B1-AC93-562A-974D-C3E4DCF1917F}' /></window>
+    <window class='worksheet' hidden='true' name="Origen elegido"><cards><edge name='left'><strip size='160'><card type='pages' /><card type='filters' /><card type='marks' /></strip></edge><edge name='top'><strip size='2147483647'><card type='columns' /></strip><strip size='2147483647'><card type='rows' /></strip></edge></cards><simple-id uuid='{11B81CA0-B911-5998-B04F-E31B2A7E7432}' /></window>
+    <window class='worksheet' hidden='true' name="Mapa de productos"><cards><edge name='left'><strip size='160'><card type='pages' /><card type='filters' /><card type='marks' /></strip></edge><edge name='top'><strip size='2147483647'><card type='columns' /></strip><strip size='2147483647'><card type='rows' /></strip></edge></cards><simple-id uuid='{11B7F53D-3480-5D11-B126-4F77EAF39F3F}' /></window>
+    <window class='worksheet' hidden='true' name="Rubro por origen"><cards><edge name='left'><strip size='160'><card type='pages' /><card type='filters' /><card type='marks' /></strip></edge><edge name='top'><strip size='2147483647'><card type='columns' /></strip><strip size='2147483647'><card type='rows' /></strip></edge></cards><simple-id uuid='{A9732503-77ED-500F-9748-7449D576300F}' /></window>
+    <window class='worksheet' hidden='true' name="Subas y bajas"><cards><edge name='left'><strip size='160'><card type='pages' /><card type='filters' /><card type='marks' /></strip></edge><edge name='top'><strip size='2147483647'><card type='columns' /></strip><strip size='2147483647'><card type='rows' /></strip></edge></cards><simple-id uuid='{79FF7A42-FBFE-5348-8D8E-B1E89C95A3A7}' /></window>
+    <window class='worksheet' hidden='true' name="Evolución del rubro"><cards><edge name='left'><strip size='160'><card type='pages' /><card type='filters' /><card type='marks' /></strip></edge><edge name='top'><strip size='2147483647'><card type='columns' /></strip><strip size='2147483647'><card type='rows' /></strip></edge></cards><simple-id uuid='{6A8C423B-0AED-5D5B-B6CD-BBF177A61E0F}' /></window>
+    <window class='worksheet' hidden='true' name="Rubro elegido"><cards><edge name='left'><strip size='160'><card type='pages' /><card type='filters' /><card type='marks' /></strip></edge><edge name='top'><strip size='2147483647'><card type='columns' /></strip><strip size='2147483647'><card type='rows' /></strip></edge></cards><simple-id uuid='{A40F8E38-6619-528B-B6CC-7563191E2F1E}' /></window>
+    <window class='worksheet' hidden='true' name="Vías por año"><cards><edge name='left'><strip size='160'><card type='pages' /><card type='filters' /><card type='marks' /></strip></edge><edge name='top'><strip size='2147483647'><card type='columns' /></strip><strip size='2147483647'><card type='rows' /></strip></edge></cards><simple-id uuid='{50B49A56-9569-5F03-886B-4C40FFAC7386}' /></window>
+    <window class='worksheet' hidden='true' name="Región por vía"><cards><edge name='left'><strip size='160'><card type='pages' /><card type='filters' /><card type='marks' /></strip></edge><edge name='top'><strip size='2147483647'><card type='columns' /></strip><strip size='2147483647'><card type='rows' /></strip></edge></cards><simple-id uuid='{F7574411-8499-596C-829B-2196682F164B}' /></window>
+    <window class='worksheet' hidden='true' name="Calendario"><cards><edge name='left'><strip size='160'><card type='pages' /><card type='filters' /><card type='marks' /></strip></edge><edge name='top'><strip size='2147483647'><card type='columns' /></strip><strip size='2147483647'><card type='rows' /></strip></edge></cards><simple-id uuid='{5BEABDF7-C84B-5D28-A55D-E2DBDC9AAB4B}' /></window>
+    <window class='worksheet' hidden='true' name="Valor por ítem"><cards><edge name='left'><strip size='160'><card type='pages' /><card type='filters' /><card type='marks' /></strip></edge><edge name='top'><strip size='2147483647'><card type='columns' /></strip><strip size='2147483647'><card type='rows' /></strip></edge></cards><simple-id uuid='{70566326-1B5F-58B2-84C7-1E0CCE8FA2ED}' /></window>
+    <window class='worksheet' hidden='true' name="Energía eléctrica"><cards><edge name='left'><strip size='160'><card type='pages' /><card type='filters' /><card type='marks' /></strip></edge><edge name='top'><strip size='2147483647'><card type='columns' /></strip><strip size='2147483647'><card type='rows' /></strip></edge></cards><simple-id uuid='{F38F0B21-8578-52E9-AC5B-3A61A1ADE89E}' /></window>
+    <window class='worksheet' hidden='true' name="Cobertura"><cards><edge name='left'><strip size='160'><card type='pages' /><card type='filters' /><card type='marks' /></strip></edge><edge name='top'><strip size='2147483647'><card type='columns' /></strip><strip size='2147483647'><card type='rows' /></strip></edge></cards><simple-id uuid='{8081CFC9-1913-56CB-B566-E4BB3B507367}' /></window>
+    <window class='dashboard' maximized='true' name="Panorama"><viewpoints><viewpoint name="Evolución mensual"><zoom type='entire-view' /></viewpoint><viewpoint name="Principales orígenes"><zoom type='entire-view' /></viewpoint><viewpoint name="Principales rubros"><zoom type='entire-view' /></viewpoint><viewpoint name="Vías de transporte"><zoom type='entire-view' /></viewpoint></viewpoints><active id='-1' /><simple-id uuid='{6B13AE2C-F5AD-5A87-8195-34F78242F6BC}' /></window>
+    <window class='dashboard' name="Orígenes"><viewpoints><viewpoint name="Ganadores y perdedores"><zoom type='entire-view' /></viewpoint><viewpoint name="Peso de los grupos"><zoom type='entire-view' /></viewpoint><viewpoint name="Evolución del origen"><zoom type='entire-view' /></viewpoint><viewpoint name="Mapa de orígenes"><floating-toolbar-visibility value='2' /><geo-search-visibility value='0' /><map-navigation value='0' /></viewpoint></viewpoints><active id='-1' /><simple-id uuid='{6444AC9B-3992-5DA7-B03C-5E50435E787D}' /></window>
+    <window class='dashboard' name="Productos"><viewpoints><viewpoint name="Mapa de productos"><zoom type='entire-view' /></viewpoint><viewpoint name="Rubro por origen"><zoom type='entire-view' /></viewpoint><viewpoint name="Subas y bajas"><zoom type='entire-view' /></viewpoint><viewpoint name="Evolución del rubro"><zoom type='entire-view' /></viewpoint></viewpoints><active id='-1' /><simple-id uuid='{A496FA3A-823E-5591-A4A0-B52CCB497EB2}' /></window>
+    <window class='dashboard' name="Logística"><viewpoints><viewpoint name="Vías por año"><zoom type='entire-view' /></viewpoint><viewpoint name="Región por vía"><zoom type='entire-view' /></viewpoint><viewpoint name="Calendario"><zoom type='entire-view' /></viewpoint><viewpoint name="Valor por ítem"><zoom type='entire-view' /></viewpoint></viewpoints><active id='-1' /><simple-id uuid='{7C105042-AC4E-5909-B76A-93B6D2581402}' /></window>
+    <window class='dashboard' name="Método"><viewpoints><viewpoint name="Energía eléctrica"><zoom type='entire-view' /></viewpoint><viewpoint name="Cobertura"><zoom type='entire-view' /></viewpoint></viewpoints><active id='-1' /><simple-id uuid='{373A22A3-CB06-51AB-94C7-A1A06D2032CA}' /></window>
+  </windows>
+</workbook>

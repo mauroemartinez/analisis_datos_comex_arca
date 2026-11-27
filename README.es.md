@@ -17,6 +17,7 @@ Con este repo podés:
 2. **Convertirlos a Parquet comprimido y unirlos en un solo histórico**, que ocupa lo menos posible (de 2018 a hoy, unos 2 GB) y se consulta en segundos con DuckDB o Polars.
 3. **Explorarlos en la misma página que el link de arriba, pero con tus datos y en tu compu:** abrís los archivos que bajaste y filtrás por importador, posición NCM, país, aduana y fechas, con gráficos y exportación a CSV. Nada se sube a ningún lado.
 4. **Consultarlos con Python o SQL** y exportarlos a Excel.
+5. **Verlo en Tableau:** un tablero de cinco páginas con las importaciones de Argentina de 2019 a 2026, generado desde código ([más abajo](#tablero-de-tableau)).
 
 El paso a paso, con capturas: [docs/TUTORIAL.md](docs/TUTORIAL.md).
 
@@ -37,6 +38,24 @@ Python con DuckDB, Polars, pandas y PyArrow sobre Parquet (zstd); notebooks de J
 - Generar una tabla final mensual con una fila por ítem.
 - Filtrar posiciones NCM desde una lista local editable.
 - Explorarlo desde tutoriales (`notebooks/`) o desde un explorador web sin backend (`explorer/`), que podés [probar online con datos de ejemplo](https://mauroemartinez.github.io/analisis_datos_comex_arca/?demo=1). Un [tutorial paso a paso](docs/TUTORIAL.md) muestra cómo.
+
+## Tablero de Tableau
+
+![Página Panorama del tablero de Tableau](tableau/capturas/1-panorama.png)
+
+`tableau/` arma un tablero de Tableau de cinco páginas con las importaciones de Argentina de 2019 a 2026, todo desde código:
+
+1. `preparar_datos.py`: DuckDB lee el histórico de ARCA (655 millones de filas, una por concepto de arancel), deja una fila por ítem (43 millones) y escribe un resumen de unas 540.000 filas por mes, capítulo, origen y vía de transporte, en CSV y como extracción Hyper de Tableau. Corre en menos de dos minutos.
+2. `fondos.py`: dibuja el fondo de cada página (paneles de vidrio de GlobalAIze, títulos y navegación) con Pillow.
+3. `generar_twb.py`: escribe el XML del libro: 24 hojas y 5 dashboards con botones de navegación, expresiones LOD, cálculos de tabla (media móvil de 12 meses), un gráfico de doble eje con líneas de referencia para los cambios de reglas, acciones de filtro y un mapa coroplético. Las posiciones y los textos salen de `diseno.py`, la única fuente de verdad del diseño.
+
+Páginas: Panorama, Orígenes (mapa, quién ganó y quién perdió peso desde 2019), Productos (mapa de rubros, a quién se le compra cada cosa, lo que más creció y cayó), Logística (vías por año y por región, estacionalidad, valor por ítem) y Método (fuente, proceso y lo que quedó afuera). Un clic en un origen o un rubro filtra el resto de su página. La energía eléctrica (NCM 2716) queda afuera: sus declaraciones suman unos USD 40 mil millones con ítems repetidos por más de lo que la interconexión puede transportar, y la página de Método muestra por qué.
+
+| Orígenes | Productos | Logística | Método |
+|---|---|---|---|
+| ![Orígenes](tableau/capturas/2-origenes.png) | ![Productos](tableau/capturas/3-productos.png) | ![Logística](tableau/capturas/4-logistica.png) | ![Método](tableau/capturas/5-metodo.png) |
+
+Para rearmarlo: `pip install -r tableau/requirements.txt`, después `python tableau/preparar_datos.py` (necesita `Data/impo_historico.parquet`), `python tableau/fondos.py` (necesita las tipografías IBM Plex Sans y Newsreader, de Google Fonts, en `tableau/marca/fuentes/`; no se versionan) y `python tableau/generar_twb.py`, y abrir `tableau/importaciones_argentina.twb` con Tableau Public Desktop.
 
 ## Estructura
 
@@ -64,6 +83,11 @@ Python con DuckDB, Polars, pandas y PyArrow sobre Parquet (zstd); notebooks de J
 |   `-- EXPLORACION_ONLINE.md         (arquitectura de exploración online/self-hosted)
 |-- exports/
 |   `-- carpeta de trabajo local no versionada (ver más abajo)
+|-- tableau/
+|   |-- preparar_datos.py              (resumen con DuckDB + extracción Hyper)
+|   |-- fondos.py, diseno.py           (fondos y diseño de las páginas)
+|   |-- generar_twb.py                 (escribe el libro de Tableau)
+|   `-- importaciones_argentina.twb    (el libro generado)
 |-- filtrar_posiciones.py
 |-- posiciones_interes.ejemplo.txt
 |-- requirements.txt

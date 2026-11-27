@@ -1,0 +1,44 @@
+{
+  "generado": "2026-11-27",
+  "desde": "enero de 2019",
+  "hasta": "agosto de 2026",
+  "ultimos_12_meses": {
+    "desde": "septiembre de 2025",
+    "hasta": "agosto de 2026"
+  },
+  "doce_meses_anteriores": {
+    "desde": "septiembre de 2024",
+    "hasta": "agosto de 2025"
+  },
+  "filas_de_la_fuente": 655785749,
+  "items_de_despacho": 43436763,
+  "filas_del_resumen": 539822,
+  "fob_total_musd": 432134.4,
+  "fob_por_anio_musd": {
+    "2019": 44716.2,
+    "2020": 38911.9,
+    "2021": 55600.3,
+    "2022": 70916.5,
+    "2023": 61911.4,
+    "2024": 52305.6,
+    "2025": 66768.5,
+    "2026": 41004.0
+  },
+  "energia_electrica_excluida": {
+    "ncm": "2716",
+    "items": 747,
+    "fob_declarado_musd": 39976.4,
+    "por_anio_musd": {
+      "2019": 1488.4,
+      "2020": 1478.1,
+      "2021": 742.0,
+      "2022": 4768.8,
+      "2023": 3894.8,
+      "2024": 8093.4,
+      "2025": 9053.3,
+      "2026": 10457.6
+    }
+  },
+  "paises_en_el_mapa": 172,
+  "capitulos": 97
+}

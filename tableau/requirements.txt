@@ -1,0 +1,6 @@
+# Dependencias del tablero de Tableau (además de las del repo)
+duckdb==1.5.5
+pandas==3.0.5
+pycountry==26.2.16
+tableauhyperapi==0.0.26963
+pillow==12.3.0

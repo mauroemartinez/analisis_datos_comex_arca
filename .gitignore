@@ -51,3 +51,10 @@ Thumbs.db
 
 # Local commercial filters
 /posiciones_interes.txt
+
+# Extracción de Tableau (se regenera con tableau/preparar_datos.py)
+*.hyper
+hyperd*.log
+~*.twbr
+# Tipografías de la marca para tableau/fondos.py: se bajan de Google Fonts (licencia OFL), no se versionan
+tableau/marca/fuentes/
