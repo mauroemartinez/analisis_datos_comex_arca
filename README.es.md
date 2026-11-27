@@ -62,8 +62,6 @@ Python con DuckDB, Polars, pandas y PyArrow sobre Parquet (zstd); notebooks de J
 |   `-- data/                         (salida de dividir_para_navegador.py, no versionada)
 |-- docs/
 |   `-- EXPLORACION_ONLINE.md         (arquitectura de exploración online/self-hosted)
-|-- .claude/skills/actualizar-historico-arca/
-|   `-- SKILL.md                      (runbook para actualizar el histórico)
 |-- exports/
 |   `-- carpeta de trabajo local no versionada (ver más abajo)
 |-- filtrar_posiciones.py
@@ -73,7 +71,7 @@ Python con DuckDB, Polars, pandas y PyArrow sobre Parquet (zstd); notebooks de J
 `-- README.es.md                      (este archivo, en español)
 ```
 
-Los datos y salidas están ignorados por Git: `.csv`, `.xlsx`, `.parquet`, `.lst`, `.zip`, bases locales y exports generados. `.claude/` está ignorado salvo la skill de arriba; `*.ipynb` está ignorado salvo lo que hay en `notebooks/`.
+Los datos y salidas están ignorados por Git: `.csv`, `.xlsx`, `.parquet`, `.lst`, `.zip`, bases locales y exports generados. `*.ipynb` está ignorado salvo lo que hay en `notebooks/`.
 
 ## Instalación
 
@@ -105,9 +103,7 @@ python Data\descargar_historico_impo.py --actualizar
 - **Si ya existe**: mira el último período cargado, descarga y convierte
   solo lo nuevo, y lo agrega **sin resortear los cientos de millones de
   filas previas** (ver "Por qué DuckDB y por qué Parquet" más abajo para el
-  detalle de cómo). Es la forma pensada para correr esto cada tanto, a mano
-  o pidiéndoselo a un agente de Claude Code (ver la skill
-  `actualizar-historico-arca` en `.claude/skills/`).
+  detalle de cómo). Es la forma pensada para correr esto cada tanto.
 - Si ARCA todavía no publicó nada nuevo, termina enseguida sin tocar el
   archivo. Correrlo de más no rompe nada.
 
@@ -281,7 +277,7 @@ Esto genera `explorer/data/impo_YYYY.parquet`, un archivo por año (medido sobre
 
 En el selector de archivo de `explorer/index.html` se pueden elegir **varios años a la vez**: el explorador los junta con `read_parquet([...])` de DuckDB y los trata como una sola tabla, sin que el usuario tenga que hacer nada especial. Recomendación práctica: no cargar más de ~2 GiB acumulados de una sola vez en el navegador (es decir, no los 9 años juntos): no es solo el límite de un archivo individual, sino la memoria total que el navegador tiene que sostener para esa pestaña. Para análisis que necesiten combinar todo el histórico completo a la vez, usar los notebooks o `consultar_impo.py`/`tabla_final.py` en local: ahí el límite es la RAM de la máquina, no un techo fijo del navegador, y ya están pensados para correr con poca RAM (ver "Corrido en una máquina con 4 GB de RAM" más arriba).
 
-Por qué el archivo partido/completo no se publica en este repositorio de GitHub: incluso partido por año, cada archivo pesa entre ~100 y ~330 MiB, por encima del límite de 100 MB por archivo que Git aplica sin extensiones (Git LFS o GitHub Releases lo permiten, pero suman una cuota/costo y una pieza más para mantener sincronizada en cada actualización mensual, sin necesidad real). Por eso este repositorio publica el *código* para generar el dato, no el dato en sí: cualquiera puede reconstruir exactamente el mismo `impo_historico.parquet` corriendo `python Data\descargar_historico_impo.py --actualizar` (a mano, o pidiéndoselo a un agente de Claude Code usando la skill `actualizar-historico-arca` en `.claude/skills/`), y después partirlo local con `dividir_para_navegador.py` si lo va a usar en el explorador web.
+Por qué el archivo partido/completo no se publica en este repositorio de GitHub: incluso partido por año, cada archivo pesa entre ~100 y ~330 MiB, por encima del límite de 100 MB por archivo que Git aplica sin extensiones (Git LFS o GitHub Releases lo permiten, pero suman una cuota/costo y una pieza más para mantener sincronizada en cada actualización mensual, sin necesidad real). Por eso este repositorio publica el *código* para generar el dato, no el dato en sí: cualquiera puede reconstruir exactamente el mismo `impo_historico.parquet` corriendo `python Data\descargar_historico_impo.py --actualizar`, y después partirlo local con `dividir_para_navegador.py` si lo va a usar en el explorador web.
 
 Ver `docs/EXPLORACION_ONLINE.md` para la decisión completa (por qué no una base de datos, cómo funciona por dentro, la arquitectura en capas, y los pasos concretos para publicarla de verdad con una URL).
 

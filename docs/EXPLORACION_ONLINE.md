@@ -171,10 +171,7 @@ descartó:
 
 En cambio, el repositorio publica el **código** para generar el dato, no el
 dato en sí: `Data/descargar_historico_impo.py --actualizar` reconstruye
-exactamente el mismo histórico desde la fuente pública de ARCA, a mano o
-pidiéndoselo a un agente de Claude Code con la skill
-`actualizar-historico-arca` (`.claude/skills/actualizar-historico-arca/`),
-que ya sabe correr y mantener al día ese comando. Después,
+exactamente el mismo histórico desde la fuente pública de ARCA. Después,
 `explorer/dividir_para_navegador.py` genera los archivos por año en local
 para quien quiera usar el explorador web. Nada de esto excluye subir el dato
 a un object storage aparte (Capa 1/2 de abajo) si se quiere un link público
@@ -281,11 +278,8 @@ que volver a subirlo (reemplaza el anterior, mismo nombre):
 wrangler r2 object put comex-arca-historico/impo_historico.parquet --file Data\impo_historico.parquet
 ```
 
-Esto todavía no está integrado a la skill `actualizar-historico-arca`
-(`.claude/skills/actualizar-historico-arca/SKILL.md`) porque depende del
-bucket que cada quien haya creado en el paso 1; una vez que el nombre del
-bucket esté decidido, conviene agregar este comando como paso final de la
-skill.
+Una vez que el nombre del bucket esté decidido, conviene sumar este comando
+como paso final de la actualización del histórico.
 
 ## Qué falta para que esto sea un producto real
 

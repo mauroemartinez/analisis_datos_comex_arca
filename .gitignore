@@ -12,12 +12,9 @@ venv/
 *.ipynb
 !/notebooks/*.ipynb
 
-# Local AI/tooling state: everything ignored except the shared, reviewed
-# skill meant to ship with the repo (see .claude/skills/actualizar-historico-arca).
-.claude/*
-!/.claude/skills/
-/.claude/skills/*
-!/.claude/skills/actualizar-historico-arca/
+# Local tooling state
+.claude/
+AGENTS.md
 .mcp.json
 .env
 .env.*

@@ -62,8 +62,6 @@ Python with DuckDB, Polars, pandas and PyArrow over Parquet (zstd); Jupyter note
 |   `-- data/                         (output of dividir_para_navegador.py, not versioned)
 |-- docs/
 |   `-- EXPLORACION_ONLINE.md         (online/self-hosted exploration architecture, in Spanish)
-|-- .claude/skills/actualizar-historico-arca/
-|   `-- SKILL.md                      (runbook for updating the history file)
 |-- exports/
 |   `-- local working folder, not versioned (see below)
 |-- filtrar_posiciones.py
@@ -73,7 +71,7 @@ Python with DuckDB, Polars, pandas and PyArrow over Parquet (zstd); Jupyter note
 `-- README.es.md                      (in Spanish)
 ```
 
-Data and outputs are ignored by Git: `.csv`, `.xlsx`, `.parquet`, `.lst`, `.zip`, local databases and generated exports. `.claude/` is ignored except for the skill above; `*.ipynb` is ignored except for what is in `notebooks/`.
+Data and outputs are ignored by Git: `.csv`, `.xlsx`, `.parquet`, `.lst`, `.zip`, local databases and generated exports. `*.ipynb` is ignored except for what is in `notebooks/`.
 
 ## Installation
 
@@ -105,9 +103,7 @@ python Data\descargar_historico_impo.py --actualizar
 - **If it already exists**: it checks the last loaded period, downloads and
   converts only what is new, and appends it **without re-sorting the hundreds
   of millions of existing rows** (see "Why DuckDB and why Parquet" below for
-  the details of how). This is the intended way to run it every so often, by
-  hand or by asking a Claude Code agent to do it (see the
-  `actualizar-historico-arca` skill in `.claude/skills/`).
+  the details of how). This is the intended way to run it every so often.
 - If ARCA has not published anything new yet, it finishes right away without
   touching the file. Running it more often than needed does not break anything.
 
@@ -281,7 +277,7 @@ This generates `explorer/data/impo_YYYY.parquet`, one file per year (measured on
 
 In the file selector of `explorer/index.html` you can pick **several years at once**: the explorer combines them with DuckDB's `read_parquet([...])` and treats them as a single table, without the user having to do anything special. Practical recommendation: do not load more than ~2 GiB in total at once in the browser (that is, not all 9 years together): it is not only the limit for an individual file, but the total memory the browser has to hold for that tab. For analyses that need to combine the entire history at once, use the notebooks or `consultar_impo.py`/`tabla_final.py` locally: there the limit is the machine's RAM, not a fixed browser ceiling, and they are already designed to run with little RAM (see "Running on a machine with 4 GB of RAM" above).
 
-Why the split or full file is not published in this GitHub repository: even split by year, each file weighs between ~100 and ~330 MiB, above the 100 MB per-file limit that Git applies without extensions (Git LFS or GitHub Releases allow it, but they add a quota or cost and one more piece to keep in sync on every monthly update, with no real need). That is why this repository publishes the *code* that generates the data, not the data itself: anyone can rebuild exactly the same `impo_historico.parquet` by running `python Data\descargar_historico_impo.py --actualizar` (by hand, or by asking a Claude Code agent to do it with the `actualizar-historico-arca` skill in `.claude/skills/`), and then split it locally with `dividir_para_navegador.py` if they are going to use it in the web explorer.
+Why the split or full file is not published in this GitHub repository: even split by year, each file weighs between ~100 and ~330 MiB, above the 100 MB per-file limit that Git applies without extensions (Git LFS or GitHub Releases allow it, but they add a quota or cost and one more piece to keep in sync on every monthly update, with no real need). That is why this repository publishes the *code* that generates the data, not the data itself: anyone can rebuild exactly the same `impo_historico.parquet` by running `python Data\descargar_historico_impo.py --actualizar`, and then split it locally with `dividir_para_navegador.py` if they are going to use it in the web explorer.
 
 See `docs/EXPLORACION_ONLINE.md` (in Spanish) for the full decision (why not a database, how it works inside, the layered architecture, and the concrete steps to actually publish it with a URL).
 
